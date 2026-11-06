@@ -51,21 +51,33 @@ But the network recorded only 33%: it rejected the verdict on 27 of its 69 answe
 The other reviewers caught at most 2%, only the SQL injection. False alarms on correct code: 0%.
 
 14
-00:02:48,500 --> 00:03:00,500
-Same bug, three reviewers.
+00:02:48,500 --> 00:02:56,000
+Same price per call: $0.01. But per bug caught, CodeWire cost $0.039, and the others $0.71.
 
 15
-00:03:01,000 --> 00:03:15,500
-The best reviewer found it, and the network threw its verdict away. The others let the bug through.
+00:02:56,500 --> 00:03:03,500
+That is the leaderboard buyers need: price per verified correct answer, not per call.
 
 16
-00:03:16,500 --> 00:03:31,500
-In round one, only 3 of the 16 miners listed for code review returned a review at all.
+00:03:04,500 --> 00:03:16,500
+Same bug, three reviewers.
 
 17
-00:03:32,500 --> 00:03:49,500
-Anyone can rerun it. Failed miners are recorded as failures, and an interrupted run resumes without paying twice.
+00:03:17,000 --> 00:03:31,500
+The best reviewer found it, and the network threw its verdict away. The others let the bug through.
 
 18
-00:03:50,500 --> 00:04:04,500
+00:03:32,500 --> 00:03:47,500
+In round one, only 3 of the 16 miners listed for code review returned a review at all.
+
+19
+00:03:48,500 --> 00:03:57,000
+Bring your own function: Mutante plants bugs in it, proves them with your tests, and buys the reviews.
+
+20
+00:03:57,500 --> 00:04:05,500
+Failed miners are recorded as failures, and an interrupted run resumes without paying twice.
+
+21
+00:04:06,500 --> 00:04:20,500
 Buyers of intelligence need to know what they are buying. Mutante measures it.

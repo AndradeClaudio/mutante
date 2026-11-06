@@ -43,6 +43,8 @@ function statistics(D) {
       counted: n('caught') / planted,
       explained: (n('caught') + n('explained-without-verdict')) / planted,
       falseAlarms: correct ? n('false-alarm') / correct : 0,
+      paid: mine.reduce((sum, p) => sum + p.paid_usdc, 0),
+      costPerCatch: n('caught') ? mine.reduce((sum, p) => sum + p.paid_usdc, 0) / n('caught') : null,
       discarded: mine.filter((p) => p.answer_key !== 'annulled' && p.verdict_discarded_by_network === 1).length,
       answers: mine.filter((p) => p.answer_key !== 'annulled').length,
     };
@@ -296,6 +298,30 @@ function scenes(D, S) {
         }
       } },
 
+    { duration: 16, captions: [
+        [0.5, 8, `Same price per call: $${S.price.toFixed(2)}. But per bug caught, ${S.best.name.split(' ')[0]} cost $${S.best.costPerCatch.toFixed(3)}, and the others $${S.scoreboard[1].costPerCatch.toFixed(2)}.`],
+        [8.5, 15.5, 'That is the leaderboard buyers need: price per verified correct answer, not per call.']],
+      draw(t) {
+        heading('Price per verified correct answer', 'Everything paid to each reviewer in round 2 ÷ bugs it caught and the network counted');
+        const most = Math.max(...S.scoreboard.map((r) => r.costPerCatch ?? 0));
+        S.scoreboard.forEach((r, i) => {
+          const y = 330 + i * 150;
+          const v = (r.costPerCatch ?? 0) / most * easeOut((t - 1 - i * 0.5) / 1.2);
+          paragraph(r.name, 120, y + 30, 520, { size: 30, weight: 600 });
+          ctx.fillStyle = '#ffffff10'; ctx.fillRect(700, y, 1020, 50);
+          ctx.fillStyle = i === 0 ? COLOR.counted : COLOR.bad; ctx.fillRect(700, y, Math.max(4, v * 1020), 50);
+          const label = `$${r.costPerCatch.toFixed(3)} per bug caught  ·  $${r.paid.toFixed(2)} paid`;
+          // A long bar holds its label inside; a short one gets it alongside.
+          const inside = v > 0.5;
+          if (t > 1.2 + i * 0.5) text(label, inside ? 724 : 700 + Math.max(4, v * 1020) + 18, y + 36, { size: 28, weight: inside ? 600 : 400, color: inside ? COLOR.background : COLOR.text });
+        });
+        if (t > 8.5) {
+          ctx.save(); ctx.globalAlpha *= easeOut((t - 8.5) / 0.8);
+          pill(`${Math.round(S.scoreboard[1].costPerCatch / S.best.costPerCatch)}× cheaper per correct answer, at the same price per call`, 120, 820, COLOR.counted, 30);
+          ctx.restore();
+        }
+      } },
+
     { duration: 28, sounds: [[1.5, 'ping'], [4.5, 'ping'], [7.5, 'ping']], captions: [
         [0.5, 12.5, 'Same bug, three reviewers.'],
         [13, 27.5, 'The best reviewer found it, and the network threw its verdict away. The others let the bug through.']],
@@ -335,10 +361,16 @@ function scenes(D, S) {
         });
       } },
 
-    { duration: 18, captions: [[0.5, 17.5, 'Anyone can rerun it. Failed miners are recorded as failures, and an interrupted run resumes without paying twice.']],
+    { duration: 18, captions: [
+        [0.5, 9, 'Bring your own function: Mutante plants bugs in it, proves them with your tests, and buys the reviews.'],
+        [9.5, 17.5, 'Failed miners are recorded as failures, and an interrupted run resumes without paying twice.']],
       draw(t) {
         heading('Run it, break it, reproduce it');
-        const commands = ['npm run generate-catalog', 'npm run crash-test -- --round my-run --budget 3', 'npm run scoreboard -- my-run'];
+        const commands = [
+          'npm run try -- --code my-function.js --tests my-function.tests.js',
+          'npm run crash-test -- --round my-run --budget 3',
+          'npm run scoreboard -- my-run',
+        ];
         codeBlock(commands.map((c) => `$ ${c}`), 120, 260, { size: 32, width: 1680 });
         const items = [
           ['Miner offline or refused?', 'Recorded as "could not answer". The run goes on.'],

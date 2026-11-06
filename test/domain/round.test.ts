@@ -90,6 +90,19 @@ describe("buildScoreboard", () => {
     expect(second!.grades.missed).toBe(1);
   });
 
+  it("prices each reviewer per correct answer, not per call", () => {
+    const round = newRound();
+    round.record(review("good", "sabotaged", "Request changes", "`or True` is always true"));
+    round.record(review("good", "correct", "Approve"));
+    round.record(review("rubber-stamp", "sabotaged", "Approve"));
+    round.record(review("rubber-stamp", "correct", "Approve"));
+
+    const [good, rubberStamp] = buildScoreboard(round.toSnapshot());
+    // Same price per call; the good reviewer paid 20,000 for one caught bug, the other bought none.
+    expect(good).toMatchObject({ costPerCatchMicroUsdc: 20_000, costPerExplainedMicroUsdc: 20_000 });
+    expect(rubberStamp).toMatchObject({ costPerCatchMicroUsdc: null });
+  });
+
   it("regrades with a revised answer key, but keeps the old key when the code the reviewer saw changed", () => {
     const round = newRound();
     round.record(review("good", "sabotaged", "Request changes", "tautology: the condition is always truthy"));

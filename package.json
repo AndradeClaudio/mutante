@@ -13,7 +13,8 @@
     "export-scoreboard": "tsx src/interface/cli/export-public-scoreboard.ts round-001 round-002 round-002-static-baseline",
     "record-video": "node video/record.mjs",
     "check-video": "node video/check.mjs",
-    "static-baseline": "tsx src/interface/cli/run-static-baseline.ts"
+    "static-baseline": "tsx src/interface/cli/run-static-baseline.ts",
+    "try": "tsx src/interface/cli/try-own-code.ts"
   },
   "keywords": [],
   "author": "",

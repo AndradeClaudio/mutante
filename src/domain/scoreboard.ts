@@ -14,6 +14,13 @@ export interface ScoreboardRow {
   readonly falseAlarmRate: number;
   readonly medianLatencyMs: number | null;
   readonly spentMicroUsdc: number;
+  /**
+   * What a buyer paid per bug caught and counted by the network (all purchases ÷ caught bugs).
+   * Null when nothing was caught: no price buys a correct answer from this reviewer.
+   */
+  readonly costPerCatchMicroUsdc: number | null;
+  /** Same, per bug named in the answer even if the network discarded the verdict. */
+  readonly costPerExplainedMicroUsdc: number | null;
 }
 
 export function buildScoreboard(round: RoundSnapshot): ScoreboardRow[] {
@@ -29,21 +36,29 @@ export function buildScoreboard(round: RoundSnapshot): ScoreboardRow[] {
       if (answerKey) grades[gradeReview(review, answerKey)]++;
     }
     const latencies = reviews.filter((r) => r.kind === "delivered").map((r) => r.latencyMs);
+    const spent = reviews.reduce((total, r) => total + costOf(r), 0);
+    const explained = grades.caught + grades["explained-without-verdict"];
     return {
       reviewerId: reviewer.id,
       name: reviewer.name,
       grades,
       detectionRate: ratio(grades.caught, plantedBugs),
-      explainedRate: ratio(grades.caught + grades["explained-without-verdict"], plantedBugs),
+      explainedRate: ratio(explained, plantedBugs),
       falseAlarmRate: ratio(grades["false-alarm"], correctSamples),
       medianLatencyMs: median(latencies),
-      spentMicroUsdc: reviews.reduce((total, r) => total + costOf(r), 0),
+      spentMicroUsdc: spent,
+      costPerCatchMicroUsdc: pricePer(spent, grades.caught),
+      costPerExplainedMicroUsdc: pricePer(spent, explained),
     };
   });
 
   return rows.sort(
     (a, b) => b.detectionRate - a.detectionRate || b.explainedRate - a.explainedRate || a.falseAlarmRate - b.falseAlarmRate,
   );
+}
+
+function pricePer(spent: number, correctAnswers: number): number | null {
+  return correctAnswers === 0 ? null : spent / correctAnswers;
 }
 
 function ratio(part: number, whole: number): number {

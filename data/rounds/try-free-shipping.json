@@ -1,0 +1,402 @@
+{
+  "id": "try-free-shipping",
+  "intent": "CODE_REVIEW_GENERAL",
+  "budgetMicroUsdc": 200000,
+  "cases": [
+    {
+      "id": "free-shipping-correct",
+      "language": "javascript",
+      "code": "// Orders of $50 or more ship free; below that, shipping costs $5.\nfunction shippingFee(orderTotal) {\n  return orderTotal >= 50 ? 0 : 5;\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "free-shipping"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "free-shipping-boundary-1",
+      "language": "javascript",
+      "code": "// Orders of $50 or more ship free; below that, shipping costs $5.\nfunction shippingFee(orderTotal) {\n  return orderTotal > 50 ? 0 : 5;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "free-shipping",
+        "operator": "boundary"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "boundary",
+        "description": "boundary changed: `>=` became `>`",
+        "clues": [
+          "orderTotal\\s*>\\s*50",
+          "off[- ]by[- ]one",
+          "boundary",
+          "edge case",
+          "inclusive",
+          "exclusive",
+          "exactly",
+          "strict(ly)? (inequality|comparison|less|greater)",
+          "(less|greater) than or equal"
+        ]
+      }
+    },
+    {
+      "id": "free-shipping-comparison-flip-1",
+      "language": "javascript",
+      "code": "// Orders of $50 or more ship free; below that, shipping costs $5.\nfunction shippingFee(orderTotal) {\n  return orderTotal <= 50 ? 0 : 5;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "free-shipping",
+        "operator": "comparison-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "inverted-comparison",
+        "description": "comparison inverted: `>=` became `<=`",
+        "clues": [
+          "orderTotal\\s*<=\\s*50",
+          "invert",
+          "revers",
+          "backwards",
+          "opposite",
+          "flipped",
+          "wrong direction",
+          "(rejects|accepts)\\b[^.]{0,60}\\b(accepts|rejects)\\b",
+          "returns `?(true|false)`? when [^.]{0,40}\\bnot\\b"
+        ]
+      }
+    },
+    {
+      "id": "free-shipping-constant-changed-1",
+      "language": "javascript",
+      "code": "// Orders of $50 or more ship free; below that, shipping costs $5.\nfunction shippingFee(orderTotal) {\n  return orderTotal >= 51 ? 0 : 5;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "free-shipping",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `50` became `51`",
+        "clues": [
+          "orderTotal\\s*>=\\s*51",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?51\\b",
+          "`51`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "free-shipping-constant-changed-2",
+      "language": "javascript",
+      "code": "// Orders of $50 or more ship free; below that, shipping costs $5.\nfunction shippingFee(orderTotal) {\n  return orderTotal >= 50 ? 1 : 5;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "free-shipping",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `0` became `1`",
+        "clues": [
+          "return\\s*orderTotal\\s*>=\\s*50\\s*\\?\\s*1\\s*:\\s*5;",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?1\\b",
+          "`1`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    }
+  ],
+  "reviewers": [
+    {
+      "id": "5530",
+      "name": "Telegraph Verity Intelligence"
+    },
+    {
+      "id": "20260828",
+      "name": "PREFLIGHT Infrastructure Signals"
+    },
+    {
+      "id": "7310045",
+      "name": "CodeWire Code Review Request Contract"
+    }
+  ],
+  "startedAt": "2026-11-06T20:48:15.469Z",
+  "closedAt": "2026-11-06T20:49:17.800Z",
+  "reviews": [
+    {
+      "reviewerId": "5530",
+      "caseId": "free-shipping-correct",
+      "kind": "delivered",
+      "verdict": "Comment",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No configured static heuristic matched. This is not an approval or proof that the code is safe.",
+      "latencyMs": 12370,
+      "receipt": {
+        "hash": "0xdb15537fba57fb83691bb177df75670e290f8b693dceb1154721fba3aaa2e6a8",
+        "transaction": "0x31943c59cde389137d6dac7d1824f736c353a693d7086d047d3264aa4805f6b6",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5092"
+      },
+      "rawResponse": "{\"miner_id\":\"5530\",\"miner_name\":\"Telegraph Verity Intelligence\",\"endpoint\":\"/v1/intent\",\"result\":{\"verdict\":\"Comment\",\"findings\":null,\"summary\":\"No configured static heuristic matched. This is not an approval or proof that the code is safe.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Orders of $50 or more ship free; below that, shipping costs $5.\\nfunction shippingFee(orderTotal) {\\n  return orderTotal \\u003e= 50 ? 0 : 5;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":319,\"timestamp\":\"2026-11-06T20:48:25.683582727Z\",\"reasoning\":\"Intent: miner telegraph-verity-intelligence given by the caller\\nMiner: The user wants a code review, and the intent has been classified as CODE_REVIEW_GENERAL. The miner's /v1/intent endpoint supports this intent. The provided code snippet is mapped to the 'code' parameter as required by the endpoint configuration for CODE_REVIEW_GENERAL.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x0cce9bfd6364a10adf2835cd8071b64789b9ba284d720b2d3e57e0c34a5858ad\"}"
+    },
+    {
+      "reviewerId": "5530",
+      "caseId": "free-shipping-comparison-flip-1",
+      "kind": "delivered",
+      "verdict": "Comment",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No configured static heuristic matched. This is not an approval or proof that the code is safe.",
+      "latencyMs": 12873,
+      "receipt": {
+        "hash": "0xc2ed79ce92e7c360d3ddf89143a83e0bb3a1e780829a2e72f1b226c1907f45c0",
+        "transaction": "0x8ee990351bbc2b7e234a52bc88ce18e97f65ce2f6c1b99b36d8e198978e3029c",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5092"
+      },
+      "rawResponse": "{\"miner_id\":\"5530\",\"miner_name\":\"Telegraph Verity Intelligence\",\"endpoint\":\"/v1/intent\",\"result\":{\"verdict\":\"Comment\",\"findings\":null,\"summary\":\"No configured static heuristic matched. This is not an approval or proof that the code is safe.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Orders of $50 or more ship free; below that, shipping costs $5.\\nfunction shippingFee(orderTotal) {\\n  return orderTotal \\u003c= 50 ? 0 : 5;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":314,\"timestamp\":\"2026-11-06T20:48:25.698238426Z\",\"reasoning\":\"Intent: miner telegraph-verity-intelligence given by the caller\\nMiner: The user wants to perform a code review, and the intent has been classified as CODE_REVIEW_GENERAL. The miner's /v1/intent endpoint supports this intent. The provided parameters include the 'code' field, which is a required parameter for the CODE_REVIEW_GENERAL intent in this miner's configuration. Therefore, I will use the /v1/intent endpoint and pass the provided code directly in the 'code' field of the request body.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0xce8600321056c5d9937e17cba01a2d884a3dab953e5e37249675398190051b88\"}"
+    },
+    {
+      "reviewerId": "5530",
+      "caseId": "free-shipping-boundary-1",
+      "kind": "delivered",
+      "verdict": "Comment",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No configured static heuristic matched. This is not an approval or proof that the code is safe.",
+      "latencyMs": 12923,
+      "receipt": {
+        "hash": "0xeeb516a73389f8f757ab3291b9dc1065318a0b1af7f9479af1baca7dd644f872",
+        "transaction": "0xe9ade4f83f0decf4c8508e59bf829ed5a13f6fc6efe5279b9780c88448ca6a26",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5092"
+      },
+      "rawResponse": "{\"miner_id\":\"5530\",\"miner_name\":\"Telegraph Verity Intelligence\",\"endpoint\":\"/v1/intent\",\"result\":{\"verdict\":\"Comment\",\"findings\":null,\"summary\":\"No configured static heuristic matched. This is not an approval or proof that the code is safe.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Orders of $50 or more ship free; below that, shipping costs $5.\\nfunction shippingFee(orderTotal) {\\n  return orderTotal \\u003e 50 ? 0 : 5;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":332,\"timestamp\":\"2026-11-06T20:48:25.704574987Z\",\"reasoning\":\"Intent: miner telegraph-verity-intelligence given by the caller\\nMiner: The user wants to perform a code review. The miner configuration includes an endpoint '/v1/intent' that explicitly supports the 'CODE_REVIEW_GENERAL' intent. The provided parameters include the 'code' field, which is a required parameter for this intent on this endpoint. Therefore, this endpoint and these parameters are used.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x06aea6fbc928dc8ec356b6cd2e2b77280d71de4b4168c1f5463152ab9f8d5b2d\"}"
+    },
+    {
+      "reviewerId": "5530",
+      "caseId": "free-shipping-constant-changed-1",
+      "kind": "delivered",
+      "verdict": "Comment",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No configured static heuristic matched. This is not an approval or proof that the code is safe.",
+      "latencyMs": 13083,
+      "receipt": {
+        "hash": "0xa4f1655cfbb5975e6d68e656b3489163adc9bba14ddd68ac8a8fe46a861c5d19",
+        "transaction": "0x86c0a6fbceceb79312be75c1201d62791225a929c9b84c0f98f684451f130128",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5092"
+      },
+      "rawResponse": "{\"miner_id\":\"5530\",\"miner_name\":\"Telegraph Verity Intelligence\",\"endpoint\":\"/v1/intent\",\"result\":{\"verdict\":\"Comment\",\"findings\":null,\"summary\":\"No configured static heuristic matched. This is not an approval or proof that the code is safe.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Orders of $50 or more ship free; below that, shipping costs $5.\\nfunction shippingFee(orderTotal) {\\n  return orderTotal \\u003e= 51 ? 0 : 5;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1020,\"timestamp\":\"2026-11-06T20:48:26.407117404Z\",\"reasoning\":\"Intent: miner telegraph-verity-intelligence given by the caller\\nMiner: The user wants to perform a code review. The miner configuration includes an endpoint '/v1/intent' that supports the 'CODE_REVIEW_GENERAL' intent. The provided parameters include the 'code' field, which is a required parameter for this intent and endpoint. Therefore, this endpoint and these parameters are used.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x3e93dd9ba46351a6f4409219468014cf659acb85847b3f9e1daf96f37c0b9d57\"}"
+    },
+    {
+      "reviewerId": "5530",
+      "caseId": "free-shipping-constant-changed-2",
+      "kind": "delivered",
+      "verdict": "Comment",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No configured static heuristic matched. This is not an approval or proof that the code is safe.",
+      "latencyMs": 15949,
+      "receipt": {
+        "hash": "0x0c0cc68cc7b9f1eeefdbfc4825667832723fd107da7ba6321e02c122fe619741",
+        "transaction": "0xf5d6008bfadd014d7a3ccbda0b02d5df30e0a2317420cfa3b5bf7739819b5235",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5092"
+      },
+      "rawResponse": "{\"miner_id\":\"5530\",\"miner_name\":\"Telegraph Verity Intelligence\",\"endpoint\":\"/v1/intent\",\"result\":{\"verdict\":\"Comment\",\"findings\":null,\"summary\":\"No configured static heuristic matched. This is not an approval or proof that the code is safe.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Orders of $50 or more ship free; below that, shipping costs $5.\\nfunction shippingFee(orderTotal) {\\n  return orderTotal \\u003e= 50 ? 1 : 5;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":288,\"timestamp\":\"2026-11-06T20:48:41.470834803Z\",\"reasoning\":\"Intent: miner telegraph-verity-intelligence given by the caller\\nMiner: The user wants to perform a code review. The miner's /v1/intent endpoint supports the CODE_REVIEW_GENERAL intent. The provided parameters include the 'code' field, which is required for this intent and endpoint. Therefore, I will use the /v1/intent endpoint with the intent set to CODE_REVIEW_GENERAL and the provided code.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x939be6775fb4c5cd9fd1adbb3910f88e2600a4f69e65b9bf38bf74889a70fcf1\"}"
+    },
+    {
+      "reviewerId": "20260828",
+      "caseId": "free-shipping-correct",
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.",
+      "latencyMs": 16083,
+      "receipt": {
+        "hash": "0xf691ad1a83c43a47e878afa6928f33c04861af8be68ef417c68bd7fcfad24715",
+        "transaction": "0xdead931b29c981c8efe312ea0e2484817085cfc67408b346b5145d3a7f367912",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5113"
+      },
+      "rawResponse": "{\"miner_id\":\"20260828\",\"miner_name\":\"PREFLIGHT Infrastructure Signals\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":\"Approve\",\"findings\":null,\"summary\":\"No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Orders of $50 or more ship free; below that, shipping costs $5.\\nfunction shippingFee(orderTotal) {\\n  return orderTotal \\u003e= 50 ? 0 : 5;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":262,\"timestamp\":\"2026-11-06T20:48:41.451702365Z\",\"reasoning\":\"Intent: miner a1-preflight given by the caller\\nMiner: The user wants a code review, and the PREFLIGHT Infrastructure Signals miner has an endpoint `/code-review` that specifically serves the `CODE_REVIEW_GENERAL` intent. The `query` parameter is set to the verbatim question including the code, and the `code` parameter is set to the provided code snippet as per the endpoint's requirements.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x5928cd9f5eb352d104c5757b4a467849dd7232a3d66207af290cd2cb69d0558f\"}"
+    },
+    {
+      "reviewerId": "20260828",
+      "caseId": "free-shipping-comparison-flip-1",
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.",
+      "latencyMs": 16302,
+      "receipt": {
+        "hash": "0x25fd983bc63d7ddfdff9991845b0178ccf7a414afbde26dd7b880fb6325e8475",
+        "transaction": "0xb8df490f47a1c9ff88aeaca2ebb3b1d707856a1d64c7851ffb5e816b8c91c157",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5113"
+      },
+      "rawResponse": "{\"miner_id\":\"20260828\",\"miner_name\":\"PREFLIGHT Infrastructure Signals\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":\"Approve\",\"findings\":null,\"summary\":\"No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Orders of $50 or more ship free; below that, shipping costs $5.\\nfunction shippingFee(orderTotal) {\\n  return orderTotal \\u003c= 50 ? 0 : 5;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":253,\"timestamp\":\"2026-11-06T20:48:42.012306154Z\",\"reasoning\":\"Intent: miner a1-preflight given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The PREFLIGHT Infrastructure Signals miner has an endpoint `/code-review` that serves this intent. The endpoint requires a `query` parameter, which is constructed by prepending 'Review this code: ' to the provided code. The `code` parameter is also populated with the provided code.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x7748571a5faebd80542dfc564070a2b2be3b1913c3ecdcd5f1990121dbabd9d2\"}"
+    },
+    {
+      "reviewerId": "20260828",
+      "caseId": "free-shipping-boundary-1",
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.",
+      "latencyMs": 16505,
+      "receipt": {
+        "hash": "0x3869f2820c78f81166789a8403899b209e601f78ff691055fc8fb7f65542c1a6",
+        "transaction": "0xc5301e65a78f10195c3a81962b6f24e675ddf935c169608aeb24c2edceb1689d",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5113"
+      },
+      "rawResponse": "{\"miner_id\":\"20260828\",\"miner_name\":\"PREFLIGHT Infrastructure Signals\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":\"Approve\",\"findings\":null,\"summary\":\"No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Orders of $50 or more ship free; below that, shipping costs $5.\\nfunction shippingFee(orderTotal) {\\n  return orderTotal \\u003e 50 ? 0 : 5;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":291,\"timestamp\":\"2026-11-06T20:48:42.042496747Z\",\"reasoning\":\"Intent: miner a1-preflight given by the caller\\nMiner: The user wants a code review, and the PREFLIGHT Infrastructure Signals miner has an endpoint `/code-review` that explicitly serves the `CODE_REVIEW_GENERAL` intent. The provided code snippet is passed as the `code` parameter, and the `query` parameter is constructed to include the instruction to review the code along with the code itself, as per the endpoint's documentation.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x793a789583f096d38202d8b5e03d4d36a1d315f0d692bf764eb9e29df21fcd58\"}"
+    },
+    {
+      "reviewerId": "20260828",
+      "caseId": "free-shipping-constant-changed-2",
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.",
+      "latencyMs": 10800,
+      "receipt": {
+        "hash": "0x7b80982bd495a817c6dda8d810037774fb8dd40639f5e54a3c9050e67e99d34e",
+        "transaction": "0x916ffdcc6b98ed0bb291b962733d26d12760b9e562fbb2bd57aa5756b6b94f74",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5113"
+      },
+      "rawResponse": "{\"miner_id\":\"20260828\",\"miner_name\":\"PREFLIGHT Infrastructure Signals\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":\"Approve\",\"findings\":null,\"summary\":\"No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Orders of $50 or more ship free; below that, shipping costs $5.\\nfunction shippingFee(orderTotal) {\\n  return orderTotal \\u003e= 50 ? 1 : 5;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":256,\"timestamp\":\"2026-11-06T20:48:51.826144434Z\",\"reasoning\":\"Intent: miner a1-preflight given by the caller\\nMiner: The user wants a code review, and the PREFLIGHT Infrastructure Signals miner has an endpoint specifically for CODE_REVIEW_GENERAL. The provided code is passed directly to the 'code' parameter, and the 'query' parameter is constructed as per the endpoint's requirement, including the code snippet.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0xe528a8683f3389dd20b251278d15fa64655037a72f898fada679dafcff2eee56\"}"
+    },
+    {
+      "reviewerId": "20260828",
+      "caseId": "free-shipping-constant-changed-1",
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.",
+      "latencyMs": 11469,
+      "receipt": {
+        "hash": "0xdf1b57083ea7b6bd0f5db0633ef9cd7d16f12747761b05cd07ba4026aaef4023",
+        "transaction": "0xe6b7e76132b6b129f2099b12fa24581d8c4845965a216221ed8e4fa62213d376",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5113"
+      },
+      "rawResponse": "{\"miner_id\":\"20260828\",\"miner_name\":\"PREFLIGHT Infrastructure Signals\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":\"Approve\",\"findings\":null,\"summary\":\"No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Orders of $50 or more ship free; below that, shipping costs $5.\\nfunction shippingFee(orderTotal) {\\n  return orderTotal \\u003e= 51 ? 0 : 5;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":245,\"timestamp\":\"2026-11-06T20:48:51.855218789Z\",\"reasoning\":\"Intent: miner a1-preflight given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The PREFLIGHT Infrastructure Signals miner has an endpoint at /code-review that serves this intent. The endpoint requires a 'query' parameter which should contain the full question, and an optional 'code' parameter for the code to review. Both are provided in the user's prompt.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x8485e8c85049d1f961b551bceea8ab6d5461623a95d9605bbfde66d4731e8bd6\"}"
+    },
+    {
+      "reviewerId": "7310045",
+      "caseId": "free-shipping-correct",
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "The code is correct."
+      ],
+      "summary": "The code is correct.",
+      "latencyMs": 10588,
+      "receipt": {
+        "hash": "0x2ad46bc3cdc82c445415f90ff14875ac72ab71126f974770a751d0a934eb1477",
+        "transaction": "0x66673aaedcd163fdb051371e4b0253b2c94871a8de07fbf1ff6008c1686f46ad",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5035"
+      },
+      "rawResponse": "{\"miner_id\":\"7310045\",\"miner_name\":\"CodeWire Code Review Request Contract\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":\"Approve\",\"findings\":[\"The code is correct.\"],\"summary\":\"The code is correct.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Orders of $50 or more ship free; below that, shipping costs $5.\\nfunction shippingFee(orderTotal) {\\n  return orderTotal \\u003e= 50 ? 0 : 5;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":2337,\"timestamp\":\"2026-11-06T20:48:53.901416362Z\",\"reasoning\":\"Intent: miner zk-codereview given by the caller\\nMiner: input schema v3 mapped in code to GET /code-review\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x92c7fb6b564778fb713588158cbee9fd7494005c140eff02c3f70da03b451c4e\",\"warnings\":[\"parameter \\\"code\\\" length 0 violates the miner's declared limit (lte 20000): code is the input to work on. A single request, not a batch.\"]}"
+    },
+    {
+      "reviewerId": "7310045",
+      "caseId": "free-shipping-boundary-1",
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "The code is correct with respect to the stated shipping rule, assuming `orderTotal` is always a valid number."
+      ],
+      "summary": "The code is correct with respect to the stated shipping rule, assuming `orderTotal` is always a valid number.",
+      "latencyMs": 10867,
+      "receipt": {
+        "hash": "0x3fbfbd9e467a0748ba8c1b7c74a5d7423a9e5f2d1915abc5b164d649923f28ac",
+        "transaction": "0xfbd5b6ba6bb378a8a1a57a662c8668096cff1c7bc23b6f76dda861fb526acdde",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5035"
+      },
+      "rawResponse": "{\"miner_id\":\"7310045\",\"miner_name\":\"CodeWire Code Review Request Contract\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":\"Request changes\",\"findings\":[\"The code is correct with respect to the stated shipping rule, assuming `orderTotal` is always a valid number.\"],\"summary\":\"The code is correct with respect to the stated shipping rule, assuming `orderTotal` is always a valid number.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Orders of $50 or more ship free; below that, shipping costs $5.\\nfunction shippingFee(orderTotal) {\\n  return orderTotal \\u003e 50 ? 0 : 5;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1850,\"timestamp\":\"2026-11-06T20:48:53.449481919Z\",\"reasoning\":\"Intent: miner zk-codereview given by the caller\\nMiner: input schema v3 mapped in code to GET /code-review\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x7bcdd94cecf6f196bb54813e2b423f5d376bc648aff866de30738e1bbb4faf33\",\"warnings\":[\"parameter \\\"code\\\" length 0 violates the miner's declared limit (lte 20000): code is the input to work on. A single request, not a batch.\"]}"
+    },
+    {
+      "reviewerId": "7310045",
+      "caseId": "free-shipping-constant-changed-1",
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "The code is incorrect."
+      ],
+      "summary": "The code is incorrect. It uses the wrong threshold for the stated rule.",
+      "latencyMs": 10657,
+      "receipt": {
+        "hash": "0x009a7c56f299a1865e8b5db8bd4e97af53610c1c6540b539ad5b0591ccbf7dff",
+        "transaction": "0xb4dd6dc78fc73086bd732ea2b045e0322b6b149a46cb89957627467b22bc71ea",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5035"
+      },
+      "rawResponse": "{\"miner_id\":\"7310045\",\"miner_name\":\"CodeWire Code Review Request Contract\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":\"Request changes\",\"findings\":[\"The code is incorrect.\"],\"summary\":\"The code is incorrect. It uses the wrong threshold for the stated rule.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Orders of $50 or more ship free; below that, shipping costs $5.\\nfunction shippingFee(orderTotal) {\\n  return orderTotal \\u003e= 51 ? 0 : 5;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":2164,\"timestamp\":\"2026-11-06T20:49:03.991428221Z\",\"reasoning\":\"Intent: miner zk-codereview given by the caller\\nMiner: input schema v3 mapped in code to GET /code-review\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0xf7875f406239241c893144e33a1c7739647e421cd36e3cc5fa3f0089209e781c\",\"warnings\":[\"parameter \\\"code\\\" length 0 violates the miner's declared limit (lte 20000): code is the input to work on. A single request, not a batch.\"]}"
+    },
+    {
+      "reviewerId": "7310045",
+      "caseId": "free-shipping-constant-changed-2",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "The code is not correct."
+      ],
+      "summary": "The code is not correct. The stated rule says orders of $50 or more ship free, so the function should return `0` for those orders. It currently returns `1` for qualifying orders, which incorrectly charges $1 instead of applying free shipping.",
+      "latencyMs": 12307,
+      "receipt": {
+        "hash": "0xffbeab6768a1767aaafe9d4de8a2f4f3a318c3b3354e6e99c7458a5a3cd34eda",
+        "transaction": "0x0f216f49077e720366d38c588c2924119131ccb0b372dc62709b21c72760ca63",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5035"
+      },
+      "rawResponse": "{\"miner_id\":\"7310045\",\"miner_name\":\"CodeWire Code Review Request Contract\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":null,\"findings\":[\"The code is not correct.\"],\"summary\":\"The code is not correct. The stated rule says orders of $50 or more ship free, so the function should return `0` for those orders. It currently returns `1` for qualifying orders, which incorrectly charges $1 instead of applying free shipping.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Orders of $50 or more ship free; below that, shipping costs $5.\\nfunction shippingFee(orderTotal) {\\n  return orderTotal \\u003e= 50 ? 1 : 5;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":2634,\"timestamp\":\"2026-11-06T20:49:04.758210579Z\",\"reasoning\":\"Intent: miner zk-codereview given by the caller\\nMiner: input schema v3 mapped in code to GET /code-review\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x70eb32c842d3bd95cb17391c8418377341aa1d9dcb0f6f87823d460557392713\",\"warnings\":[\"parameter \\\"code\\\" length 0 violates the miner's declared limit (lte 20000): code is the input to work on. A single request, not a batch.\"]}"
+    },
+    {
+      "reviewerId": "7310045",
+      "caseId": "free-shipping-comparison-flip-1",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [],
+      "summary": "The code is not correct for the stated shipping policy.",
+      "latencyMs": 22557,
+      "receipt": {
+        "hash": "0x2fced7b9aac7dc683e81725943850068144371aa5c4a8105a8a9fbd94d3c2350",
+        "transaction": "0x8c558851e71617d9f8e8aef0417ad5f4704c6bf9f281c34d979e5ae47676b900",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5035"
+      },
+      "rawResponse": "{\"miner_id\":\"7310045\",\"miner_name\":\"CodeWire Code Review Request Contract\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":null,\"findings\":null,\"summary\":\"The code is not correct for the stated shipping policy.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"unavailable\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Orders of $50 or more ship free; below that, shipping costs $5.\\nfunction shippingFee(orderTotal) {\\n  return orderTotal \\u003c= 50 ? 0 : 5;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":5702,\"timestamp\":\"2026-11-06T20:49:07.649996548Z\",\"reasoning\":\"Intent: miner zk-codereview given by the caller\\nMiner: input schema v3 mapped in code to GET /code-review\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x2dc1e20683f8d59d9f58497f4a883aa49632c6ed23932939f2fc02f84a034bb6\",\"warnings\":[\"parameter \\\"code\\\" length 0 violates the miner's declared limit (lte 20000): code is the input to work on. A single request, not a batch.\"]}"
+    }
+  ]
+}
