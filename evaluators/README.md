@@ -71,7 +71,11 @@ Code: [`src/application/build-evaluation-material.ts`](../src/application/build-
 
 | Version | Rows | Planted bugs | Correct samples | Kinds of bug | Submitted |
 |---|---|---|---|---|---|
-| v1 (6 Nov 2026) | 32 | 24 | 8 | 9 | not yet |
+| v1 (6 Nov 2026) | 32 | 24 | 8 | 9 | 6 Nov 2026, from `0x612a5aE1970488583A059E97749F5D817B65FFAb`: 32 received, 32 accepted, 0 duplicates, 0 rejected, all `admitted` |
+
+The pool for `CODE_REVIEW_GENERAL` went from 10 to 11 contributors. The rows become `eligible` when the network publishes
+its next snapshot; the active one dates from 28 October 2026. The work is claimed on
+[issue #111](https://github.com/telegraphprotocol/bounties/issues/111).
 
 Nothing here claims a ranking change. That needs network evidence, and the [rules](https://anjoman.ai/dashboard/hackathon/season-2/rules)
 ask for exactly that.
