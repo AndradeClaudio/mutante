@@ -1,0 +1,11 @@
+{
+  "name": "mutante-static-analyzers",
+  "private": true,
+  "description": "Static analyzers used as a baseline reviewer. Kept apart because SonarJS needs TypeScript 5 while the project uses TypeScript 7.",
+  "dependencies": {
+    "@eslint/js": "9.39.5",
+    "eslint": "9.39.5",
+    "eslint-plugin-sonarjs": "4.2.2",
+    "typescript": "5.9.3"
+  }
+}

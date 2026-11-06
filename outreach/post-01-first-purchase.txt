@@ -1,0 +1,9 @@
+Building for @Telegraphprotoc Hackathon S2 🧪
+
+My agent made its first autonomous purchase: $0.01 (testnet) for a review of code I sabotaged on purpose. The reviewer caught the bug.
+
+Next: crash-testing every CODE_REVIEW miner.
+
+https://sepolia.etherscan.io/tx/0x08a720fef83571cbed9514ecb1e5dd922133e658a29ad94ae1f157b3ac67455a
+
+Hackathon entry (prizes)

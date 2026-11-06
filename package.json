@@ -1,0 +1,35 @@
+{
+  "name": "mutante",
+  "version": "1.0.0",
+  "description": "Mutante: a crash test for Telegraph code-review miners",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "generate-catalog": "tsx src/interface/cli/generate-catalog.ts",
+    "crash-test": "tsx src/interface/cli/run-crash-test.ts",
+    "scoreboard": "tsx src/interface/cli/show-scoreboard.ts",
+    "regrade": "tsx src/interface/cli/regrade-round.ts",
+    "export-scoreboard": "tsx src/interface/cli/export-public-scoreboard.ts round-001 round-002 round-002-static-baseline",
+    "record-video": "node video/record.mjs",
+    "check-video": "node video/check.mjs",
+    "static-baseline": "tsx src/interface/cli/run-static-baseline.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@x402/evm": "^2.30.0",
+    "@x402/fetch": "^2.30.0",
+    "dotenv": "^18.0.9",
+    "viem": "^2.57.16"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "puppeteer-core": "^23.11.1",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  }
+}

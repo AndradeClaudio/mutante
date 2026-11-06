@@ -1,0 +1,215 @@
+Round round-002: 71 cases, budget $3
+[209 left] 7310045     can-vote-comparison-flip-1                   Request changes
+[208 left] 7310045     can-vote-constant-changed-1                  no verdict
+[207 left] 7310045     can-vote-correct                             Approve
+[206 left] 7310045     can-vote-boundary-1                          Request changes
+[205 left] 7310045     cart-total-comparison-flip-1                 no verdict
+[204 left] 7310045     cart-total-boundary-1                        no verdict
+[203 left] 7310045     cart-total-arithmetic-1                      Request changes
+[202 left] 7310045     cart-total-correct                           Approve
+[201 left] 7310045     cart-total-constant-changed-2                no verdict
+[200 left] 7310045     cart-total-constant-changed-1                Request changes
+[199 left] 7310045     token-expired-boundary-1                     Approve
+[198 left] 7310045     token-expired-correct                        no verdict
+[197 left] 7310045     can-delete-post-equality-flip-1              Request changes
+[196 left] 7310045     token-expired-comparison-flip-1              no verdict
+[195 left] 7310045     can-delete-post-logical-connective-1         no verdict
+[194 left] 7310045     can-delete-post-correct                      no verdict
+[193 left] 7310045     withdraw-boundary-1                          no verdict
+[192 left] 7310045     withdraw-comparison-flip-1                   Request changes
+[191 left] 7310045     withdraw-correct                             Approve
+[190 left] 7310045     withdraw-always-true-condition-1             Request changes
+[189 left] 7310045     withdraw-guard-removed-1                     no verdict
+[188 left] 7310045     withdraw-arithmetic-1                        Request changes
+[187 left] 7310045     discount-arithmetic-2                        no verdict
+[186 left] 7310045     discount-correct                             Approve
+[185 left] 7310045     discount-arithmetic-1                        Request changes
+[184 left] 7310045     discount-arithmetic-3                        Request changes
+[183 left] 7310045     discount-constant-changed-1                  no verdict
+[182 left] 7310045     strong-password-comparison-flip-1            Request changes
+[181 left] 7310045     discount-constant-changed-2                  Request changes
+[180 left] 7310045     strong-password-correct                      no verdict
+[179 left] 7310045     strong-password-boundary-1                   Request changes
+[178 left] 7310045     pagination-arithmetic-1                      Request changes
+[177 left] 7310045     strong-password-constant-changed-1           Request changes
+[176 left] 7310045     pagination-correct                           no verdict
+[175 left] 7310045     strong-password-logical-connective-1         no verdict
+[174 left] 7310045     pagination-arithmetic-3                      Request changes
+[173 left] 7310045     pagination-arithmetic-2                      no verdict
+[172 left] 7310045     pagination-constant-changed-1                no verdict
+[171 left] 7310045     rate-limit-correct                           no verdict
+[170 left] 7310045     authenticated-profile-negation-removed-1     Request changes
+[169 left] 7310045     rate-limit-comparison-flip-1                 no verdict
+[168 left] 7310045     authenticated-profile-correct                Approve
+[167 left] 7310045     average-correct                              Approve
+[166 left] 7310045     authenticated-profile-always-true-condition-1 Request changes
+[165 left] 7310045     rate-limit-boundary-1                        Request changes
+[164 left] 7310045     average-constant-changed-1                   Request changes
+[163 left] 7310045     average-arithmetic-1                         no verdict
+[162 left] 7310045     average-arithmetic-2                         Request changes
+[161 left] 7310045     weekend-correct                              Approve
+[160 left] 7310045     weekend-equality-flip-1                      no verdict
+[159 left] 7310045     weekend-equality-flip-2                      Request changes
+[158 left] 7310045     weekend-logical-connective-1                 Request changes
+[157 left] 7310045     weekend-constant-changed-2                   no verdict
+[156 left] 7310045     weekend-constant-changed-1                   no verdict
+[155 left] 7310045     last-n-correct                               Approve
+[154 left] 7310045     last-n-arithmetic-1                          no verdict
+[153 left] 7310045     last-n-constant-changed-1                    no verdict
+[152 left] 7310045     can-ship-order-correct                       Approve
+[151 left] 7310045     can-ship-order-comparison-flip-1             Approve
+[150 left] 7310045     can-ship-order-boundary-1                    Request changes
+[149 left] 7310045     can-ship-order-constant-changed-1            no verdict
+[148 left] 7310045     discount-age-correct                         Approve
+[147 left] 7310045     find-user-sql-concatenation-1                Request changes
+[146 left] 7310045     find-user-correct                            Approve
+[145 left] 7310045     discount-age-boundary-2                      Request changes
+[144 left] 7310045     discount-age-boundary-1                      no verdict
+[143 left] 7310045     discount-age-comparison-flip-1               Request changes
+[142 left] 7310045     discount-age-comparison-flip-2               no verdict
+[141 left] 7310045     discount-age-logical-connective-1            Request changes
+[140 left] 7310045     discount-age-constant-changed-1              Approve
+[139 left] 5530        can-vote-boundary-1                          Comment
+[138 left] 5530        can-vote-correct                             Comment
+[137 left] 5530        can-vote-comparison-flip-1                   Comment
+[136 left] 7310045     discount-age-constant-changed-2              Approve
+[135 left] 5530        cart-total-correct                           Comment
+[134 left] 5530        cart-total-comparison-flip-1                 Comment
+[133 left] 5530        cart-total-boundary-1                        Comment
+[132 left] 5530        can-vote-constant-changed-1                  Comment
+[131 left] 5530        cart-total-constant-changed-2                Comment
+[130 left] 5530        cart-total-arithmetic-1                      Comment
+[129 left] 5530        token-expired-correct                        Comment
+[128 left] 5530        cart-total-constant-changed-1                Comment
+[127 left] 5530        can-delete-post-correct                      Comment
+[126 left] 5530        token-expired-comparison-flip-1              Comment
+[125 left] 5530        token-expired-boundary-1                     Comment
+[124 left] 5530        can-delete-post-logical-connective-1         Comment
+[123 left] 5530        can-delete-post-equality-flip-1              Comment
+[122 left] 5530        withdraw-boundary-1                          Comment
+[121 left] 5530        withdraw-comparison-flip-1                   Comment
+[120 left] 5530        withdraw-correct                             Comment
+[119 left] 5530        withdraw-guard-removed-1                     Comment
+[118 left] 5530        withdraw-arithmetic-1                        Comment
+[117 left] 5530        withdraw-always-true-condition-1             Comment
+[116 left] 5530        discount-arithmetic-3                        Comment
+[115 left] 5530        discount-arithmetic-2                        Comment
+[114 left] 5530        discount-arithmetic-1                        Comment
+[113 left] 5530        discount-correct                             Comment
+[112 left] 5530        discount-constant-changed-1                  Comment
+[111 left] 5530        discount-constant-changed-2                  Comment
+[110 left] 5530        strong-password-correct                      Comment
+[109 left] 5530        strong-password-boundary-1                   Comment
+[108 left] 5530        strong-password-comparison-flip-1            Comment
+[107 left] 5530        strong-password-constant-changed-1           Comment
+[106 left] 5530        pagination-correct                           Comment
+[105 left] 5530        pagination-arithmetic-2                      Comment
+[104 left] 5530        pagination-arithmetic-1                      Comment
+[103 left] 5530        pagination-arithmetic-3                      Comment
+[102 left] 5530        rate-limit-correct                           Comment
+[101 left] 5530        pagination-constant-changed-1                Comment
+[100 left] 5530        rate-limit-boundary-1                        Comment
+[99 left] 5530        authenticated-profile-correct                Comment
+[98 left] 5530        rate-limit-comparison-flip-1                 Comment
+[97 left] 5530        authenticated-profile-negation-removed-1     Comment
+[96 left] 5530        strong-password-logical-connective-1         Comment
+[95 left] 5530        average-correct                              Comment
+[94 left] 5530        authenticated-profile-always-true-condition-1 Comment
+[93 left] 5530        weekend-correct                              Comment
+[92 left] 5530        average-arithmetic-2                         Comment
+[91 left] 5530        average-constant-changed-1                   Comment
+[90 left] 5530        average-arithmetic-1                         Comment
+[89 left] 5530        weekend-equality-flip-1                      Comment
+[88 left] 5530        weekend-logical-connective-1                 Comment
+[87 left] 5530        weekend-constant-changed-1                   Comment
+[86 left] 5530        weekend-equality-flip-2                      Comment
+[85 left] 5530        last-n-constant-changed-1                    Comment
+[84 left] 5530        last-n-correct                               Comment
+[83 left] 5530        last-n-arithmetic-1                          Comment
+[82 left] 5530        weekend-constant-changed-2                   Comment
+[81 left] 5530        can-ship-order-comparison-flip-1             Comment
+[80 left] 5530        can-ship-order-boundary-1                    Comment
+[79 left] 5530        can-ship-order-constant-changed-1            Comment
+[78 left] 5530        can-ship-order-correct                       Comment
+[77 left] 5530        discount-age-correct                         Comment
+[76 left] 5530        find-user-correct                            Comment
+[75 left] 5530        discount-age-boundary-1                      Comment
+[74 left] 5530        find-user-sql-concatenation-1                Request changes
+[73 left] 5530        discount-age-comparison-flip-1               Comment
+[72 left] 5530        discount-age-comparison-flip-2               Comment
+[71 left] 5530        discount-age-boundary-2                      Comment
+[70 left] 5530        discount-age-logical-connective-1            Comment
+[69 left] 5530        discount-age-constant-changed-2              Comment
+[68 left] 20260828    can-vote-boundary-1                          Approve
+[67 left] 20260828    can-vote-correct                             Approve
+[66 left] 5530        discount-age-constant-changed-1              Comment
+[65 left] 20260828    can-vote-constant-changed-1                  Approve
+[64 left] 20260828    cart-total-correct                           Approve
+[63 left] 20260828    can-vote-comparison-flip-1                   Approve
+[62 left] 20260828    cart-total-boundary-1                        Approve
+[61 left] 20260828    cart-total-arithmetic-1                      Approve
+[60 left] 20260828    cart-total-constant-changed-1                Approve
+[59 left] 20260828    cart-total-comparison-flip-1                 Approve
+[58 left] 20260828    token-expired-boundary-1                     Approve
+[57 left] 20260828    token-expired-correct                        Approve
+[56 left] 20260828    cart-total-constant-changed-2                Approve
+[55 left] 20260828    token-expired-comparison-flip-1              Approve
+[54 left] 20260828    withdraw-correct                             Approve
+[53 left] 20260828    can-delete-post-correct                      Approve
+[52 left] 20260828    can-delete-post-equality-flip-1              Approve
+[51 left] 20260828    can-delete-post-logical-connective-1         Approve
+[50 left] 20260828    withdraw-comparison-flip-1                   Approve
+[49 left] 20260828    withdraw-arithmetic-1                        Approve
+[48 left] 20260828    withdraw-always-true-condition-1             Approve
+[47 left] 20260828    withdraw-boundary-1                          Approve
+[46 left] 20260828    discount-arithmetic-2                        Approve
+[45 left] 20260828    discount-arithmetic-1                        Approve
+[44 left] 20260828    withdraw-guard-removed-1                     Approve
+[43 left] 20260828    discount-correct                             Approve
+[42 left] 20260828    discount-constant-changed-1                  Approve
+[41 left] 20260828    discount-arithmetic-3                        Approve
+[40 left] 20260828    discount-constant-changed-2                  Approve
+[39 left] 20260828    strong-password-correct                      Approve
+[38 left] 20260828    strong-password-boundary-1                   Approve
+[37 left] 20260828    strong-password-logical-connective-1         Approve
+[36 left] 20260828    strong-password-comparison-flip-1            Approve
+[35 left] 20260828    strong-password-constant-changed-1           Approve
+[34 left] 20260828    pagination-correct                           Approve
+[33 left] 20260828    pagination-arithmetic-2                      Approve
+[32 left] 20260828    pagination-arithmetic-3                      Approve
+[31 left] 20260828    pagination-arithmetic-1                      Approve
+[30 left] 20260828    rate-limit-correct                           Approve
+[29 left] 20260828    rate-limit-boundary-1                        Approve
+[28 left] 20260828    pagination-constant-changed-1                Approve
+[27 left] 20260828    rate-limit-comparison-flip-1                 Approve
+[26 left] 20260828    authenticated-profile-always-true-condition-1 Approve
+[25 left] 20260828    average-correct                              Approve
+[24 left] 20260828    authenticated-profile-negation-removed-1     Approve
+[23 left] 20260828    authenticated-profile-correct                Approve
+[22 left] 20260828    average-arithmetic-1                         Approve
+[21 left] 20260828    average-arithmetic-2                         Approve
+[20 left] 20260828    average-constant-changed-1                   Approve
+[19 left] 20260828    weekend-correct                              Approve
+[18 left] 20260828    weekend-equality-flip-2                      Approve
+[17 left] 20260828    weekend-equality-flip-1                      Approve
+[16 left] 20260828    weekend-logical-connective-1                 Approve
+[15 left] 20260828    weekend-constant-changed-2                   Approve
+[14 left] 20260828    weekend-constant-changed-1                   Approve
+[13 left] 20260828    last-n-arithmetic-1                          Approve
+[12 left] 20260828    last-n-correct                               Approve
+[11 left] 20260828    last-n-constant-changed-1                    Approve
+[10 left] 20260828    can-ship-order-comparison-flip-1             Approve
+[9 left] 20260828    can-ship-order-correct                       Approve
+[8 left] 20260828    can-ship-order-boundary-1                    Approve
+[7 left] 20260828    find-user-sql-concatenation-1                Request changes
+[6 left] 20260828    find-user-correct                            Approve
+[5 left] 20260828    discount-age-correct                         Approve
+[4 left] 20260828    can-ship-order-constant-changed-1            Approve
+[3 left] 20260828    discount-age-comparison-flip-1               Approve
+[2 left] 20260828    discount-age-comparison-flip-2               Approve
+[1 left] 20260828    discount-age-boundary-1                      Approve
+[0 left] 20260828    discount-age-boundary-2                      Approve
+[0 left] 20260828    discount-age-constant-changed-2              Approve
+[0 left] 20260828    discount-age-constant-changed-1              Approve
+[0 left] 20260828    discount-age-logical-connective-1            Approve
+Done. Spent: $2.13. Pending: 0

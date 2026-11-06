@@ -1,0 +1,71 @@
+1
+00:00:00,500 --> 00:00:08,500
+Who reviews the reviewers? A crash test for the code-review miners on Telegraph.
+
+2
+00:00:09,500 --> 00:00:17,000
+This function decides who gets a discount: seniors from 65, and children under 12.
+
+3
+00:00:17,500 --> 00:00:29,500
+Change one character and a customer on their 65th birthday loses the senior discount. Would a paid AI reviewer notice?
+
+4
+00:00:30,500 --> 00:00:42,000
+We start from small correct functions. Each states its rule in a comment and has tests.
+
+5
+00:00:42,500 --> 00:00:57,500
+A mutation engine plants one bug at a time, and keeps it only if the tests prove it is a real bug.
+
+6
+00:00:58,500 --> 00:01:16,000
+Then an agent buys a review of every sample from every reviewer: machine to machine, $0.01 per call in test USDC.
+
+7
+00:01:16,500 --> 00:01:35,500
+What you see is a replay of the real run log from 6 November 2026.
+
+8
+00:01:36,500 --> 00:01:55,500
+Every answer comes with a Telegraph receipt and an on-chain payment anyone can check.
+
+9
+00:01:56,500 --> 00:02:03,500
+First, the free option. ESLint and SonarJS flagged 3 of the 54 bugs, even counting any warning.
+
+10
+00:02:04,000 --> 00:02:11,500
+The other 51 are valid code that breaks its own comment. No lint rule knows what the code promises.
+
+11
+00:02:12,500 --> 00:02:24,000
+Results. The best reviewer, CodeWire, explained 52% of the planted bugs.
+
+12
+00:02:24,500 --> 00:02:36,000
+But the network recorded only 33%: it rejected the verdict on 27 of its 69 answers.
+
+13
+00:02:36,500 --> 00:02:47,500
+The other reviewers caught at most 2%, only the SQL injection. False alarms on correct code: 0%.
+
+14
+00:02:48,500 --> 00:03:00,500
+Same bug, three reviewers.
+
+15
+00:03:01,000 --> 00:03:15,500
+The best reviewer found it, and the network threw its verdict away. The others let the bug through.
+
+16
+00:03:16,500 --> 00:03:31,500
+In round one, only 3 of the 16 miners listed for code review returned a review at all.
+
+17
+00:03:32,500 --> 00:03:49,500
+Anyone can rerun it. Failed miners are recorded as failures, and an interrupted run resumes without paying twice.
+
+18
+00:03:50,500 --> 00:04:04,500
+Buyers of intelligence need to know what they are buying. Mutante measures it.

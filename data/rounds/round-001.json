@@ -1,0 +1,1315 @@
+{
+  "id": "round-001",
+  "intent": "CODE_REVIEW_GENERAL",
+  "startedAt": "2026-11-06T11:40:31.537Z",
+  "closedAt": "2026-11-06T11:42:12.572Z",
+  "budgetMicroUsdc": 2000000,
+  "cases": [
+    {
+      "id": "py-auth-or-true",
+      "language": "python",
+      "code": "def delete_user(user, target):\n    if user.is_admin or True:\n        db.delete(target)\n",
+      "origin": {
+        "kind": "hand-written"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "authorization",
+        "description": "`or True` makes the admin check always true",
+        "clues": [
+          "or True",
+          "always (true|truthy|evaluat)",
+          "bypass",
+          "any (user|caller|one)"
+        ]
+      }
+    },
+    {
+      "id": "py-sql-concatenated",
+      "language": "python",
+      "code": "def find_user(cursor, name):\n    cursor.execute(\"SELECT * FROM users WHERE name = '\" + name + \"'\")\n    return cursor.fetchone()\n",
+      "origin": {
+        "kind": "hand-written"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "injection",
+        "description": "SQL built by concatenation allows injection",
+        "clues": [
+          "sql injection",
+          "inject",
+          "parameteri[sz]",
+          "concatenat",
+          "interpolat"
+        ]
+      }
+    },
+    {
+      "id": "py-sql-parameterized",
+      "language": "python",
+      "code": "def find_user(cursor, name):\n    cursor.execute(\"SELECT * FROM users WHERE name = %s\", (name,))\n    return cursor.fetchone()\n",
+      "origin": {
+        "kind": "hand-written"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "js-loop-out-of-bounds",
+      "language": "javascript",
+      "code": "function cartTotal(items) {\n  let total = 0;\n  for (let i = 0; i <= items.length; i++) {\n    total += items[i].price;\n  }\n  return total;\n}\n",
+      "origin": {
+        "kind": "hand-written"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "boundary",
+        "description": "`<=` reads one position past the end of the array",
+        "clues": [
+          "<=",
+          "off[- ]by[- ]one",
+          "out of (bounds|range)",
+          "undefined",
+          "beyond",
+          "past the end"
+        ]
+      }
+    },
+    {
+      "id": "py-age-strictly-greater",
+      "language": "python",
+      "code": "def can_vote(age):\n    \"\"\"Voting is allowed at 18 or older.\"\"\"\n    return age > 18\n",
+      "origin": {
+        "kind": "hand-written"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "inverted-comparison",
+        "description": "`> 18` excludes someone who is exactly 18",
+        "clues": [
+          ">=",
+          "exactly 18",
+          "18[- ]year[- ]olds?",
+          "off[- ]by[- ]one",
+          "boundary",
+          "excludes 18"
+        ]
+      }
+    },
+    {
+      "id": "py-age-correct",
+      "language": "python",
+      "code": "def can_vote(age):\n    \"\"\"Voting is allowed at 18 or older.\"\"\"\n    return age >= 18\n",
+      "origin": {
+        "kind": "hand-written"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "js-token-expired-inverted",
+      "language": "javascript",
+      "code": "// Returns true when the token is past its expiry time.\nfunction isExpired(token) {\n  return token.expiresAt > Date.now();\n}\n",
+      "origin": {
+        "kind": "hand-written"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "inverted-comparison",
+        "description": "comparison inverted: returns true for tokens that are still valid",
+        "clues": [
+          "invert",
+          "reversed",
+          "backwards",
+          "opposite",
+          "<\\s*Date\\.now",
+          "<=\\s*Date\\.now",
+          "not (yet )?expired"
+        ]
+      }
+    }
+  ],
+  "reviewers": [
+    {
+      "id": "60006",
+      "name": "GitHub File Contents"
+    },
+    {
+      "id": "60001",
+      "name": "GitHub Pull Request"
+    },
+    {
+      "id": "60004",
+      "name": "GitHub Languages"
+    },
+    {
+      "id": "9002",
+      "name": "TxLens"
+    },
+    {
+      "id": "60002",
+      "name": "GitHub PR Files"
+    },
+    {
+      "id": "60009",
+      "name": "Codeberg Pull Requests"
+    },
+    {
+      "id": "5530",
+      "name": "Telegraph Verity Intelligence"
+    },
+    {
+      "id": "20260828",
+      "name": "PREFLIGHT Infrastructure Signals"
+    },
+    {
+      "id": "60008",
+      "name": "GitLab Merge Requests"
+    },
+    {
+      "id": "60010",
+      "name": "NPM Package Metadata"
+    },
+    {
+      "id": "1900999004",
+      "name": "CodeWire Code Review"
+    },
+    {
+      "id": "302",
+      "name": "ChainSight — Universal Intelligence & Data Oracle"
+    },
+    {
+      "id": "7310045",
+      "name": "CodeWire Code Review Request Contract"
+    },
+    {
+      "id": "60005",
+      "name": "GitHub Commits"
+    },
+    {
+      "id": "60003",
+      "name": "GitHub Compare"
+    },
+    {
+      "id": "60007",
+      "name": "GitHub Review Comments"
+    }
+  ],
+  "reviews": [
+    {
+      "reviewerId": "60006",
+      "caseId": "py-auth-or-true",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-contents cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 389,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60006",
+      "caseId": "py-age-strictly-greater",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-contents cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 365,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60006",
+      "caseId": "py-sql-concatenated",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-contents cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 1081,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60006",
+      "caseId": "py-sql-parameterized",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-contents cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 1082,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60006",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-contents cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 1088,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60006",
+      "caseId": "py-age-correct",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-contents cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 354,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60001",
+      "caseId": "py-auth-or-true",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-pull cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 358,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60006",
+      "caseId": "js-token-expired-inverted",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-contents cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 367,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60001",
+      "caseId": "py-sql-concatenated",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-pull cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 341,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60001",
+      "caseId": "py-sql-parameterized",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-pull cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 365,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60001",
+      "caseId": "py-age-strictly-greater",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-pull cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 347,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60001",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-pull cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 359,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60001",
+      "caseId": "py-age-correct",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-pull cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 365,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60001",
+      "caseId": "js-token-expired-inverted",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-pull cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 348,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60004",
+      "caseId": "py-auth-or-true",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-languages cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 358,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60004",
+      "caseId": "py-sql-concatenated",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-languages cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 360,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60004",
+      "caseId": "py-sql-parameterized",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-languages cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 355,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60004",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-languages cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 364,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60004",
+      "caseId": "py-age-strictly-greater",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-languages cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 338,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60004",
+      "caseId": "py-age-correct",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-languages cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 354,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60004",
+      "caseId": "js-token-expired-inverted",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-languages cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 345,
+      "receipt": null
+    },
+    {
+      "reviewerId": "9002",
+      "caseId": "py-auth-or-true",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"could not route this question now, try again later\"}",
+      "latencyMs": 1530,
+      "receipt": null
+    },
+    {
+      "reviewerId": "9002",
+      "caseId": "py-sql-concatenated",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"could not route this question now, try again later\"}",
+      "latencyMs": 1551,
+      "receipt": null
+    },
+    {
+      "reviewerId": "9002",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"could not route this question now, try again later\"}",
+      "latencyMs": 1569,
+      "receipt": null
+    },
+    {
+      "reviewerId": "9002",
+      "caseId": "py-sql-parameterized",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"could not route this question now, try again later\"}",
+      "latencyMs": 1640,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60002",
+      "caseId": "py-auth-or-true",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-files cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 348,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60002",
+      "caseId": "py-sql-concatenated",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-files cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 368,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60002",
+      "caseId": "py-sql-parameterized",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-files cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 369,
+      "receipt": null
+    },
+    {
+      "reviewerId": "9002",
+      "caseId": "py-age-strictly-greater",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"could not route this question now, try again later\"}",
+      "latencyMs": 1831,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60002",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-files cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 369,
+      "receipt": null
+    },
+    {
+      "reviewerId": "9002",
+      "caseId": "py-age-correct",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"could not route this question now, try again later\"}",
+      "latencyMs": 1609,
+      "receipt": null
+    },
+    {
+      "reviewerId": "9002",
+      "caseId": "js-token-expired-inverted",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"could not route this question now, try again later\"}",
+      "latencyMs": 1720,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60002",
+      "caseId": "py-age-strictly-greater",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-files cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 359,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60002",
+      "caseId": "py-age-correct",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-files cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 362,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60002",
+      "caseId": "js-token-expired-inverted",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-files cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 357,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60009",
+      "caseId": "py-auth-or-true",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-codeberg-pr cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 348,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60009",
+      "caseId": "py-sql-concatenated",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-codeberg-pr cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 368,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60009",
+      "caseId": "py-sql-parameterized",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-codeberg-pr cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 346,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60009",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-codeberg-pr cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 360,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60009",
+      "caseId": "py-age-strictly-greater",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-codeberg-pr cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 348,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60009",
+      "caseId": "py-age-correct",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-codeberg-pr cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 368,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60009",
+      "caseId": "js-token-expired-inverted",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-codeberg-pr cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 369,
+      "receipt": null
+    },
+    {
+      "reviewerId": "5530",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "delivered",
+      "verdict": "Comment",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No configured static heuristic matched. This is not an approval or proof that the code is safe.",
+      "latencyMs": 16103,
+      "receipt": {
+        "hash": "0x7c2ff6767cdc44378fc4e8dc616f088630ff05c613e3287569a9b205541bb8e3",
+        "transaction": "0x313f6524fd7deb590066e21a474c864f308fbd9d4f950dd38d2b4afeedf40043",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5092"
+      },
+      "rawResponse": "{\"miner_id\":\"5530\",\"miner_name\":\"Telegraph Verity Intelligence\",\"endpoint\":\"/v1/intent\",\"result\":{\"verdict\":\"Comment\",\"findings\":null,\"summary\":\"No configured static heuristic matched. This is not an approval or proof that the code is safe.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"function cartTotal(items) {\\n  let total = 0;\\n  for (let i = 0; i \\u003c= items.length; i++) {\\n    total += items[i].price;\\n  }\\n  return total;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":297,\"timestamp\":\"2026-11-06T11:40:51.791676911Z\",\"reasoning\":\"Intent: miner telegraph-verity-intelligence given by the caller\\nMiner: The user has provided code for review and the intent has been classified as CODE_REVIEW_GENERAL. The miner configuration includes an endpoint '/v1/intent' that supports the CODE_REVIEW_GENERAL intent. The 'code' parameter is required for this intent, and the provided code snippet has been mapped to this parameter. The 'intent' parameter is also required and set to 'CODE_REVIEW_GENERAL'.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0xa7b0d6438d31c88c30220b92f9ece667dd86184e776fe0458856be61ad7d7804\"}"
+    },
+    {
+      "reviewerId": "5530",
+      "caseId": "py-sql-parameterized",
+      "kind": "delivered",
+      "verdict": "Comment",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No configured static heuristic matched. This is not an approval or proof that the code is safe.",
+      "latencyMs": 16209,
+      "receipt": {
+        "hash": "0x42314093e218298008bc644d218555ac653dd70bae6a919badfd33951547543b",
+        "transaction": "0x9dabde78c76c208218eaf81f53d2d0cd0fcd3183aba8b1caf3384c348dd00131",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5092"
+      },
+      "rawResponse": "{\"miner_id\":\"5530\",\"miner_name\":\"Telegraph Verity Intelligence\",\"endpoint\":\"/v1/intent\",\"result\":{\"verdict\":\"Comment\",\"findings\":null,\"summary\":\"No configured static heuristic matched. This is not an approval or proof that the code is safe.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"def find_user(cursor, name):\\n    cursor.execute(\\\"SELECT * FROM users WHERE name = %s\\\", (name,))\\n    return cursor.fetchone()\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":291,\"timestamp\":\"2026-11-06T11:40:51.901188558Z\",\"reasoning\":\"Intent: miner telegraph-verity-intelligence given by the caller\\nMiner: The user wants to perform a code review, and the intent has been classified as CODE_REVIEW_GENERAL. The miner's /v1/intent endpoint supports this intent. The provided parameters include the 'code' field, which is required for this intent and maps directly to the miner's 'code' request parameter. The 'intent' field is set to CODE_REVIEW_GENERAL as required.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0xd9022f823c5f16916df3c2e96d5c3ce4623da7a1b457d253985f8c1b5a742e68\"}"
+    },
+    {
+      "reviewerId": "5530",
+      "caseId": "py-auth-or-true",
+      "kind": "delivered",
+      "verdict": "Comment",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No configured static heuristic matched. This is not an approval or proof that the code is safe.",
+      "latencyMs": 16494,
+      "receipt": {
+        "hash": "0x0383ec79b4d623ed3477a34dabce4f9af15f16fd9809a62f7f28584925655658",
+        "transaction": "0x7fc83f240559f326463f3e69bd4be2b302390667370cf119b597076ae96ea35b",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5092"
+      },
+      "rawResponse": "{\"miner_id\":\"5530\",\"miner_name\":\"Telegraph Verity Intelligence\",\"endpoint\":\"/v1/intent\",\"result\":{\"verdict\":\"Comment\",\"findings\":null,\"summary\":\"No configured static heuristic matched. This is not an approval or proof that the code is safe.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"def delete_user(user, target):\\n    if user.is_admin or True:\\n        db.delete(target)\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":298,\"timestamp\":\"2026-11-06T11:40:51.8935271Z\",\"reasoning\":\"Intent: miner telegraph-verity-intelligence given by the caller\\nMiner: The user wants to perform a code review. The provided miner configuration includes an endpoint '/v1/intent' that explicitly supports the 'CODE_REVIEW_GENERAL' intent. The question provides the code to be reviewed, which maps directly to the 'code' parameter of this endpoint. Therefore, this endpoint and parameter are used to construct the request.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x6bcd9a53f73bad12e10a05dc7c29383f62eb6129da6ad5b7affa0521b4f56b9b\"}"
+    },
+    {
+      "reviewerId": "5530",
+      "caseId": "py-sql-concatenated",
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "Possible SQL statement built with string interpolation or concatenation."
+      ],
+      "summary": "Static heuristic review found 1 potential issue(s). Review each finding in context; this is not a full semantic or security audit.",
+      "latencyMs": 16556,
+      "receipt": {
+        "hash": "0xe8441ce655334e16c8389d7d200ab29b62b7d054a42937b752fcc811619f3e22",
+        "transaction": "0xc74e76ea8ca52d109821245a37580d2b411b2ea01bdc4d27c95b66061cba32e3",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5092"
+      },
+      "rawResponse": "{\"miner_id\":\"5530\",\"miner_name\":\"Telegraph Verity Intelligence\",\"endpoint\":\"/v1/intent\",\"result\":{\"verdict\":\"Request changes\",\"findings\":[\"Possible SQL statement built with string interpolation or concatenation.\"],\"summary\":\"Static heuristic review found 1 potential issue(s). Review each finding in context; this is not a full semantic or security audit.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"def find_user(cursor, name):\\n    cursor.execute(\\\"SELECT * FROM users WHERE name = '\\\" + name + \\\"'\\\")\\n    return cursor.fetchone()\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":331,\"timestamp\":\"2026-11-06T11:40:51.818643082Z\",\"reasoning\":\"Intent: miner telegraph-verity-intelligence given by the caller\\nMiner: The user wants to perform a code review, and the intent has been classified as CODE_REVIEW_GENERAL. The miner configuration includes an endpoint '/v1/intent' that serves the CODE_REVIEW_GENERAL intent. The required parameter 'code' is provided in the user's prompt, and the 'intent' parameter is set to 'CODE_REVIEW_GENERAL' as per the fixed intent.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x761694135c7f33adca61e8055170dfed3e2af0ef11d56e207e184bdf45a15889\"}"
+    },
+    {
+      "reviewerId": "5530",
+      "caseId": "py-age-correct",
+      "kind": "delivered",
+      "verdict": "Comment",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No configured static heuristic matched. This is not an approval or proof that the code is safe.",
+      "latencyMs": 10524,
+      "receipt": {
+        "hash": "0xec23a5d8300bc4b703079acfe2ea3e7881cbcc34c244020561aaf4318f845f95",
+        "transaction": "0xfc2cbe4bf1122dd6847ef4a55e9a120a5c117441a9ef268e3450db8cdfe0b8b0",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5092"
+      },
+      "rawResponse": "{\"miner_id\":\"5530\",\"miner_name\":\"Telegraph Verity Intelligence\",\"endpoint\":\"/v1/intent\",\"result\":{\"verdict\":\"Comment\",\"findings\":null,\"summary\":\"No configured static heuristic matched. This is not an approval or proof that the code is safe.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"def can_vote(age):\\n    \\\"\\\"\\\"Voting is allowed at 18 or older.\\\"\\\"\\\"\\n    return age \\u003e= 18\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":303,\"timestamp\":\"2026-11-06T11:41:02.595753019Z\",\"reasoning\":\"Intent: miner telegraph-verity-intelligence given by the caller\\nMiner: The user has provided code for review and the intent is CODE_REVIEW_GENERAL. The miner's /v1/intent endpoint supports CODE_REVIEW_GENERAL and requires the 'code' parameter, which is provided in the user's input. The 'intent' parameter is set to CODE_REVIEW_GENERAL as per the fixed intent.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0xd978e6415669826d03bb256ccca25ab62b9fcaefb7ef315b2104636bf1a137c0\"}"
+    },
+    {
+      "reviewerId": "5530",
+      "caseId": "py-age-strictly-greater",
+      "kind": "delivered",
+      "verdict": "Comment",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No configured static heuristic matched. This is not an approval or proof that the code is safe.",
+      "latencyMs": 10595,
+      "receipt": {
+        "hash": "0xbe26ab7ff4f70dea6ad8380f2fd3532ea9de96c21e2a170d9e21bc00fc57e21a",
+        "transaction": "0x3cdb8a73521c971f5a3f1baf2fdd1dd56de013edbe83b69d62b4f2e4add216b3",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5092"
+      },
+      "rawResponse": "{\"miner_id\":\"5530\",\"miner_name\":\"Telegraph Verity Intelligence\",\"endpoint\":\"/v1/intent\",\"result\":{\"verdict\":\"Comment\",\"findings\":null,\"summary\":\"No configured static heuristic matched. This is not an approval or proof that the code is safe.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"def can_vote(age):\\n    \\\"\\\"\\\"Voting is allowed at 18 or older.\\\"\\\"\\\"\\n    return age \\u003e 18\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":316,\"timestamp\":\"2026-11-06T11:41:02.687750864Z\",\"reasoning\":\"Intent: miner telegraph-verity-intelligence given by the caller\\nMiner: The user wants to perform a code review, and the intent has been classified as CODE_REVIEW_GENERAL. The miner configuration includes an endpoint '/v1/intent' that explicitly supports the CODE_REVIEW_GENERAL intent. The provided parameters include the 'code' field, which is a required parameter for this intent and endpoint. Therefore, the request is constructed to use this endpoint with the provided code.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x3bd200184a402025851725601ea89c1dd4afc3c5fd3b7bbd875907f4aaae9a54\"}"
+    },
+    {
+      "reviewerId": "5530",
+      "caseId": "js-token-expired-inverted",
+      "kind": "delivered",
+      "verdict": "Comment",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No configured static heuristic matched. This is not an approval or proof that the code is safe.",
+      "latencyMs": 10795,
+      "receipt": {
+        "hash": "0x646a4ab00d10ad242114024611f8dd4d91c857c4696836286dec8651576f24e9",
+        "transaction": "0xc008cc02f5578ec313d6a8d143e26e84f03a08508f20eef1c3f20a4b04998224",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5092"
+      },
+      "rawResponse": "{\"miner_id\":\"5530\",\"miner_name\":\"Telegraph Verity Intelligence\",\"endpoint\":\"/v1/intent\",\"result\":{\"verdict\":\"Comment\",\"findings\":null,\"summary\":\"No configured static heuristic matched. This is not an approval or proof that the code is safe.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Returns true when the token is past its expiry time.\\nfunction isExpired(token) {\\n  return token.expiresAt \\u003e Date.now();\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1075,\"timestamp\":\"2026-11-06T11:41:03.452923287Z\",\"reasoning\":\"Intent: miner telegraph-verity-intelligence given by the caller\\nMiner: The user wants to perform a code review. The provided miner configuration includes an endpoint '/v1/intent' that explicitly supports the 'CODE_REVIEW_GENERAL' intent. The user's input provides the code to be reviewed, which maps directly to the 'code' parameter required by this endpoint for the 'CODE_REVIEW_GENERAL' intent.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x9ed43383388949046f7b88e103d7498e00dd1e018c5640a51200ea1217575af1\"}"
+    },
+    {
+      "reviewerId": "20260828",
+      "caseId": "py-auth-or-true",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [],
+      "summary": "No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.",
+      "latencyMs": 11129,
+      "receipt": {
+        "hash": "0xf200feff5f0662d6063682f646875746c122636fc43e57fe35ea4303c39234a3",
+        "transaction": "0xf2fafc4daeb9b692dd4a97621baeb540010506c39d396d8ad8f4a288536471f6",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5076"
+      },
+      "rawResponse": "{\"miner_id\":\"20260828\",\"miner_name\":\"PREFLIGHT Infrastructure Signals\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":null,\"findings\":null,\"summary\":\"No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"def delete_user(user, target):\\n    if user.is_admin or True:\\n        db.delete(target)\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":263,\"timestamp\":\"2026-11-06T11:41:02.493313742Z\",\"reasoning\":\"Intent: miner preflight-ssl-verification given by the caller\\nMiner: The user wants a code review, and the PREFLIGHT Infrastructure Signals miner has an endpoint specifically for CODE_REVIEW_GENERAL. The question provides the code to be reviewed, which maps directly to the 'code' parameter. The 'query' parameter is also required and should contain the full question, which in this case is a request to review the provided code.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x09d00bb78a300c1647e228dd555c77b99f7c0da6be0afb75292d6b32a1e495f8\"}"
+    },
+    {
+      "reviewerId": "20260828",
+      "caseId": "py-age-strictly-greater",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "",
+      "latencyMs": 15570,
+      "receipt": {
+        "hash": "0x8cdd935bec8c9eb0b4a1aee56a11c94348e83589d961fb0e0b5a9530c90945f3",
+        "transaction": "0xead6417ce53b68e4837abf6862593c66e01364d2bbfd881a083aeab433695b5c",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5076"
+      },
+      "rawResponse": "{\"miner_id\":\"20260828\",\"miner_name\":\"PREFLIGHT Infrastructure Signals\",\"endpoint\":\"/code-review\",\"result\":{\"checked_at\":\"2026-11-06T11:41:18.750Z\",\"confidence\":0.7,\"findings\":[],\"found\":true,\"issue_count\":0,\"method\":\"static pattern review for security and reliability smells (not a full semantic review)\",\"reason\":\"No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.\",\"verdict\":\"no_issues_found\"},\"result_shape\":\"raw\",\"shape_error\":\"no_fields_found\",\"format_version\":3,\"input\":{\"code\":\"def can_vote(age):\\n    \\\"\\\"\\\"Voting is allowed at 18 or older.\\\"\\\"\\\"\\n    return age \\u003e 18\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":683,\"timestamp\":\"2026-11-06T11:41:18.868173365Z\",\"reasoning\":\"Intent: miner preflight-ssl-verification given by the caller\\nMiner: The user wants a code review, and the PREFLIGHT Infrastructure Signals miner has an endpoint `/code-review` that specifically serves the `CODE_REVIEW_GENERAL` intent. The provided code is passed as the `code` parameter, and the `query` parameter is constructed as per the endpoint's requirements, including the code snippet.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0xb5a4363db2f4bcc2f3ca1abe6e858034de6f1ec64c48d636e4da5d955dfd306c\"}"
+    },
+    {
+      "reviewerId": "20260828",
+      "caseId": "py-sql-concatenated",
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "SQL built by string concatenation"
+      ],
+      "summary": "1 issue found (1 high severity): line 2: SQL built by string concatenation — use parameterised queries.",
+      "latencyMs": 16744,
+      "receipt": {
+        "hash": "0x0e8d59ef022207ec9d3913ab51feaf465357cc74001c004b8a93cc8e08d15b67",
+        "transaction": "0xe092982ec35350695de20f15875068dec3900f3b8bf77b6ee1611512873e9b55",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5076"
+      },
+      "rawResponse": "{\"miner_id\":\"20260828\",\"miner_name\":\"PREFLIGHT Infrastructure Signals\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":\"Request changes\",\"findings\":[\"SQL built by string concatenation\"],\"summary\":\"1 issue found (1 high severity): line 2: SQL built by string concatenation — use parameterised queries.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"def find_user(cursor, name):\\n    cursor.execute(\\\"SELECT * FROM users WHERE name = '\\\" + name + \\\"'\\\")\\n    return cursor.fetchone()\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":247,\"timestamp\":\"2026-11-06T11:41:18.435285298Z\",\"reasoning\":\"Intent: miner preflight-ssl-verification given by the caller\\nMiner: The user wants a code review, and the PREFLIGHT Infrastructure Signals miner has an endpoint `/code-review` that specifically serves the `CODE_REVIEW_GENERAL` intent. The provided code is passed as the `code` parameter, and the `query` parameter is constructed by prepending 'Review this code: ' to the provided code, as per the endpoint's documentation.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x53607c2fd8fe2124d70e88880d126357f6c1eb0176699fd07ec6e9bf5bbe58f6\"}"
+    },
+    {
+      "reviewerId": "20260828",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [],
+      "summary": "No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.",
+      "latencyMs": 17074,
+      "receipt": {
+        "hash": "0x08be6ef19d4514da15d29ce6a74673b78ab0e017e244e20a13d81f050ebaf97c",
+        "transaction": "0xf7c89d716bcc96ad80a5ca787d403f8b89836e611afa78f660faf628abb96d54",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5076"
+      },
+      "rawResponse": "{\"miner_id\":\"20260828\",\"miner_name\":\"PREFLIGHT Infrastructure Signals\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":null,\"findings\":null,\"summary\":\"No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"function cartTotal(items) {\\n  let total = 0;\\n  for (let i = 0; i \\u003c= items.length; i++) {\\n    total += items[i].price;\\n  }\\n  return total;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":252,\"timestamp\":\"2026-11-06T11:41:18.214479199Z\",\"reasoning\":\"Intent: miner preflight-ssl-verification given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The PREFLIGHT Infrastructure Signals miner has an endpoint at /code-review that explicitly serves the CODE_REVIEW_GENERAL intent. The endpoint requires a 'query' parameter which should contain the full question, and an optional 'code' parameter for the code to review. Both parameters are provided in the user's input.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x5dcb7002fc70b8a5481199dcf0d34105e48c17eb58e33ea72e098c75d5cade43\"}"
+    },
+    {
+      "reviewerId": "20260828",
+      "caseId": "py-sql-parameterized",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [],
+      "summary": "No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.",
+      "latencyMs": 17384,
+      "receipt": {
+        "hash": "0x1d8f54613e1a4aab89e1093b77b994206615f8eba346aa6d91e24a751d6bba8a",
+        "transaction": "0x27f3f6a71ac013c2217a2ef82cbd155494a629dfeb8775b15caa8323b03b6ddb",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5076"
+      },
+      "rawResponse": "{\"miner_id\":\"20260828\",\"miner_name\":\"PREFLIGHT Infrastructure Signals\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":null,\"findings\":null,\"summary\":\"No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"missing\",\"summary\":\"ok\"},\"input\":{\"code\":\"def find_user(cursor, name):\\n    cursor.execute(\\\"SELECT * FROM users WHERE name = %s\\\", (name,))\\n    return cursor.fetchone()\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":257,\"timestamp\":\"2026-11-06T11:41:18.224876135Z\",\"reasoning\":\"Intent: miner preflight-ssl-verification given by the caller\\nMiner: The user wants a code review, and the PREFLIGHT Infrastructure Signals miner has an endpoint at /code-review that serves the CODE_REVIEW_GENERAL intent. The provided code is passed to the 'code' parameter, and the 'query' parameter is constructed as per the endpoint's requirements, including the code itself.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0xb27251bef7f33a496f6e5aad71fc1f5d83f84ddad18c3e815c9b024aadfd9b1a\"}"
+    },
+    {
+      "reviewerId": "60008",
+      "caseId": "py-auth-or-true",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gitlab-mr cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 358,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60008",
+      "caseId": "py-sql-concatenated",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gitlab-mr cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 387,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60008",
+      "caseId": "py-sql-parameterized",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gitlab-mr cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 348,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60008",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gitlab-mr cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 349,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60008",
+      "caseId": "py-age-strictly-greater",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gitlab-mr cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 340,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60008",
+      "caseId": "py-age-correct",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gitlab-mr cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 335,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60008",
+      "caseId": "js-token-expired-inverted",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gitlab-mr cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 357,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60010",
+      "caseId": "py-auth-or-true",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-npm-pkg cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 347,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60010",
+      "caseId": "py-sql-concatenated",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-npm-pkg cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 357,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60010",
+      "caseId": "py-sql-parameterized",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-npm-pkg cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 352,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60010",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-npm-pkg cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 342,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60010",
+      "caseId": "py-age-strictly-greater",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-npm-pkg cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 369,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60010",
+      "caseId": "py-age-correct",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-npm-pkg cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 365,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60010",
+      "caseId": "js-token-expired-inverted",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-npm-pkg cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 352,
+      "receipt": null
+    },
+    {
+      "reviewerId": "1900999004",
+      "caseId": "py-sql-concatenated",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"could not route this question now, try again later\"}",
+      "latencyMs": 1662,
+      "receipt": null
+    },
+    {
+      "reviewerId": "1900999004",
+      "caseId": "py-auth-or-true",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"could not route this question now, try again later\"}",
+      "latencyMs": 1790,
+      "receipt": null
+    },
+    {
+      "reviewerId": "1900999004",
+      "caseId": "py-sql-parameterized",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"could not route this question now, try again later\"}",
+      "latencyMs": 1682,
+      "receipt": null
+    },
+    {
+      "reviewerId": "1900999004",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"could not route this question now, try again later\"}",
+      "latencyMs": 1779,
+      "receipt": null
+    },
+    {
+      "reviewerId": "1900999004",
+      "caseId": "py-age-strictly-greater",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"could not route this question now, try again later\"}",
+      "latencyMs": 1810,
+      "receipt": null
+    },
+    {
+      "reviewerId": "1900999004",
+      "caseId": "py-age-correct",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"could not route this question now, try again later\"}",
+      "latencyMs": 1840,
+      "receipt": null
+    },
+    {
+      "reviewerId": "302",
+      "caseId": "py-auth-or-true",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner chainsight-oracle cannot take this request's params: /codereview has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 360,
+      "receipt": null
+    },
+    {
+      "reviewerId": "302",
+      "caseId": "py-sql-concatenated",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner chainsight-oracle cannot take this request's params: /codereview has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 343,
+      "receipt": null
+    },
+    {
+      "reviewerId": "302",
+      "caseId": "py-sql-parameterized",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner chainsight-oracle cannot take this request's params: /codereview has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 363,
+      "receipt": null
+    },
+    {
+      "reviewerId": "302",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner chainsight-oracle cannot take this request's params: /codereview has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 339,
+      "receipt": null
+    },
+    {
+      "reviewerId": "1900999004",
+      "caseId": "js-token-expired-inverted",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"could not route this question now, try again later\"}",
+      "latencyMs": 1751,
+      "receipt": null
+    },
+    {
+      "reviewerId": "302",
+      "caseId": "py-age-strictly-greater",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner chainsight-oracle cannot take this request's params: /codereview has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 347,
+      "receipt": null
+    },
+    {
+      "reviewerId": "302",
+      "caseId": "py-age-correct",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner chainsight-oracle cannot take this request's params: /codereview has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 357,
+      "receipt": null
+    },
+    {
+      "reviewerId": "302",
+      "caseId": "js-token-expired-inverted",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner chainsight-oracle cannot take this request's params: /codereview has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 349,
+      "receipt": null
+    },
+    {
+      "reviewerId": "20260828",
+      "caseId": "py-age-correct",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "",
+      "latencyMs": 20329,
+      "receipt": {
+        "hash": "0x9ca70c120ebab8e1d76212622c3ffe06c664d4e41e1bd16f7bb9e88cdda4efa6",
+        "transaction": "0x53666b2988e6d96500fdfe349abb9d502ad0a27bd4cb25616d1c135ff4bce986",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5076"
+      },
+      "rawResponse": "{\"miner_id\":\"20260828\",\"miner_name\":\"PREFLIGHT Infrastructure Signals\",\"endpoint\":\"/code-review\",\"result\":{\"checked_at\":\"2026-11-06T11:41:39.925Z\",\"confidence\":0.7,\"findings\":[],\"found\":true,\"issue_count\":0,\"method\":\"static pattern review for security and reliability smells (not a full semantic review)\",\"reason\":\"No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.\",\"verdict\":\"no_issues_found\"},\"result_shape\":\"raw\",\"shape_error\":\"no_fields_found\",\"format_version\":3,\"input\":{\"code\":\"def can_vote(age):\\n    \\\"\\\"\\\"Voting is allowed at 18 or older.\\\"\\\"\\\"\\n    return age \\u003e= 18\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":267,\"timestamp\":\"2026-11-06T11:41:40.0417859Z\",\"reasoning\":\"Intent: miner preflight-ssl-verification given by the caller\\nMiner: The user wants a code review, and the PREFLIGHT Infrastructure Signals miner has an endpoint at /code-review that explicitly serves the CODE_REVIEW_GENERAL intent. The provided code snippet is passed as the 'code' parameter, and the 'query' parameter is constructed as per the endpoint's requirement, including the code snippet within a descriptive question.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0xcb6e4a179432ae763b1ca7de31bce0dc4c2fb16a175d028d2eb6450554b7d4d1\"}"
+    },
+    {
+      "reviewerId": "20260828",
+      "caseId": "js-token-expired-inverted",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "",
+      "latencyMs": 20238,
+      "receipt": {
+        "hash": "0xf0a50a8e781b856aa02ccf895e59eab412cc6376916d7d47f16d8d6fd28d447a",
+        "transaction": "0xc446ecee877cf0d74a8e83906e9c81a1a8dbd7ff6025e20396798f8ecf8cd0e2",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5076"
+      },
+      "rawResponse": "{\"miner_id\":\"20260828\",\"miner_name\":\"PREFLIGHT Infrastructure Signals\",\"endpoint\":\"/code-review\",\"result\":{\"checked_at\":\"2026-11-06T11:41:40.330Z\",\"confidence\":0.7,\"findings\":[],\"found\":true,\"issue_count\":0,\"method\":\"static pattern review for security and reliability smells (not a full semantic review)\",\"reason\":\"No security or reliability smells were found by the static checks (code execution, injection, secrets, weak crypto, TLS, deserialisation, error handling); this is a pattern review, not a proof of correctness.\",\"verdict\":\"no_issues_found\"},\"result_shape\":\"raw\",\"shape_error\":\"no_fields_found\",\"format_version\":3,\"input\":{\"code\":\"// Returns true when the token is past its expiry time.\\nfunction isExpired(token) {\\n  return token.expiresAt \\u003e Date.now();\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":256,\"timestamp\":\"2026-11-06T11:41:40.447897903Z\",\"reasoning\":\"Intent: miner preflight-ssl-verification given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The PREFLIGHT Infrastructure Signals miner has an endpoint `/code-review` that serves this intent. The endpoint requires a `query` parameter, which is constructed by prepending \\\"Review this code: \\\" to the provided code. The `code` parameter is also populated with the provided code.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0xb873636045962e9f6b3cdbf75e84924b4b46a4ff3fd538900fa587b9efe2af11\"}"
+    },
+    {
+      "reviewerId": "7310045",
+      "caseId": "py-auth-or-true",
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "The authorization check is ineffective. `if user.is_admin or True:` is always true, so every caller can delete any `target`, regardless of whether the user is an administrator."
+      ],
+      "summary": "The code is not correct.",
+      "latencyMs": 13052,
+      "receipt": {
+        "hash": "0xf68f85bacbdc544e144ebe6dbac359767b8ed336dd99a9d13ea7b7cb838b308e",
+        "transaction": "0x5ad5fc082b16ce636466c263603b43d9d73e31fb5a1bdf1d7f8f4e5dbbeda40a",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5035"
+      },
+      "rawResponse": "{\"miner_id\":\"7310045\",\"miner_name\":\"CodeWire Code Review Request Contract\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":\"Request changes\",\"findings\":[\"The authorization check is ineffective. `if user.is_admin or True:` is always true, so every caller can delete any `target`, regardless of whether the user is an administrator.\"],\"summary\":\"The code is not correct.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"def delete_user(user, target):\\n    if user.is_admin or True:\\n        db.delete(target)\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":2540,\"timestamp\":\"2026-11-06T11:41:42.315866809Z\",\"reasoning\":\"Intent: miner zk-codereview given by the caller\\nMiner: input schema v3 mapped in code to GET /code-review\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x0888e62e04cdbf5ac8541e1eacd65eab8552dafb3df541bba492ed932755a2e9\",\"warnings\":[\"parameter \\\"code\\\" length 0 violates the miner's declared limit (lte 20000): code is the input to work on. A single request, not a batch.\"]}"
+    },
+    {
+      "reviewerId": "7310045",
+      "caseId": "py-sql-concatenated",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "The code is not correct or secure."
+      ],
+      "summary": "The code is not correct or secure.",
+      "latencyMs": 13330,
+      "receipt": {
+        "hash": "0x5e37cafa42485d41e0f98a19c683e98e768edfba038f69af092093f1e89fe3bc",
+        "transaction": "0xc3f4e2eea710d2823a106b53b1c2cfcc0bf0e4e8a547d6ddb89f879ef25d9120",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5035"
+      },
+      "rawResponse": "{\"miner_id\":\"7310045\",\"miner_name\":\"CodeWire Code Review Request Contract\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":null,\"findings\":[\"The code is not correct or secure.\"],\"summary\":\"The code is not correct or secure.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"def find_user(cursor, name):\\n    cursor.execute(\\\"SELECT * FROM users WHERE name = '\\\" + name + \\\"'\\\")\\n    return cursor.fetchone()\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":3798,\"timestamp\":\"2026-11-06T11:41:44.000836436Z\",\"reasoning\":\"Intent: miner zk-codereview given by the caller\\nMiner: input schema v3 mapped in code to GET /code-review\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0xf9a58b49cf59094a2b6bbdd340ddb10934c58ce0ecf9b74fdb426fef73429222\",\"warnings\":[\"parameter \\\"code\\\" length 0 violates the miner's declared limit (lte 20000): code is the input to work on. A single request, not a batch.\"]}"
+    },
+    {
+      "reviewerId": "7310045",
+      "caseId": "py-sql-parameterized",
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "The code is correct and secure for its apparent purpose."
+      ],
+      "summary": "The code is correct and secure for its apparent purpose.",
+      "latencyMs": 15708,
+      "receipt": {
+        "hash": "0xe32eb1918b8abceb51618978d7dd374f52b5a842e9209e7cde6f152d21b98f71",
+        "transaction": "0x39944003b86c903c21b3e414c8367cf560989706ecdfd8324c144bdd512e3331",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5035"
+      },
+      "rawResponse": "{\"miner_id\":\"7310045\",\"miner_name\":\"CodeWire Code Review Request Contract\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":\"Approve\",\"findings\":[\"The code is correct and secure for its apparent purpose.\"],\"summary\":\"The code is correct and secure for its apparent purpose.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"def find_user(cursor, name):\\n    cursor.execute(\\\"SELECT * FROM users WHERE name = %s\\\", (name,))\\n    return cursor.fetchone()\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1775,\"timestamp\":\"2026-11-06T11:41:55.160123278Z\",\"reasoning\":\"Intent: miner zk-codereview given by the caller\\nMiner: input schema v3 mapped in code to GET /code-review\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x87f58962663cd81e507d33021956d317fcf4353e419bf35395fc16c99b4ab896\",\"warnings\":[\"parameter \\\"code\\\" length 0 violates the miner's declared limit (lte 20000): code is the input to work on. A single request, not a batch.\"]}"
+    },
+    {
+      "reviewerId": "7310045",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "The code is incorrect."
+      ],
+      "summary": "The code is incorrect. It contains an off-by-one error that can cause a runtime exception.",
+      "latencyMs": 16824,
+      "receipt": {
+        "hash": "0xc88b271b3546ed2893129ee22ace31b4012f6cd8a7302316997adba1e093f27a",
+        "transaction": "0xc66eda1e9094c40f003eed5e43cc8f4260b83699cb1e777bb76872f94874f75f",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5035"
+      },
+      "rawResponse": "{\"miner_id\":\"7310045\",\"miner_name\":\"CodeWire Code Review Request Contract\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":null,\"findings\":[\"The code is incorrect.\"],\"summary\":\"The code is incorrect. It contains an off-by-one error that can cause a runtime exception.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"function cartTotal(items) {\\n  let total = 0;\\n  for (let i = 0; i \\u003c= items.length; i++) {\\n    total += items[i].price;\\n  }\\n  return total;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":3450,\"timestamp\":\"2026-11-06T11:41:57.030904798Z\",\"reasoning\":\"Intent: miner zk-codereview given by the caller\\nMiner: input schema v3 mapped in code to GET /code-review\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x6164b44ce128b8ae7244f8fad0bfb0b3d20ac3f1cee225ee1533720a769274f5\",\"warnings\":[\"parameter \\\"code\\\" length 0 violates the miner's declared limit (lte 20000): code is the input to work on. A single request, not a batch.\"]}"
+    },
+    {
+      "reviewerId": "7310045",
+      "caseId": "py-age-strictly-greater",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "The off-by-one error is in the comparison `age > 18`. The docstring says voting is allowed at 18 or older, but this condition excludes an 18-year-old."
+      ],
+      "summary": "The code is not correct.",
+      "latencyMs": 13712,
+      "receipt": {
+        "hash": "0xbe6de8e00b5b37849eb2101cb3660190c4960f25cdce81ede2af9356ebf59a54",
+        "transaction": "0x506a15fec7e26f9d228ee20418fa9918118d63f3765008966be6d186711cc60b",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5035"
+      },
+      "rawResponse": "{\"miner_id\":\"7310045\",\"miner_name\":\"CodeWire Code Review Request Contract\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":null,\"findings\":[\"The off-by-one error is in the comparison `age \\u003e 18`. The docstring says voting is allowed at 18 or older, but this condition excludes an 18-year-old.\"],\"summary\":\"The code is not correct.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"def can_vote(age):\\n    \\\"\\\"\\\"Voting is allowed at 18 or older.\\\"\\\"\\\"\\n    return age \\u003e 18\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":2330,\"timestamp\":\"2026-11-06T11:41:55.711819097Z\",\"reasoning\":\"Intent: miner zk-codereview given by the caller\\nMiner: input schema v3 mapped in code to GET /code-review\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x50f3327f265fc8ea516ca934c19010c6fc9de0121956a5ff3eeb2afeee19d181\",\"warnings\":[\"parameter \\\"code\\\" length 0 violates the miner's declared limit (lte 20000): code is the input to work on. A single request, not a batch.\"]}"
+    },
+    {
+      "reviewerId": "60005",
+      "caseId": "py-auth-or-true",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-commits cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 366,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60005",
+      "caseId": "py-sql-concatenated",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-commits cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 367,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60005",
+      "caseId": "py-sql-parameterized",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-commits cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 369,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60005",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-commits cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 347,
+      "receipt": null
+    },
+    {
+      "reviewerId": "7310045",
+      "caseId": "py-age-correct",
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "The boundary condition uses `>= 18`, so a person aged exactly 18 is allowed to vote.",
+        "Ages below 18 return `False`.",
+        "The docstring accurately describes the behavior.",
+        "The function is simple, readable, and has no unnecessary dependencies or performance concerns."
+      ],
+      "summary": "The code is correct and clear for its stated purpose.",
+      "latencyMs": 13997,
+      "receipt": {
+        "hash": "0x61550654555f994fe310614feceeafb9f7ad522c2579569da967979c4e2df3d8",
+        "transaction": "0x67239cf20cd1f6a2e93dcf94f6664bc4be93c6205f218d18d1e87e2d2a21eec4",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5035"
+      },
+      "rawResponse": "{\"miner_id\":\"7310045\",\"miner_name\":\"CodeWire Code Review Request Contract\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":\"Approve\",\"findings\":[\"The boundary condition uses `\\u003e= 18`, so a person aged exactly 18 is allowed to vote.\",\"Ages below 18 return `False`.\",\"The docstring accurately describes the behavior.\",\"The function is simple, readable, and has no unnecessary dependencies or performance concerns.\"],\"summary\":\"The code is correct and clear for its stated purpose.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"def can_vote(age):\\n    \\\"\\\"\\\"Voting is allowed at 18 or older.\\\"\\\"\\\"\\n    return age \\u003e= 18\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":2567,\"timestamp\":\"2026-11-06T11:41:56.147772805Z\",\"reasoning\":\"Intent: miner zk-codereview given by the caller\\nMiner: input schema v3 mapped in code to GET /code-review\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x77249118ce6fa35bc3a7712b99eead780cfeaaae6043b59aa385039b4edff446\",\"warnings\":[\"parameter \\\"code\\\" length 0 violates the miner's declared limit (lte 20000): code is the input to work on. A single request, not a batch.\"]}"
+    },
+    {
+      "reviewerId": "60005",
+      "caseId": "py-age-strictly-greater",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-commits cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 368,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60005",
+      "caseId": "py-age-correct",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-commits cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 360,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60005",
+      "caseId": "js-token-expired-inverted",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-commits cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 357,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60003",
+      "caseId": "py-auth-or-true",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-compare cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 348,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60003",
+      "caseId": "py-sql-concatenated",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-compare cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 367,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60003",
+      "caseId": "py-sql-parameterized",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-compare cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 359,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60003",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-compare cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 368,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60003",
+      "caseId": "py-age-strictly-greater",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-compare cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 358,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60003",
+      "caseId": "py-age-correct",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-compare cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 342,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60003",
+      "caseId": "js-token-expired-inverted",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-compare cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 369,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60007",
+      "caseId": "py-sql-concatenated",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-review-comments cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 338,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60007",
+      "caseId": "py-auth-or-true",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-review-comments cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 357,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60007",
+      "caseId": "py-sql-parameterized",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-review-comments cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 367,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60007",
+      "caseId": "js-loop-out-of-bounds",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-review-comments cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 348,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60007",
+      "caseId": "py-age-strictly-greater",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-review-comments cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 353,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60007",
+      "caseId": "py-age-correct",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-review-comments cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 345,
+      "receipt": null
+    },
+    {
+      "reviewerId": "60007",
+      "caseId": "js-token-expired-inverted",
+      "kind": "failed",
+      "reason": "HTTP 503: {\"error\":\"no_compatible_miner\",\"intent\":\"CODE_REVIEW_GENERAL\",\"message\":\"miner code-gh-review-comments cannot take this request's params: /query has no field for required param(s) code\",\"schema_version\":3}",
+      "latencyMs": 338,
+      "receipt": null
+    },
+    {
+      "reviewerId": "7310045",
+      "caseId": "js-token-expired-inverted",
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "The boolean logic is inverted.",
+        "The function is named `isExpired`, but it returns `true` when `token.expiresAt` is later than `Date.now()`.",
+        "That means it reports unexpired tokens as expired and expired tokens as unexpired.",
+        "Fix it by reversing the comparison:",
+        "A token whose expiry equals the current time should be considered expired, so `expiresAt <= Date.now()` is correct.",
+        "`Date.now()` is appropriate for millisecond timestamps, but the token’s timestamp unit must match.",
+        "There are no security or performance issues beyond the correctness bug.",
+        "The function is concise and readable, although the comment should be updated or removed because it currently describes behavior opposite to the implementation."
+      ],
+      "summary": "The code is incorrect. The boolean logic is inverted.",
+      "latencyMs": 15178,
+      "receipt": {
+        "hash": "0x02e70d6b79a974535c5b9fd80919b445c653af00de0e5b76acb9fbc5fba4c4b6",
+        "transaction": "0x85b14fa9b8dddae7a3adc647658c7b5fb076d32ebe492aad266116f8fb28755c",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "5035"
+      },
+      "rawResponse": "{\"miner_id\":\"7310045\",\"miner_name\":\"CodeWire Code Review Request Contract\",\"endpoint\":\"/code-review\",\"result\":{\"verdict\":\"Request changes\",\"findings\":[\"The boolean logic is inverted.\",\"The function is named `isExpired`, but it returns `true` when `token.expiresAt` is later than `Date.now()`.\",\"That means it reports unexpired tokens as expired and expired tokens as unexpired.\",\"Fix it by reversing the comparison:\",\"A token whose expiry equals the current time should be considered expired, so `expiresAt \\u003c= Date.now()` is correct.\",\"`Date.now()` is appropriate for millisecond timestamps, but the token’s timestamp unit must match.\",\"There are no security or performance issues beyond the correctness bug.\",\"The function is concise and readable, although the comment should be updated or removed because it currently describes behavior opposite to the implementation.\"],\"summary\":\"The code is incorrect. The boolean logic is inverted.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Returns true when the token is past its expiry time.\\nfunction isExpired(token) {\\n  return token.expiresAt \\u003e Date.now();\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":2704,\"timestamp\":\"2026-11-06T11:42:06.524058444Z\",\"reasoning\":\"Intent: miner zk-codereview given by the caller\\nMiner: input schema v3 mapped in code to GET /code-review\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x45c18a130fcacdfa6949bfc1a45c59ec6e87168efb00d6a96d02b4bfc000c002\",\"warnings\":[\"parameter \\\"code\\\" length 0 violates the miner's declared limit (lte 20000): code is the input to work on. A single request, not a batch.\"]}"
+    }
+  ]
+}

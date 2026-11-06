@@ -1,0 +1,3351 @@
+{
+  "id": "round-002-static-baseline",
+  "intent": "LOCAL_STATIC_ANALYSIS",
+  "budgetMicroUsdc": 1,
+  "cases": [
+    {
+      "id": "can-vote-correct",
+      "language": "javascript",
+      "code": "// Voting is allowed at 18 or older.\nfunction canVote(age) {\n  return age >= 18;\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "can-vote"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "can-vote-boundary-1",
+      "language": "javascript",
+      "code": "// Voting is allowed at 18 or older.\nfunction canVote(age) {\n  return age > 18;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "can-vote",
+        "operator": "boundary"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "boundary",
+        "description": "boundary changed: `>=` became `>`",
+        "clues": [
+          "age\\s*>\\s*18",
+          "off[- ]by[- ]one",
+          "boundary",
+          "edge case",
+          "inclusive",
+          "exclusive",
+          "exactly",
+          "strict(ly)? (inequality|comparison|less|greater)",
+          "(less|greater) than or equal"
+        ]
+      }
+    },
+    {
+      "id": "can-vote-comparison-flip-1",
+      "language": "javascript",
+      "code": "// Voting is allowed at 18 or older.\nfunction canVote(age) {\n  return age <= 18;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "can-vote",
+        "operator": "comparison-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "inverted-comparison",
+        "description": "comparison inverted: `>=` became `<=`",
+        "clues": [
+          "age\\s*<=\\s*18",
+          "invert",
+          "revers",
+          "backwards",
+          "opposite",
+          "flipped",
+          "wrong direction",
+          "(rejects|accepts)\\b[^.]{0,60}\\b(accepts|rejects)\\b",
+          "returns `?(true|false)`? when [^.]{0,40}\\bnot\\b"
+        ]
+      }
+    },
+    {
+      "id": "can-vote-constant-changed-1",
+      "language": "javascript",
+      "code": "// Voting is allowed at 18 or older.\nfunction canVote(age) {\n  return age >= 19;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "can-vote",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `18` became `19`",
+        "clues": [
+          "age\\s*>=\\s*19",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?19\\b",
+          "`19`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "cart-total-correct",
+      "language": "javascript",
+      "code": "// Sum of the item prices.\nfunction cartTotal(items) {\n  let total = 0;\n  for (let i = 0; i < items.length; i++) total += items[i].price;\n  return total;\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "cart-total"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "cart-total-boundary-1",
+      "language": "javascript",
+      "code": "// Sum of the item prices.\nfunction cartTotal(items) {\n  let total = 0;\n  for (let i = 0; i <= items.length; i++) total += items[i].price;\n  return total;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "cart-total",
+        "operator": "boundary"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "boundary",
+        "description": "boundary changed: `<` became `<=`",
+        "clues": [
+          "i\\s*<=\\s*items\\.length",
+          "off[- ]by[- ]one",
+          "boundary",
+          "edge case",
+          "inclusive",
+          "exclusive",
+          "exactly",
+          "strict(ly)? (inequality|comparison|less|greater)",
+          "(less|greater) than or equal"
+        ]
+      }
+    },
+    {
+      "id": "cart-total-comparison-flip-1",
+      "language": "javascript",
+      "code": "// Sum of the item prices.\nfunction cartTotal(items) {\n  let total = 0;\n  for (let i = 0; i > items.length; i++) total += items[i].price;\n  return total;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "cart-total",
+        "operator": "comparison-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "inverted-comparison",
+        "description": "comparison inverted: `<` became `>`",
+        "clues": [
+          "i\\s*>\\s*items\\.length",
+          "invert",
+          "revers",
+          "backwards",
+          "opposite",
+          "flipped",
+          "wrong direction",
+          "(rejects|accepts)\\b[^.]{0,60}\\b(accepts|rejects)\\b",
+          "returns `?(true|false)`? when [^.]{0,40}\\bnot\\b"
+        ]
+      }
+    },
+    {
+      "id": "cart-total-arithmetic-1",
+      "language": "javascript",
+      "code": "// Sum of the item prices.\nfunction cartTotal(items) {\n  let total = 0;\n  for (let i = 0; i < items.length; i++) total -= items[i].price;\n  return total;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "cart-total",
+        "operator": "arithmetic"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "arithmetic",
+        "description": "arithmetic operator swapped: `+=` became `-=`",
+        "clues": [
+          "total\\s*-=\\s*items\\[i\\]",
+          "arithmetic",
+          "wrong operator",
+          "should (be )?(add|subtract|multipl|divid)",
+          "sign",
+          "subtraction",
+          "addition",
+          "multiplication",
+          "division",
+          "negative of",
+          "increase (rather|instead)"
+        ]
+      }
+    },
+    {
+      "id": "cart-total-constant-changed-1",
+      "language": "javascript",
+      "code": "// Sum of the item prices.\nfunction cartTotal(items) {\n  let total = 1;\n  for (let i = 0; i < items.length; i++) total += items[i].price;\n  return total;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "cart-total",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `0` became `1`",
+        "clues": [
+          "total\\s*=\\s*1",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?1\\b",
+          "`1`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "cart-total-constant-changed-2",
+      "language": "javascript",
+      "code": "// Sum of the item prices.\nfunction cartTotal(items) {\n  let total = 0;\n  for (let i = 1; i < items.length; i++) total += items[i].price;\n  return total;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "cart-total",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `0` became `1`",
+        "clues": [
+          "i\\s*=\\s*1",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?1\\b",
+          "`1`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "token-expired-correct",
+      "language": "javascript",
+      "code": "// True when the token is past its expiry time.\nfunction isExpired(token, now) {\n  return token.expiresAt < now;\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "token-expired"
+      },
+      "answerKey": {
+        "kind": "annulled",
+        "reason": "ambiguous contract: 'past its expiry time' does not say whether the exact expiry instant has already expired"
+      }
+    },
+    {
+      "id": "token-expired-boundary-1",
+      "language": "javascript",
+      "code": "// True when the token is past its expiry time.\nfunction isExpired(token, now) {\n  return token.expiresAt <= now;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "token-expired",
+        "operator": "boundary"
+      },
+      "answerKey": {
+        "kind": "annulled",
+        "reason": "ambiguous contract: under the original comment, both `<` and `<=` at the exact expiry instant were defensible"
+      }
+    },
+    {
+      "id": "token-expired-comparison-flip-1",
+      "language": "javascript",
+      "code": "// True when the token is past its expiry time.\nfunction isExpired(token, now) {\n  return token.expiresAt > now;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "token-expired",
+        "operator": "comparison-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "inverted-comparison",
+        "description": "comparison inverted: `<` became `>`",
+        "clues": [
+          "token\\.expiresAt\\s*>\\s*now",
+          "invert",
+          "revers",
+          "backwards",
+          "opposite",
+          "flipped",
+          "wrong direction"
+        ]
+      }
+    },
+    {
+      "id": "can-delete-post-correct",
+      "language": "javascript",
+      "code": "// Only admins or the post owner may delete a post.\nfunction canDelete(user, post) {\n  return user.isAdmin || post.ownerId === user.id;\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "can-delete-post"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "can-delete-post-logical-connective-1",
+      "language": "javascript",
+      "code": "// Only admins or the post owner may delete a post.\nfunction canDelete(user, post) {\n  return user.isAdmin && post.ownerId === user.id;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "can-delete-post",
+        "operator": "logical-connective"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "logic",
+        "description": "logical connective swapped: `||` became `&&`",
+        "clues": [
+          "user\\.isAdmin\\s*&&\\s*post\\.ownerId\\s*===\\s*user\\.id",
+          "logical operator",
+          "should be (&&|\\|\\||and|or|===|!==)",
+          "negat",
+          "invert",
+          "opposite",
+          "always (returns? )?`?(true|false)",
+          "both [^.]{0,40}(simultaneously|at the same time)",
+          "\\b(and|or)\\b\\W{0,3} instead of",
+          "every [^.]{0,30}except"
+        ]
+      }
+    },
+    {
+      "id": "can-delete-post-equality-flip-1",
+      "language": "javascript",
+      "code": "// Only admins or the post owner may delete a post.\nfunction canDelete(user, post) {\n  return user.isAdmin || post.ownerId !== user.id;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "can-delete-post",
+        "operator": "equality-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "logic",
+        "description": "equality inverted: `===` became `!==`",
+        "clues": [
+          "post\\.ownerId\\s*!==\\s*user\\.id",
+          "logical operator",
+          "should be (&&|\\|\\||and|or|===|!==)",
+          "negat",
+          "invert",
+          "opposite",
+          "always (returns? )?`?(true|false)",
+          "both [^.]{0,40}(simultaneously|at the same time)",
+          "\\b(and|or)\\b\\W{0,3} instead of",
+          "every [^.]{0,30}except"
+        ]
+      }
+    },
+    {
+      "id": "withdraw-correct",
+      "language": "javascript",
+      "code": "// Withdraws if the balance covers it; otherwise throws.\nfunction withdraw(account, amount) {\n  if (amount > account.balance) throw new Error(\"insufficient funds\");\n  account.balance -= amount;\n  return account.balance;\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "withdraw"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "withdraw-boundary-1",
+      "language": "javascript",
+      "code": "// Withdraws if the balance covers it; otherwise throws.\nfunction withdraw(account, amount) {\n  if (amount >= account.balance) throw new Error(\"insufficient funds\");\n  account.balance -= amount;\n  return account.balance;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "withdraw",
+        "operator": "boundary"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "boundary",
+        "description": "boundary changed: `>` became `>=`",
+        "clues": [
+          "amount\\s*>=\\s*account\\.balance",
+          "off[- ]by[- ]one",
+          "boundary",
+          "edge case",
+          "inclusive",
+          "exclusive",
+          "exactly",
+          "strict(ly)? (inequality|comparison|less|greater)",
+          "(less|greater) than or equal"
+        ]
+      }
+    },
+    {
+      "id": "withdraw-comparison-flip-1",
+      "language": "javascript",
+      "code": "// Withdraws if the balance covers it; otherwise throws.\nfunction withdraw(account, amount) {\n  if (amount < account.balance) throw new Error(\"insufficient funds\");\n  account.balance -= amount;\n  return account.balance;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "withdraw",
+        "operator": "comparison-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "inverted-comparison",
+        "description": "comparison inverted: `>` became `<`",
+        "clues": [
+          "amount\\s*<\\s*account\\.balance",
+          "invert",
+          "revers",
+          "backwards",
+          "opposite",
+          "flipped",
+          "wrong direction",
+          "(rejects|accepts)\\b[^.]{0,60}\\b(accepts|rejects)\\b",
+          "returns `?(true|false)`? when [^.]{0,40}\\bnot\\b"
+        ]
+      }
+    },
+    {
+      "id": "withdraw-arithmetic-1",
+      "language": "javascript",
+      "code": "// Withdraws if the balance covers it; otherwise throws.\nfunction withdraw(account, amount) {\n  if (amount > account.balance) throw new Error(\"insufficient funds\");\n  account.balance += amount;\n  return account.balance;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "withdraw",
+        "operator": "arithmetic"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "arithmetic",
+        "description": "arithmetic operator swapped: `-=` became `+=`",
+        "clues": [
+          "account\\.balance\\s*\\+=\\s*amount",
+          "arithmetic",
+          "wrong operator",
+          "should (be )?(add|subtract|multipl|divid)",
+          "sign",
+          "subtraction",
+          "addition",
+          "multiplication",
+          "division",
+          "negative of",
+          "increase (rather|instead)"
+        ]
+      }
+    },
+    {
+      "id": "withdraw-always-true-condition-1",
+      "language": "javascript",
+      "code": "// Withdraws if the balance covers it; otherwise throws.\nfunction withdraw(account, amount) {\n  if (amount > account.balance || true) throw new Error(\"insufficient funds\");\n  account.balance -= amount;\n  return account.balance;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "withdraw",
+        "operator": "always-true-condition"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "authorization",
+        "description": "`if` condition made always true (`|| true`)",
+        "clues": [
+          "\\|\\|\\s*true",
+          "always (true|truthy|pass|execut|run)",
+          "\\|\\|\\s*true",
+          "bypass",
+          "unconditional",
+          "tautolog"
+        ]
+      }
+    },
+    {
+      "id": "withdraw-guard-removed-1",
+      "language": "javascript",
+      "code": "// Withdraws if the balance covers it; otherwise throws.\nfunction withdraw(account, amount) {\n  account.balance -= amount;\n  return account.balance;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "withdraw",
+        "operator": "guard-removed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "missing-validation",
+        "description": "guard removed: `if (amount > account.balance) throw new Error(\"insufficient funds\");`",
+        "clues": [
+          "amount\\s*>\\s*account\\.balance",
+          "missing (check|validation|guard)",
+          "no (check|validation|guard)",
+          "without (check|validat)",
+          "not (checked|validated)",
+          "(allows|permits) [^.]{0,40}(exceed|beyond|more than)"
+        ]
+      }
+    },
+    {
+      "id": "discount-correct",
+      "language": "javascript",
+      "code": "// Price after a percentage discount, never below zero.\nfunction applyDiscount(price, percent) {\n  const result = price - price * percent / 100;\n  return Math.max(result, 0);\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "discount"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "discount-arithmetic-1",
+      "language": "javascript",
+      "code": "// Price after a percentage discount, never below zero.\nfunction applyDiscount(price, percent) {\n  const result = price + price * percent / 100;\n  return Math.max(result, 0);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "discount",
+        "operator": "arithmetic"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "arithmetic",
+        "description": "arithmetic operator swapped: `-` became `+`",
+        "clues": [
+          "price\\s*\\+\\s*price",
+          "arithmetic",
+          "wrong operator",
+          "should (be )?(add|subtract|multipl|divid)",
+          "sign",
+          "subtraction",
+          "addition",
+          "multiplication",
+          "division",
+          "negative of",
+          "increase (rather|instead)"
+        ]
+      }
+    },
+    {
+      "id": "discount-arithmetic-2",
+      "language": "javascript",
+      "code": "// Price after a percentage discount, never below zero.\nfunction applyDiscount(price, percent) {\n  const result = price - price / percent / 100;\n  return Math.max(result, 0);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "discount",
+        "operator": "arithmetic"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "arithmetic",
+        "description": "arithmetic operator swapped: `*` became `/`",
+        "clues": [
+          "price\\s*\\/\\s*percent",
+          "arithmetic",
+          "wrong operator",
+          "should (be )?(add|subtract|multipl|divid)",
+          "sign",
+          "subtraction",
+          "addition",
+          "multiplication",
+          "division",
+          "negative of",
+          "increase (rather|instead)"
+        ]
+      }
+    },
+    {
+      "id": "discount-arithmetic-3",
+      "language": "javascript",
+      "code": "// Price after a percentage discount, never below zero.\nfunction applyDiscount(price, percent) {\n  const result = price - price * percent * 100;\n  return Math.max(result, 0);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "discount",
+        "operator": "arithmetic"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "arithmetic",
+        "description": "arithmetic operator swapped: `/` became `*`",
+        "clues": [
+          "percent\\s*\\*\\s*100",
+          "arithmetic",
+          "wrong operator",
+          "should (be )?(add|subtract|multipl|divid)",
+          "sign",
+          "subtraction",
+          "addition",
+          "multiplication",
+          "division",
+          "negative of",
+          "increase (rather|instead)"
+        ]
+      }
+    },
+    {
+      "id": "discount-constant-changed-1",
+      "language": "javascript",
+      "code": "// Price after a percentage discount, never below zero.\nfunction applyDiscount(price, percent) {\n  const result = price - price * percent / 101;\n  return Math.max(result, 0);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "discount",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `100` became `101`",
+        "clues": [
+          "percent\\s*\\/\\s*101",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?101\\b",
+          "`101`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "discount-constant-changed-2",
+      "language": "javascript",
+      "code": "// Price after a percentage discount, never below zero.\nfunction applyDiscount(price, percent) {\n  const result = price - price * percent / 100;\n  return Math.max(result, 1);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "discount",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `0` became `1`",
+        "clues": [
+          "Math\\.max\\(result,\\s*1\\)",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?1\\b",
+          "`1`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "strong-password-correct",
+      "language": "javascript",
+      "code": "// Strong: at least 12 characters and contains a digit.\nfunction isStrongPassword(pw) {\n  return pw.length >= 12 && /\\d/.test(pw);\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "strong-password"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "strong-password-boundary-1",
+      "language": "javascript",
+      "code": "// Strong: at least 12 characters and contains a digit.\nfunction isStrongPassword(pw) {\n  return pw.length > 12 && /\\d/.test(pw);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "strong-password",
+        "operator": "boundary"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "boundary",
+        "description": "boundary changed: `>=` became `>`",
+        "clues": [
+          "pw\\.length\\s*>\\s*12",
+          "off[- ]by[- ]one",
+          "boundary",
+          "edge case",
+          "inclusive",
+          "exclusive",
+          "exactly",
+          "strict(ly)? (inequality|comparison|less|greater)",
+          "(less|greater) than or equal"
+        ]
+      }
+    },
+    {
+      "id": "strong-password-comparison-flip-1",
+      "language": "javascript",
+      "code": "// Strong: at least 12 characters and contains a digit.\nfunction isStrongPassword(pw) {\n  return pw.length <= 12 && /\\d/.test(pw);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "strong-password",
+        "operator": "comparison-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "inverted-comparison",
+        "description": "comparison inverted: `>=` became `<=`",
+        "clues": [
+          "pw\\.length\\s*<=\\s*12",
+          "invert",
+          "revers",
+          "backwards",
+          "opposite",
+          "flipped",
+          "wrong direction",
+          "(rejects|accepts)\\b[^.]{0,60}\\b(accepts|rejects)\\b",
+          "returns `?(true|false)`? when [^.]{0,40}\\bnot\\b"
+        ]
+      }
+    },
+    {
+      "id": "strong-password-logical-connective-1",
+      "language": "javascript",
+      "code": "// Strong: at least 12 characters and contains a digit.\nfunction isStrongPassword(pw) {\n  return pw.length >= 12 || /\\d/.test(pw);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "strong-password",
+        "operator": "logical-connective"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "logic",
+        "description": "logical connective swapped: `&&` became `||`",
+        "clues": [
+          "pw\\.length\\s*>=\\s*12\\s*\\|\\|\\s*\\/\\\\d\\/\\.test",
+          "logical operator",
+          "should be (&&|\\|\\||and|or|===|!==)",
+          "negat",
+          "invert",
+          "opposite",
+          "always (returns? )?`?(true|false)",
+          "both [^.]{0,40}(simultaneously|at the same time)",
+          "\\b(and|or)\\b\\W{0,3} instead of",
+          "every [^.]{0,30}except"
+        ]
+      }
+    },
+    {
+      "id": "strong-password-constant-changed-1",
+      "language": "javascript",
+      "code": "// Strong: at least 12 characters and contains a digit.\nfunction isStrongPassword(pw) {\n  return pw.length >= 13 && /\\d/.test(pw);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "strong-password",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `12` became `13`",
+        "clues": [
+          "pw\\.length\\s*>=\\s*13",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?13\\b",
+          "`13`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "pagination-correct",
+      "language": "javascript",
+      "code": "// Items of a 1-based page with `size` items per page.\nfunction paginate(items, page, size) {\n  const start = (page - 1) * size;\n  return items.slice(start, start + size);\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "pagination"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "pagination-arithmetic-1",
+      "language": "javascript",
+      "code": "// Items of a 1-based page with `size` items per page.\nfunction paginate(items, page, size) {\n  const start = (page + 1) * size;\n  return items.slice(start, start + size);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "pagination",
+        "operator": "arithmetic"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "arithmetic",
+        "description": "arithmetic operator swapped: `-` became `+`",
+        "clues": [
+          "page\\s*\\+\\s*1",
+          "arithmetic",
+          "wrong operator",
+          "should (be )?(add|subtract|multipl|divid)",
+          "sign",
+          "subtraction",
+          "addition",
+          "multiplication",
+          "division",
+          "negative of",
+          "increase (rather|instead)"
+        ]
+      }
+    },
+    {
+      "id": "pagination-arithmetic-2",
+      "language": "javascript",
+      "code": "// Items of a 1-based page with `size` items per page.\nfunction paginate(items, page, size) {\n  const start = (page - 1) / size;\n  return items.slice(start, start + size);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "pagination",
+        "operator": "arithmetic"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "arithmetic",
+        "description": "arithmetic operator swapped: `*` became `/`",
+        "clues": [
+          "\\/\\s*size",
+          "arithmetic",
+          "wrong operator",
+          "should (be )?(add|subtract|multipl|divid)",
+          "sign",
+          "subtraction",
+          "addition",
+          "multiplication",
+          "division",
+          "negative of",
+          "increase (rather|instead)"
+        ]
+      }
+    },
+    {
+      "id": "pagination-arithmetic-3",
+      "language": "javascript",
+      "code": "// Items of a 1-based page with `size` items per page.\nfunction paginate(items, page, size) {\n  const start = (page - 1) * size;\n  return items.slice(start, start - size);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "pagination",
+        "operator": "arithmetic"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "arithmetic",
+        "description": "arithmetic operator swapped: `+` became `-`",
+        "clues": [
+          "start\\s*-\\s*size",
+          "arithmetic",
+          "wrong operator",
+          "should (be )?(add|subtract|multipl|divid)",
+          "sign",
+          "subtraction",
+          "addition",
+          "multiplication",
+          "division",
+          "negative of",
+          "increase (rather|instead)"
+        ]
+      }
+    },
+    {
+      "id": "pagination-constant-changed-1",
+      "language": "javascript",
+      "code": "// Items of a 1-based page with `size` items per page.\nfunction paginate(items, page, size) {\n  const start = (page - 2) * size;\n  return items.slice(start, start + size);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "pagination",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `1` became `2`",
+        "clues": [
+          "page\\s*-\\s*2",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?2\\b",
+          "`2`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "rate-limit-correct",
+      "language": "javascript",
+      "code": "// Allows a request while fewer than `limit` were made in the window.\nfunction allowRequest(count, limit) {\n  return count < limit;\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "rate-limit"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "rate-limit-boundary-1",
+      "language": "javascript",
+      "code": "// Allows a request while fewer than `limit` were made in the window.\nfunction allowRequest(count, limit) {\n  return count <= limit;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "rate-limit",
+        "operator": "boundary"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "boundary",
+        "description": "boundary changed: `<` became `<=`",
+        "clues": [
+          "count\\s*<=\\s*limit",
+          "off[- ]by[- ]one",
+          "boundary",
+          "edge case",
+          "inclusive",
+          "exclusive",
+          "exactly",
+          "strict(ly)? (inequality|comparison|less|greater)",
+          "(less|greater) than or equal"
+        ]
+      }
+    },
+    {
+      "id": "rate-limit-comparison-flip-1",
+      "language": "javascript",
+      "code": "// Allows a request while fewer than `limit` were made in the window.\nfunction allowRequest(count, limit) {\n  return count > limit;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "rate-limit",
+        "operator": "comparison-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "inverted-comparison",
+        "description": "comparison inverted: `<` became `>`",
+        "clues": [
+          "count\\s*>\\s*limit",
+          "invert",
+          "revers",
+          "backwards",
+          "opposite",
+          "flipped",
+          "wrong direction",
+          "(rejects|accepts)\\b[^.]{0,60}\\b(accepts|rejects)\\b",
+          "returns `?(true|false)`? when [^.]{0,40}\\bnot\\b"
+        ]
+      }
+    },
+    {
+      "id": "authenticated-profile-correct",
+      "language": "javascript",
+      "code": "// Returns the user's profile; anonymous callers are rejected.\nfunction getProfile(session) {\n  if (!session.user) throw new Error(\"unauthenticated\");\n  return session.user.profile;\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "authenticated-profile"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "authenticated-profile-negation-removed-1",
+      "language": "javascript",
+      "code": "// Returns the user's profile; anonymous callers are rejected.\nfunction getProfile(session) {\n  if (session.user) throw new Error(\"unauthenticated\");\n  return session.user.profile;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "authenticated-profile",
+        "operator": "negation-removed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "logic",
+        "description": "negation `!` removed",
+        "clues": [
+          "missing (!|not|negation)",
+          "should be negated",
+          "without (the )?(!|not)",
+          "logical operator",
+          "should be (&&|\\|\\||and|or|===|!==)",
+          "negat",
+          "invert",
+          "opposite",
+          "always (returns? )?`?(true|false)",
+          "both [^.]{0,40}(simultaneously|at the same time)",
+          "\\b(and|or)\\b\\W{0,3} instead of",
+          "every [^.]{0,30}except"
+        ]
+      }
+    },
+    {
+      "id": "authenticated-profile-always-true-condition-1",
+      "language": "javascript",
+      "code": "// Returns the user's profile; anonymous callers are rejected.\nfunction getProfile(session) {\n  if (!session.user || true) throw new Error(\"unauthenticated\");\n  return session.user.profile;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "authenticated-profile",
+        "operator": "always-true-condition"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "authorization",
+        "description": "`if` condition made always true (`|| true`)",
+        "clues": [
+          "\\|\\|\\s*true",
+          "always (true|truthy|pass|execut|run)",
+          "\\|\\|\\s*true",
+          "bypass",
+          "unconditional",
+          "tautolog"
+        ]
+      }
+    },
+    {
+      "id": "average-correct",
+      "language": "javascript",
+      "code": "// Mean of a non-empty array of numbers.\nfunction average(xs) {\n  let sum = 0;\n  for (const x of xs) sum += x;\n  return sum / xs.length;\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "average"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "average-arithmetic-1",
+      "language": "javascript",
+      "code": "// Mean of a non-empty array of numbers.\nfunction average(xs) {\n  let sum = 0;\n  for (const x of xs) sum -= x;\n  return sum / xs.length;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "average",
+        "operator": "arithmetic"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "arithmetic",
+        "description": "arithmetic operator swapped: `+=` became `-=`",
+        "clues": [
+          "sum\\s*-=\\s*x",
+          "arithmetic",
+          "wrong operator",
+          "should (be )?(add|subtract|multipl|divid)",
+          "sign",
+          "subtraction",
+          "addition",
+          "multiplication",
+          "division",
+          "negative of",
+          "increase (rather|instead)"
+        ]
+      }
+    },
+    {
+      "id": "average-arithmetic-2",
+      "language": "javascript",
+      "code": "// Mean of a non-empty array of numbers.\nfunction average(xs) {\n  let sum = 0;\n  for (const x of xs) sum += x;\n  return sum * xs.length;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "average",
+        "operator": "arithmetic"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "arithmetic",
+        "description": "arithmetic operator swapped: `/` became `*`",
+        "clues": [
+          "sum\\s*\\*\\s*xs\\.length",
+          "arithmetic",
+          "wrong operator",
+          "should (be )?(add|subtract|multipl|divid)",
+          "sign",
+          "subtraction",
+          "addition",
+          "multiplication",
+          "division",
+          "negative of",
+          "increase (rather|instead)"
+        ]
+      }
+    },
+    {
+      "id": "average-constant-changed-1",
+      "language": "javascript",
+      "code": "// Mean of a non-empty array of numbers.\nfunction average(xs) {\n  let sum = 1;\n  for (const x of xs) sum += x;\n  return sum / xs.length;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "average",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `0` became `1`",
+        "clues": [
+          "sum\\s*=\\s*1",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?1\\b",
+          "`1`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "weekend-correct",
+      "language": "javascript",
+      "code": "// day: 0 = Sunday ... 6 = Saturday.\nfunction isWeekend(day) {\n  return day === 0 || day === 6;\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "weekend"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "weekend-logical-connective-1",
+      "language": "javascript",
+      "code": "// day: 0 = Sunday ... 6 = Saturday.\nfunction isWeekend(day) {\n  return day === 0 && day === 6;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "weekend",
+        "operator": "logical-connective"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "logic",
+        "description": "logical connective swapped: `||` became `&&`",
+        "clues": [
+          "day\\s*===\\s*0\\s*&&\\s*day\\s*===\\s*6",
+          "logical operator",
+          "should be (&&|\\|\\||and|or|===|!==)",
+          "negat",
+          "invert",
+          "opposite",
+          "always (returns? )?`?(true|false)",
+          "both [^.]{0,40}(simultaneously|at the same time)",
+          "\\b(and|or)\\b\\W{0,3} instead of",
+          "every [^.]{0,30}except"
+        ]
+      }
+    },
+    {
+      "id": "weekend-equality-flip-1",
+      "language": "javascript",
+      "code": "// day: 0 = Sunday ... 6 = Saturday.\nfunction isWeekend(day) {\n  return day !== 0 || day === 6;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "weekend",
+        "operator": "equality-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "logic",
+        "description": "equality inverted: `===` became `!==`",
+        "clues": [
+          "day\\s*!==\\s*0",
+          "logical operator",
+          "should be (&&|\\|\\||and|or|===|!==)",
+          "negat",
+          "invert",
+          "opposite",
+          "always (returns? )?`?(true|false)",
+          "both [^.]{0,40}(simultaneously|at the same time)",
+          "\\b(and|or)\\b\\W{0,3} instead of",
+          "every [^.]{0,30}except"
+        ]
+      }
+    },
+    {
+      "id": "weekend-equality-flip-2",
+      "language": "javascript",
+      "code": "// day: 0 = Sunday ... 6 = Saturday.\nfunction isWeekend(day) {\n  return day === 0 || day !== 6;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "weekend",
+        "operator": "equality-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "logic",
+        "description": "equality inverted: `===` became `!==`",
+        "clues": [
+          "day\\s*!==\\s*6",
+          "logical operator",
+          "should be (&&|\\|\\||and|or|===|!==)",
+          "negat",
+          "invert",
+          "opposite",
+          "always (returns? )?`?(true|false)",
+          "both [^.]{0,40}(simultaneously|at the same time)",
+          "\\b(and|or)\\b\\W{0,3} instead of",
+          "every [^.]{0,30}except"
+        ]
+      }
+    },
+    {
+      "id": "weekend-constant-changed-1",
+      "language": "javascript",
+      "code": "// day: 0 = Sunday ... 6 = Saturday.\nfunction isWeekend(day) {\n  return day === 1 || day === 6;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "weekend",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `0` became `1`",
+        "clues": [
+          "day\\s*===\\s*1",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?1\\b",
+          "`1`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "weekend-constant-changed-2",
+      "language": "javascript",
+      "code": "// day: 0 = Sunday ... 6 = Saturday.\nfunction isWeekend(day) {\n  return day === 0 || day === 7;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "weekend",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `6` became `7`",
+        "clues": [
+          "day\\s*===\\s*7",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?7\\b",
+          "`7`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "last-n-correct",
+      "language": "javascript",
+      "code": "// Last n elements of the array (all of them if fewer).\nfunction lastN(arr, n) {\n  return arr.slice(Math.max(arr.length - n, 0));\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "last-n"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "last-n-arithmetic-1",
+      "language": "javascript",
+      "code": "// Last n elements of the array (all of them if fewer).\nfunction lastN(arr, n) {\n  return arr.slice(Math.max(arr.length + n, 0));\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "last-n",
+        "operator": "arithmetic"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "arithmetic",
+        "description": "arithmetic operator swapped: `-` became `+`",
+        "clues": [
+          "arr\\.length\\s*\\+\\s*n",
+          "arithmetic",
+          "wrong operator",
+          "should (be )?(add|subtract|multipl|divid)",
+          "sign",
+          "subtraction",
+          "addition",
+          "multiplication",
+          "division",
+          "negative of",
+          "increase (rather|instead)"
+        ]
+      }
+    },
+    {
+      "id": "last-n-constant-changed-1",
+      "language": "javascript",
+      "code": "// Last n elements of the array (all of them if fewer).\nfunction lastN(arr, n) {\n  return arr.slice(Math.max(arr.length - n, 1));\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "last-n",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `0` became `1`",
+        "clues": [
+          "Math\\.max\\(arr\\.length\\s*-\\s*n,\\s*1\\)",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?1\\b",
+          "`1`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "can-ship-order-correct",
+      "language": "javascript",
+      "code": "// An order ships only if every line is in stock.\nfunction canShip(order, stock) {\n  return order.lines.every(l => (stock[l.sku] ?? 0) >= l.qty);\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "can-ship-order"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "can-ship-order-boundary-1",
+      "language": "javascript",
+      "code": "// An order ships only if every line is in stock.\nfunction canShip(order, stock) {\n  return order.lines.every(l => (stock[l.sku] ?? 0) > l.qty);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "can-ship-order",
+        "operator": "boundary"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "boundary",
+        "description": "boundary changed: `>=` became `>`",
+        "clues": [
+          ">\\s*l\\.qty",
+          "off[- ]by[- ]one",
+          "boundary",
+          "edge case",
+          "inclusive",
+          "exclusive",
+          "exactly",
+          "strict(ly)? (inequality|comparison|less|greater)",
+          "(less|greater) than or equal"
+        ]
+      }
+    },
+    {
+      "id": "can-ship-order-comparison-flip-1",
+      "language": "javascript",
+      "code": "// An order ships only if every line is in stock.\nfunction canShip(order, stock) {\n  return order.lines.every(l => (stock[l.sku] ?? 0) <= l.qty);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "can-ship-order",
+        "operator": "comparison-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "inverted-comparison",
+        "description": "comparison inverted: `>=` became `<=`",
+        "clues": [
+          "<=\\s*l\\.qty",
+          "invert",
+          "revers",
+          "backwards",
+          "opposite",
+          "flipped",
+          "wrong direction",
+          "(rejects|accepts)\\b[^.]{0,60}\\b(accepts|rejects)\\b",
+          "returns `?(true|false)`? when [^.]{0,40}\\bnot\\b"
+        ]
+      }
+    },
+    {
+      "id": "can-ship-order-constant-changed-1",
+      "language": "javascript",
+      "code": "// An order ships only if every line is in stock.\nfunction canShip(order, stock) {\n  return order.lines.every(l => (stock[l.sku] ?? 1) >= l.qty);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "can-ship-order",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `0` became `1`",
+        "clues": [
+          "stock\\[l\\.sku\\]\\s*\\?\\?\\s*1",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?1\\b",
+          "`1`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "find-user-correct",
+      "language": "javascript",
+      "code": "// Finds a user by email with a parameterized query.\nfunction findUser(db, email) {\n  return db.query(\"SELECT * FROM users WHERE email = $1\", [email]);\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "find-user"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "find-user-sql-concatenation-1",
+      "language": "javascript",
+      "code": "// Finds a user by email with a parameterized query.\nfunction findUser(db, email) {\n  return db.query(\"SELECT * FROM users WHERE email = '\" + email + \"'\");\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "find-user",
+        "operator": "sql-concatenation"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "injection",
+        "description": "parameterized query replaced by SQL concatenated with user input",
+        "clues": [
+          "sql injection",
+          "inject",
+          "parameteri[sz]",
+          "concatenat",
+          "interpolat"
+        ]
+      }
+    },
+    {
+      "id": "discount-age-correct",
+      "language": "javascript",
+      "code": "// Seniors (65+) and children under 12 get a discount.\nfunction hasDiscount(age) {\n  return age >= 65 || age < 12;\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "discount-age"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "discount-age-boundary-1",
+      "language": "javascript",
+      "code": "// Seniors (65+) and children under 12 get a discount.\nfunction hasDiscount(age) {\n  return age > 65 || age < 12;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "discount-age",
+        "operator": "boundary"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "boundary",
+        "description": "boundary changed: `>=` became `>`",
+        "clues": [
+          "age\\s*>\\s*65",
+          "off[- ]by[- ]one",
+          "boundary",
+          "edge case",
+          "inclusive",
+          "exclusive",
+          "exactly",
+          "strict(ly)? (inequality|comparison|less|greater)",
+          "(less|greater) than or equal"
+        ]
+      }
+    },
+    {
+      "id": "discount-age-boundary-2",
+      "language": "javascript",
+      "code": "// Seniors (65+) and children under 12 get a discount.\nfunction hasDiscount(age) {\n  return age >= 65 || age <= 12;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "discount-age",
+        "operator": "boundary"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "boundary",
+        "description": "boundary changed: `<` became `<=`",
+        "clues": [
+          "age\\s*<=\\s*12",
+          "off[- ]by[- ]one",
+          "boundary",
+          "edge case",
+          "inclusive",
+          "exclusive",
+          "exactly",
+          "strict(ly)? (inequality|comparison|less|greater)",
+          "(less|greater) than or equal"
+        ]
+      }
+    },
+    {
+      "id": "discount-age-comparison-flip-1",
+      "language": "javascript",
+      "code": "// Seniors (65+) and children under 12 get a discount.\nfunction hasDiscount(age) {\n  return age <= 65 || age < 12;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "discount-age",
+        "operator": "comparison-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "inverted-comparison",
+        "description": "comparison inverted: `>=` became `<=`",
+        "clues": [
+          "age\\s*<=\\s*65",
+          "invert",
+          "revers",
+          "backwards",
+          "opposite",
+          "flipped",
+          "wrong direction",
+          "(rejects|accepts)\\b[^.]{0,60}\\b(accepts|rejects)\\b",
+          "returns `?(true|false)`? when [^.]{0,40}\\bnot\\b"
+        ]
+      }
+    },
+    {
+      "id": "discount-age-comparison-flip-2",
+      "language": "javascript",
+      "code": "// Seniors (65+) and children under 12 get a discount.\nfunction hasDiscount(age) {\n  return age >= 65 || age > 12;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "discount-age",
+        "operator": "comparison-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "inverted-comparison",
+        "description": "comparison inverted: `<` became `>`",
+        "clues": [
+          "age\\s*>\\s*12",
+          "invert",
+          "revers",
+          "backwards",
+          "opposite",
+          "flipped",
+          "wrong direction",
+          "(rejects|accepts)\\b[^.]{0,60}\\b(accepts|rejects)\\b",
+          "returns `?(true|false)`? when [^.]{0,40}\\bnot\\b"
+        ]
+      }
+    },
+    {
+      "id": "discount-age-logical-connective-1",
+      "language": "javascript",
+      "code": "// Seniors (65+) and children under 12 get a discount.\nfunction hasDiscount(age) {\n  return age >= 65 && age < 12;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "discount-age",
+        "operator": "logical-connective"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "logic",
+        "description": "logical connective swapped: `||` became `&&`",
+        "clues": [
+          "age\\s*>=\\s*65\\s*&&\\s*age\\s*<\\s*12",
+          "logical operator",
+          "should be (&&|\\|\\||and|or|===|!==)",
+          "negat",
+          "invert",
+          "opposite",
+          "always (returns? )?`?(true|false)",
+          "both [^.]{0,40}(simultaneously|at the same time)",
+          "\\b(and|or)\\b\\W{0,3} instead of",
+          "every [^.]{0,30}except"
+        ]
+      }
+    },
+    {
+      "id": "discount-age-constant-changed-1",
+      "language": "javascript",
+      "code": "// Seniors (65+) and children under 12 get a discount.\nfunction hasDiscount(age) {\n  return age >= 66 || age < 12;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "discount-age",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `65` became `66`",
+        "clues": [
+          "age\\s*>=\\s*66",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?66\\b",
+          "`66`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "discount-age-constant-changed-2",
+      "language": "javascript",
+      "code": "// Seniors (65+) and children under 12 get a discount.\nfunction hasDiscount(age) {\n  return age >= 65 || age < 13;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "discount-age",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `12` became `13`",
+        "clues": [
+          "age\\s*<\\s*13",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?13\\b",
+          "`13`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    }
+  ],
+  "reviewers": [
+    {
+      "id": "eslint-recommended",
+      "name": "ESLint 9.39.5 (recommended rules)"
+    },
+    {
+      "id": "sonarjs-recommended",
+      "name": "SonarJS 4.2.2 (Sonar way rules)"
+    }
+  ],
+  "startedAt": "2026-11-06T20:11:58.349Z",
+  "closedAt": "2026-11-06T20:12:01.691Z",
+  "reviews": [
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "can-vote-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 136,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'canVote' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":17,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"canVote\"},\"fix\":{\"range\":[37,82],\"text\":\"\"},\"desc\":\"Remove unused variable 'canVote'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "can-vote-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'canVote' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":17,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"canVote\"},\"fix\":{\"range\":[37,81],\"text\":\"\"},\"desc\":\"Remove unused variable 'canVote'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "can-vote-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'canVote' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":17,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"canVote\"},\"fix\":{\"range\":[37,82],\"text\":\"\"},\"desc\":\"Remove unused variable 'canVote'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "can-vote-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'canVote' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":17,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"canVote\"},\"fix\":{\"range\":[37,82],\"text\":\"\"},\"desc\":\"Remove unused variable 'canVote'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "cart-total-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 16,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'cartTotal' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"cartTotal\"},\"fix\":{\"range\":[27,155],\"text\":\"\"},\"desc\":\"Remove unused variable 'cartTotal'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "cart-total-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'cartTotal' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"cartTotal\"},\"fix\":{\"range\":[27,156],\"text\":\"\"},\"desc\":\"Remove unused variable 'cartTotal'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "cart-total-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "for-direction: The update clause in this loop moves the variable in the wrong direction. (line 4)"
+      ],
+      "summary": "1 issue(s) reported.",
+      "latencyMs": 7,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'cartTotal' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"cartTotal\"},\"fix\":{\"range\":[27,155],\"text\":\"\"},\"desc\":\"Remove unused variable 'cartTotal'.\"}]},{\"ruleId\":\"for-direction\",\"severity\":2,\"message\":\"The update clause in this loop moves the variable in the wrong direction.\",\"line\":4,\"column\":3,\"nodeType\":null,\"messageId\":\"incorrectDirection\",\"endLine\":4,\"endColumn\":41}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "cart-total-arithmetic-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'cartTotal' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"cartTotal\"},\"fix\":{\"range\":[27,155],\"text\":\"\"},\"desc\":\"Remove unused variable 'cartTotal'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "cart-total-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 14,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'cartTotal' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"cartTotal\"},\"fix\":{\"range\":[27,155],\"text\":\"\"},\"desc\":\"Remove unused variable 'cartTotal'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "cart-total-constant-changed-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'cartTotal' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"cartTotal\"},\"fix\":{\"range\":[27,155],\"text\":\"\"},\"desc\":\"Remove unused variable 'cartTotal'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "token-expired-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'isExpired' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"isExpired\"},\"fix\":{\"range\":[48,114],\"text\":\"\"},\"desc\":\"Remove unused variable 'isExpired'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "token-expired-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'isExpired' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"isExpired\"},\"fix\":{\"range\":[48,115],\"text\":\"\"},\"desc\":\"Remove unused variable 'isExpired'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "token-expired-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'isExpired' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"isExpired\"},\"fix\":{\"range\":[48,114],\"text\":\"\"},\"desc\":\"Remove unused variable 'isExpired'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "can-delete-post-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 10,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'canDelete' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"canDelete\"},\"fix\":{\"range\":[52,137],\"text\":\"\"},\"desc\":\"Remove unused variable 'canDelete'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "can-delete-post-logical-connective-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'canDelete' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"canDelete\"},\"fix\":{\"range\":[52,137],\"text\":\"\"},\"desc\":\"Remove unused variable 'canDelete'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "can-delete-post-equality-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'canDelete' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"canDelete\"},\"fix\":{\"range\":[52,137],\"text\":\"\"},\"desc\":\"Remove unused variable 'canDelete'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "withdraw-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'withdraw' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":18,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"withdraw\"},\"fix\":{\"range\":[57,221],\"text\":\"\"},\"desc\":\"Remove unused variable 'withdraw'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "withdraw-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'withdraw' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":18,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"withdraw\"},\"fix\":{\"range\":[57,222],\"text\":\"\"},\"desc\":\"Remove unused variable 'withdraw'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "withdraw-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'withdraw' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":18,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"withdraw\"},\"fix\":{\"range\":[57,221],\"text\":\"\"},\"desc\":\"Remove unused variable 'withdraw'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "withdraw-arithmetic-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'withdraw' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":18,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"withdraw\"},\"fix\":{\"range\":[57,221],\"text\":\"\"},\"desc\":\"Remove unused variable 'withdraw'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "withdraw-always-true-condition-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "no-constant-condition: Unexpected constant condition. (line 3)"
+      ],
+      "summary": "1 issue(s) reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'withdraw' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":18,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"withdraw\"},\"fix\":{\"range\":[57,229],\"text\":\"\"},\"desc\":\"Remove unused variable 'withdraw'.\"}]},{\"ruleId\":\"no-constant-condition\",\"severity\":2,\"message\":\"Unexpected constant condition.\",\"line\":3,\"column\":7,\"nodeType\":\"LogicalExpression\",\"messageId\":\"unexpected\",\"endLine\":3,\"endColumn\":39}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "withdraw-guard-removed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'withdraw' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":18,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"withdraw\"},\"fix\":{\"range\":[57,150],\"text\":\"\"},\"desc\":\"Remove unused variable 'withdraw'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "discount-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'applyDiscount' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":23,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"applyDiscount\"},\"fix\":{\"range\":[56,176],\"text\":\"\"},\"desc\":\"Remove unused variable 'applyDiscount'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "discount-arithmetic-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'applyDiscount' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":23,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"applyDiscount\"},\"fix\":{\"range\":[56,176],\"text\":\"\"},\"desc\":\"Remove unused variable 'applyDiscount'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "discount-arithmetic-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'applyDiscount' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":23,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"applyDiscount\"},\"fix\":{\"range\":[56,176],\"text\":\"\"},\"desc\":\"Remove unused variable 'applyDiscount'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "discount-arithmetic-3",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'applyDiscount' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":23,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"applyDiscount\"},\"fix\":{\"range\":[56,176],\"text\":\"\"},\"desc\":\"Remove unused variable 'applyDiscount'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "discount-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'applyDiscount' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":23,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"applyDiscount\"},\"fix\":{\"range\":[56,176],\"text\":\"\"},\"desc\":\"Remove unused variable 'applyDiscount'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "discount-constant-changed-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'applyDiscount' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":23,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"applyDiscount\"},\"fix\":{\"range\":[56,176],\"text\":\"\"},\"desc\":\"Remove unused variable 'applyDiscount'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "strong-password-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 14,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'isStrongPassword' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":26,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"isStrongPassword\"},\"fix\":{\"range\":[56,132],\"text\":\"\"},\"desc\":\"Remove unused variable 'isStrongPassword'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "strong-password-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'isStrongPassword' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":26,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"isStrongPassword\"},\"fix\":{\"range\":[56,131],\"text\":\"\"},\"desc\":\"Remove unused variable 'isStrongPassword'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "strong-password-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'isStrongPassword' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":26,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"isStrongPassword\"},\"fix\":{\"range\":[56,132],\"text\":\"\"},\"desc\":\"Remove unused variable 'isStrongPassword'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "strong-password-logical-connective-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'isStrongPassword' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":26,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"isStrongPassword\"},\"fix\":{\"range\":[56,132],\"text\":\"\"},\"desc\":\"Remove unused variable 'isStrongPassword'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "strong-password-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'isStrongPassword' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":26,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"isStrongPassword\"},\"fix\":{\"range\":[56,132],\"text\":\"\"},\"desc\":\"Remove unused variable 'isStrongPassword'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "pagination-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'paginate' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":18,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"paginate\"},\"fix\":{\"range\":[55,173],\"text\":\"\"},\"desc\":\"Remove unused variable 'paginate'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "pagination-arithmetic-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'paginate' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":18,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"paginate\"},\"fix\":{\"range\":[55,173],\"text\":\"\"},\"desc\":\"Remove unused variable 'paginate'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "pagination-arithmetic-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'paginate' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":18,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"paginate\"},\"fix\":{\"range\":[55,173],\"text\":\"\"},\"desc\":\"Remove unused variable 'paginate'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "pagination-arithmetic-3",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'paginate' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":18,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"paginate\"},\"fix\":{\"range\":[55,173],\"text\":\"\"},\"desc\":\"Remove unused variable 'paginate'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "pagination-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'paginate' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":18,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"paginate\"},\"fix\":{\"range\":[55,173],\"text\":\"\"},\"desc\":\"Remove unused variable 'paginate'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "rate-limit-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'allowRequest' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":22,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"allowRequest\"},\"fix\":{\"range\":[70,133],\"text\":\"\"},\"desc\":\"Remove unused variable 'allowRequest'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "rate-limit-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'allowRequest' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":22,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"allowRequest\"},\"fix\":{\"range\":[70,134],\"text\":\"\"},\"desc\":\"Remove unused variable 'allowRequest'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "rate-limit-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'allowRequest' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":22,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"allowRequest\"},\"fix\":{\"range\":[70,133],\"text\":\"\"},\"desc\":\"Remove unused variable 'allowRequest'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "authenticated-profile-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'getProfile' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":20,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"getProfile\"},\"fix\":{\"range\":[63,183],\"text\":\"\"},\"desc\":\"Remove unused variable 'getProfile'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "authenticated-profile-negation-removed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'getProfile' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":20,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"getProfile\"},\"fix\":{\"range\":[63,182],\"text\":\"\"},\"desc\":\"Remove unused variable 'getProfile'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "authenticated-profile-always-true-condition-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "no-constant-condition: Unexpected constant condition. (line 3)"
+      ],
+      "summary": "1 issue(s) reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'getProfile' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":20,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"getProfile\"},\"fix\":{\"range\":[63,191],\"text\":\"\"},\"desc\":\"Remove unused variable 'getProfile'.\"}]},{\"ruleId\":\"no-constant-condition\",\"severity\":2,\"message\":\"Unexpected constant condition.\",\"line\":3,\"column\":7,\"nodeType\":\"LogicalExpression\",\"messageId\":\"unexpected\",\"endLine\":3,\"endColumn\":28}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "average-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 9,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'average' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":17,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"average\"},\"fix\":{\"range\":[41,138],\"text\":\"\"},\"desc\":\"Remove unused variable 'average'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "average-arithmetic-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'average' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":17,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"average\"},\"fix\":{\"range\":[41,138],\"text\":\"\"},\"desc\":\"Remove unused variable 'average'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "average-arithmetic-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'average' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":17,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"average\"},\"fix\":{\"range\":[41,138],\"text\":\"\"},\"desc\":\"Remove unused variable 'average'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "average-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'average' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":17,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"average\"},\"fix\":{\"range\":[41,138],\"text\":\"\"},\"desc\":\"Remove unused variable 'average'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "weekend-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'isWeekend' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"isWeekend\"},\"fix\":{\"range\":[37,97],\"text\":\"\"},\"desc\":\"Remove unused variable 'isWeekend'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "weekend-logical-connective-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'isWeekend' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"isWeekend\"},\"fix\":{\"range\":[37,97],\"text\":\"\"},\"desc\":\"Remove unused variable 'isWeekend'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "weekend-equality-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'isWeekend' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"isWeekend\"},\"fix\":{\"range\":[37,97],\"text\":\"\"},\"desc\":\"Remove unused variable 'isWeekend'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "weekend-equality-flip-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'isWeekend' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"isWeekend\"},\"fix\":{\"range\":[37,97],\"text\":\"\"},\"desc\":\"Remove unused variable 'isWeekend'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "weekend-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'isWeekend' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"isWeekend\"},\"fix\":{\"range\":[37,97],\"text\":\"\"},\"desc\":\"Remove unused variable 'isWeekend'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "weekend-constant-changed-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'isWeekend' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":19,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"isWeekend\"},\"fix\":{\"range\":[37,97],\"text\":\"\"},\"desc\":\"Remove unused variable 'isWeekend'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "last-n-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'lastN' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":15,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"lastN\"},\"fix\":{\"range\":[56,131],\"text\":\"\"},\"desc\":\"Remove unused variable 'lastN'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "last-n-arithmetic-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'lastN' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":15,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"lastN\"},\"fix\":{\"range\":[56,131],\"text\":\"\"},\"desc\":\"Remove unused variable 'lastN'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "last-n-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'lastN' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":15,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"lastN\"},\"fix\":{\"range\":[56,131],\"text\":\"\"},\"desc\":\"Remove unused variable 'lastN'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "can-ship-order-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'canShip' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":17,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"canShip\"},\"fix\":{\"range\":[50,147],\"text\":\"\"},\"desc\":\"Remove unused variable 'canShip'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "can-ship-order-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'canShip' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":17,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"canShip\"},\"fix\":{\"range\":[50,146],\"text\":\"\"},\"desc\":\"Remove unused variable 'canShip'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "can-ship-order-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'canShip' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":17,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"canShip\"},\"fix\":{\"range\":[50,147],\"text\":\"\"},\"desc\":\"Remove unused variable 'canShip'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "can-ship-order-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'canShip' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":17,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"canShip\"},\"fix\":{\"range\":[50,147],\"text\":\"\"},\"desc\":\"Remove unused variable 'canShip'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "find-user-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'findUser' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":18,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"findUser\"},\"fix\":{\"range\":[53,153],\"text\":\"\"},\"desc\":\"Remove unused variable 'findUser'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "find-user-sql-concatenation-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'findUser' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":18,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"findUser\"},\"fix\":{\"range\":[53,157],\"text\":\"\"},\"desc\":\"Remove unused variable 'findUser'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "discount-age-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 2,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'hasDiscount' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":21,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"hasDiscount\"},\"fix\":{\"range\":[55,116],\"text\":\"\"},\"desc\":\"Remove unused variable 'hasDiscount'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "discount-age-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 2,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'hasDiscount' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":21,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"hasDiscount\"},\"fix\":{\"range\":[55,115],\"text\":\"\"},\"desc\":\"Remove unused variable 'hasDiscount'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "discount-age-boundary-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 2,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'hasDiscount' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":21,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"hasDiscount\"},\"fix\":{\"range\":[55,117],\"text\":\"\"},\"desc\":\"Remove unused variable 'hasDiscount'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "discount-age-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'hasDiscount' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":21,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"hasDiscount\"},\"fix\":{\"range\":[55,116],\"text\":\"\"},\"desc\":\"Remove unused variable 'hasDiscount'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "discount-age-comparison-flip-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'hasDiscount' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":21,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"hasDiscount\"},\"fix\":{\"range\":[55,116],\"text\":\"\"},\"desc\":\"Remove unused variable 'hasDiscount'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "discount-age-logical-connective-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'hasDiscount' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":21,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"hasDiscount\"},\"fix\":{\"range\":[55,116],\"text\":\"\"},\"desc\":\"Remove unused variable 'hasDiscount'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "discount-age-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 2,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'hasDiscount' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":21,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"hasDiscount\"},\"fix\":{\"range\":[55,116],\"text\":\"\"},\"desc\":\"Remove unused variable 'hasDiscount'.\"}]}]"
+    },
+    {
+      "reviewerId": "eslint-recommended",
+      "caseId": "discount-age-constant-changed-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 3,
+      "rawResponse": "[{\"ruleId\":\"no-unused-vars\",\"severity\":2,\"message\":\"'hasDiscount' is defined but never used.\",\"line\":2,\"column\":10,\"nodeType\":\"Identifier\",\"messageId\":\"unusedVar\",\"endLine\":2,\"endColumn\":21,\"suggestions\":[{\"messageId\":\"removeVar\",\"data\":{\"varName\":\"hasDiscount\"},\"fix\":{\"range\":[55,116],\"text\":\"\"},\"desc\":\"Remove unused variable 'hasDiscount'.\"}]}]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "can-vote-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 115,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "can-vote-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 8,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "can-vote-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 10,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "can-vote-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 10,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "cart-total-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 26,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "cart-total-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 13,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "cart-total-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "sonarjs/for-loop-increment-sign: \"i\" is incremented and will never reach its stop condition. (line 4)"
+      ],
+      "summary": "1 issue(s) reported.",
+      "latencyMs": 13,
+      "rawResponse": "[{\"ruleId\":\"sonarjs/for-loop-increment-sign\",\"severity\":2,\"message\":\"\\\"i\\\" is incremented and will never reach its stop condition.\",\"line\":4,\"column\":37,\"nodeType\":\"UpdateExpression\",\"endLine\":4,\"endColumn\":40}]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "cart-total-arithmetic-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 9,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "cart-total-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 18,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "cart-total-constant-changed-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 9,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "token-expired-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "token-expired-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 9,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "token-expired-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 9,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "can-delete-post-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "can-delete-post-logical-connective-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "can-delete-post-equality-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "withdraw-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 23,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "withdraw-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 17,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "withdraw-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "withdraw-arithmetic-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "withdraw-always-true-condition-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "sonarjs/no-redundant-boolean: Refactor the code to avoid using this boolean literal. (line 3)"
+      ],
+      "summary": "1 issue(s) reported.",
+      "latencyMs": 8,
+      "rawResponse": "[{\"ruleId\":\"sonarjs/no-redundant-boolean\",\"severity\":2,\"message\":\"Refactor the code to avoid using this boolean literal.\",\"line\":3,\"column\":35,\"nodeType\":\"Literal\",\"messageId\":\"removeUnnecessaryBoolean\",\"endLine\":3,\"endColumn\":39,\"suggestions\":[{\"messageId\":\"suggestRemoveUnnecessaryBoolean\",\"fix\":{\"range\":[100,132],\"text\":\"true\"},\"desc\":\"Remove the unnecessary boolean literal\"}]}]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "withdraw-guard-removed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "discount-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 29,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "discount-arithmetic-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 11,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "discount-arithmetic-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 8,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "discount-arithmetic-3",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "discount-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 8,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "discount-constant-changed-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 11,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "strong-password-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 20,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "strong-password-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 9,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "strong-password-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 10,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "strong-password-logical-connective-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 11,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "strong-password-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 13,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "pagination-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "pagination-arithmetic-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 10,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "pagination-arithmetic-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "pagination-arithmetic-3",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 11,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "pagination-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 10,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "rate-limit-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "rate-limit-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "rate-limit-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "authenticated-profile-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "authenticated-profile-negation-removed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "authenticated-profile-always-true-condition-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "sonarjs/no-redundant-boolean: Refactor the code to avoid using this boolean literal. (line 3)"
+      ],
+      "summary": "1 issue(s) reported.",
+      "latencyMs": 8,
+      "rawResponse": "[{\"ruleId\":\"sonarjs/no-redundant-boolean\",\"severity\":2,\"message\":\"Refactor the code to avoid using this boolean literal.\",\"line\":3,\"column\":24,\"nodeType\":\"Literal\",\"messageId\":\"removeUnnecessaryBoolean\",\"endLine\":3,\"endColumn\":28,\"suggestions\":[{\"messageId\":\"suggestRemoveUnnecessaryBoolean\",\"fix\":{\"range\":[100,121],\"text\":\"true\"},\"desc\":\"Remove the unnecessary boolean literal\"}]}]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "average-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "average-arithmetic-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 9,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "average-arithmetic-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "average-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 8,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "weekend-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "weekend-logical-connective-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "weekend-equality-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "weekend-equality-flip-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "weekend-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "weekend-constant-changed-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "last-n-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "last-n-arithmetic-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "last-n-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "can-ship-order-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 8,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "can-ship-order-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 9,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "can-ship-order-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "can-ship-order-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "find-user-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "find-user-sql-concatenation-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "discount-age-correct",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 6,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "discount-age-boundary-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "discount-age-boundary-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "discount-age-comparison-flip-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "discount-age-comparison-flip-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 7,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "discount-age-logical-connective-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "discount-age-constant-changed-1",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 4,
+      "rawResponse": "[]"
+    },
+    {
+      "reviewerId": "sonarjs-recommended",
+      "caseId": "discount-age-constant-changed-2",
+      "receipt": null,
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [],
+      "summary": "No issues reported.",
+      "latencyMs": 5,
+      "rawResponse": "[]"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+node_modules/
+.env
+video/preview/
+video/check-frames/
+# The demo video is published on video platforms and can be regenerated with npm run record-video.
+outreach/video/*.mp4

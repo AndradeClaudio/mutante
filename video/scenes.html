@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mutante demo</title>
+<style>
+  html, body { margin: 0; background: #0d1117; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="screen" width="1920" height="1080"></canvas>
+<script src="soundtrack.js"></script>
+<script>
+// Demo video drawn from the real data (window.DATA is injected by the recorder).
+// Every scene is a function of time, so dropped frames never delay the video.
+const W = 1920, H = 1080;
+const ctx = document.getElementById('screen').getContext('2d');
+const COLOR = {
+  background: '#0d1117', panel: '#161b22', border: '#2b3340', text: '#e6edf3', muted: '#8b97a6',
+  counted: '#3fb8af', explained: '#e3a33b', bad: '#e5534b', good: '#57ab5a', blue: '#6cb6ff', code: '#0a0e13',
+};
+const SANS = '"Segoe UI", system-ui, sans-serif';
+const MONO = '"Cascadia Code", Consolas, monospace';
+const ROUND_1 = 'round-001', ROUND_2 = 'round-002', STATIC_BASELINE = 'round-002-static-baseline';
+// A one-character bug that the best reviewer explained, the network discarded and the others let through.
+const EXAMPLE_CORRECT = 'discount-age-correct', EXAMPLE_MUTANT = 'discount-age-boundary-1';
+
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const easeOut = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const pct = (x) => `${Math.round(x * 100)}%`;
+
+function statistics(D) {
+  const round2 = D.purchases.filter((p) => p.round === ROUND_2);
+  const ids = [...new Set(round2.map((p) => p.reviewer_id))];
+  const scoreboard = ids.map((id) => {
+    const mine = round2.filter((p) => p.reviewer_id === id);
+    const n = (grade) => mine.filter((p) => p.grade_code === grade).length;
+    const planted = mine.filter((p) => p.answer_key === 'planted bug').length;
+    const correct = mine.filter((p) => p.answer_key === 'correct code').length;
+    return {
+      id, name: mine[0].reviewer, planted,
+      counted: n('caught') / planted,
+      explained: (n('caught') + n('explained-without-verdict')) / planted,
+      falseAlarms: correct ? n('false-alarm') / correct : 0,
+      discarded: mine.filter((p) => p.answer_key !== 'annulled' && p.verdict_discarded_by_network === 1).length,
+      answers: mine.filter((p) => p.answer_key !== 'annulled').length,
+    };
+  }).sort((a, b) => b.explained - a.explained);
+  const cases2 = D.cases.filter((c) => c.round === ROUND_2);
+  const round1 = D.purchases.filter((p) => p.round === ROUND_1);
+  const miners1 = [...new Set(round1.map((p) => p.reviewer_id))].map((id) => {
+    const mine = round1.filter((p) => p.reviewer_id === id);
+    return { id, name: mine[0].reviewer, answered: mine.some((p) => p.grade_code !== 'failed') };
+  });
+  // Static analyzers: any warning counts as flagging the bug (a generous reading).
+  const baseline = D.purchases.filter((p) => p.round === STATIC_BASELINE && p.answer_key === 'planted bug');
+  const isFlag = (p) => p.grade_code === 'caught' || p.grade_code === 'blocked-without-reason';
+  const linters = [...new Set(baseline.map((p) => p.reviewer_id))].map((id) => {
+    const mine = baseline.filter((p) => p.reviewer_id === id);
+    return { name: mine[0].reviewer, flagged: mine.filter(isFlag).length, planted: mine.length };
+  });
+  const linterHits = [...new Set(baseline.filter(isFlag).map((p) => p.case))]
+    .map((id) => D.cases.find((c) => c.round === STATIC_BASELINE && c.case === id));
+  return {
+    linters, linterHits,
+    scoreboard, best: scoreboard[0], othersMax: Math.max(...scoreboard.slice(1).map((p) => p.explained)),
+    purchases: round2.length, price: round2[0].paid_usdc,
+    originals: cases2.filter((c) => c.case.endsWith('-correct')).length,
+    operators: new Set(cases2.filter((c) => c.answer_key !== 'correct code' && c.mutation).map((c) => c.mutation)).size,
+    totalCases: cases2.length,
+    planted: cases2.filter((c) => c.answer_key === 'planted bug').length,
+    correct: cases2.filter((c) => c.answer_key === 'correct code').length,
+    annulled: cases2.filter((c) => c.answer_key === 'annulled').length,
+    miners1, answered1: miners1.filter((m) => m.answered).length,
+    falseAlarmsMax: Math.max(...scoreboard.map((p) => p.falseAlarms)),
+  };
+}
+
+// ---------- drawing ----------
+function box(x, y, w, h, fill = COLOR.panel, border = COLOR.border, radius = 14) {
+  ctx.beginPath(); ctx.roundRect(x, y, w, h, radius); ctx.fillStyle = fill; ctx.fill();
+  if (border) { ctx.strokeStyle = border; ctx.lineWidth = 2; ctx.stroke(); }
+}
+function text(t, x, y, { size = 36, color = COLOR.text, weight = 400, font = SANS, align = 'left' } = {}) {
+  ctx.font = `${weight} ${size}px ${font}`; ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'alphabetic';
+  ctx.fillText(t, x, y);
+}
+function wrap(t, width, size, weight = 400, font = SANS) {
+  ctx.font = `${weight} ${size}px ${font}`;
+  const lines = []; let current = '';
+  for (const word of t.split(/\s+/)) {
+    const attempt = current ? `${current} ${word}` : word;
+    if (ctx.measureText(attempt).width > width && current) { lines.push(current); current = word; } else current = attempt;
+  }
+  if (current) lines.push(current);
+  return lines;
+}
+function paragraph(t, x, y, width, options = {}) {
+  const size = options.size ?? 36, spacing = options.spacing ?? size * 1.35;
+  const lines = wrap(t, width, size, options.weight, options.font);
+  lines.forEach((l, i) => text(l, x, y + i * spacing, options));
+  return y + lines.length * spacing;
+}
+function codeBlock(lines, x, y, { size = 30, highlight = -1, highlightColor = COLOR.bad, width = 1100 } = {}) {
+  const lineHeight = size * 1.55;
+  box(x, y, width, lines.length * lineHeight + 48, COLOR.code);
+  lines.forEach((l, i) => {
+    const ly = y + 24 + i * lineHeight;
+    if (i === highlight) { ctx.fillStyle = highlightColor + '33'; ctx.fillRect(x + 2, ly, width - 4, lineHeight); }
+    text(l, x + 28, ly + size * 1.1, { size, font: MONO, color: l.trim().startsWith('//') ? COLOR.muted : COLOR.text });
+  });
+  return y + lines.length * lineHeight + 48;
+}
+function pill(t, x, y, color, size = 24) {
+  ctx.font = `600 ${size}px ${SANS}`;
+  const w = ctx.measureText(t).width + size * 1.2, h = size * 1.6;
+  box(x, y - h + size * 0.45, w, h, color + '22', color, h / 2);
+  text(t, x + size * 0.6, y, { size, color, weight: 600 });
+  return w;
+}
+function heading(t, subtitle) {
+  text(t, 120, 170, { size: 64, weight: 600 });
+  if (subtitle) text(subtitle, 120, 225, { size: 30, color: COLOR.muted });
+}
+
+// ---------- scenes ----------
+function scenes(D, S) {
+  const caseById = (id) => D.cases.find((c) => c.round === ROUND_2 && c.case === id);
+  const correct = caseById(EXAMPLE_CORRECT).code.trimEnd().split('\n');
+  const mutant = caseById(EXAMPLE_MUTANT).code.trimEnd().split('\n');
+  const changedLine = mutant.findIndex((l, i) => l !== correct[i]);
+  const example = D.purchases.filter((p) => p.round === ROUND_2 && p.case === EXAMPLE_MUTANT);
+  const fromBest = example.find((p) => p.reviewer_id === S.best.id);
+  const log = D.log;
+  const sampleMutants = ['can-vote-boundary-1', 'cart-total-arithmetic-1', 'weekend-logical-connective-1', 'find-user-sql-concatenation-1', 'strong-password-constant-changed-1']
+    .map(caseById).filter(Boolean);
+
+  return [
+    { duration: 9, captions: [[0.5, 8.5, 'Who reviews the reviewers? A crash test for the code-review miners on Telegraph.']],
+      draw(t) {
+        ctx.globalAlpha *= easeOut(t / 1.2);
+        text('MUTANTE', W / 2, 400, { size: 140, weight: 700, align: 'center', color: COLOR.counted });
+        text('a crash test for Telegraph code-review miners', W / 2, 480, { size: 46, align: 'center' });
+        text('Telegraph Hackathon Season II  ·  Apps & Agents  ·  Model Economy', W / 2, 600, { size: 30, align: 'center', color: COLOR.muted });
+      } },
+
+    { duration: 21, sounds: [[8.5, 'glitch']], captions: [
+        [0.5, 8, 'This function decides who gets a discount: seniors from 65, and children under 12.'],
+        [8.5, 20.5, 'Change one character and a customer on their 65th birthday loses the senior discount. Would a paid AI reviewer notice?']],
+      draw(t) {
+        heading('A one-character bug', 'Real sample from the test set');
+        const swapped = t > 8.5;
+        codeBlock(swapped ? mutant : correct, 120, 290, { size: 34, highlight: swapped ? changedLine : -1, width: 1680 });
+        if (swapped) {
+          ctx.globalAlpha *= easeOut((t - 8.5) / 0.6);
+          pill('mutant: ">=" became ">"', 120, 640, COLOR.bad, 30);
+          text('hasDiscount(65)  →  false   (the comment promises true)', 120, 720, { size: 32, font: MONO, color: COLOR.muted });
+        }
+      } },
+
+    { duration: 28, captions: [
+        [0.5, 12, 'We start from small correct functions. Each states its rule in a comment and has tests.'],
+        [12.5, 27.5, 'A mutation engine plants one bug at a time, and keeps it only if the tests prove it is a real bug.']],
+      draw(t) {
+        heading('How the test set is built', 'Every planted bug is proven by running tests, so the answer key is known before we ask');
+        const steps = [
+          [`${S.originals}`, 'correct functions', 'contract in a comment, plus tests'],
+          [`${S.operators}`, 'kinds of mutation', 'flipped comparison, changed constant, removed guard, SQL concatenation…'],
+          ['sandbox', 'tests per mutant', 'kept only if it breaks the contract'],
+          [`${S.totalCases}`, 'test cases', `${S.planted} proven bugs · ${S.correct} correct · ${S.annulled} annulled after review`],
+        ];
+        const w = 390, gap = 40, y = 300;
+        steps.forEach(([number, label, note], i) => {
+          const a = easeOut((t - 1 - i * 2.5) / 0.8);
+          if (a <= 0) return;
+          ctx.save(); ctx.globalAlpha *= a;
+          const x = 120 + i * (w + gap);
+          box(x, y, w, 300);
+          text(number, x + 30, y + 110, { size: number.length > 4 ? 60 : 88, weight: 700, color: i === 3 ? COLOR.counted : COLOR.text });
+          text(label, x + 30, y + 165, { size: 32, weight: 600 });
+          paragraph(note, x + 30, y + 215, w - 60, { size: 24, color: COLOR.muted });
+          if (i < 3) text('→', x + w + 6, y + 165, { size: 36, color: COLOR.muted });
+          ctx.restore();
+        });
+        if (t > 12) {
+          const step = Math.floor((t - 12) / 3.2);
+          const c = sampleMutants[step % sampleMutants.length];
+          ctx.save(); ctx.globalAlpha *= easeOut((t - 12 - step * 3.2) / 0.5);
+          text('Mutant', 120, 700, { size: 26, color: COLOR.muted });
+          text(c.case, 230, 700, { size: 26, font: MONO, color: COLOR.blue });
+          text(c.planted.replaceAll('`', ''), 120, 760, { size: 40, font: MONO, color: COLOR.bad });
+          ctx.restore();
+        }
+      } },
+
+    { duration: 38, sounds: [[1, 'pulse']], captions: [
+        [0.5, 18, `Then an agent buys a review of every sample from every reviewer: machine to machine, $${S.price.toFixed(2)} per call in test USDC.`],
+        [18.5, 37.5, 'What you see is a replay of the real run log from 6 November 2026.']],
+      draw(t) {
+        heading('Buying the reviews', 'Replay of the real run log  ·  Ethereum Sepolia testnet  ·  x402 payments');
+        const visible = Math.min(log.length, Math.floor(clamp((t - 1) / 34) * log.length));
+        box(120, 280, 1180, 570, COLOR.code);
+        log.slice(Math.max(0, visible - 14), visible).forEach((l, i) => {
+          const y = 330 + i * 38;
+          text(`[${String(l.left).padStart(3)} left]`, 150, y, { size: 24, font: MONO, color: COLOR.muted });
+          text(l.reviewer.padEnd(9), 330, y, { size: 24, font: MONO, color: COLOR.blue });
+          text(l.caseId.slice(0, 38), 470, y, { size: 24, font: MONO });
+          const color = l.outcome === 'Request changes' ? COLOR.counted : l.outcome === 'no verdict' ? COLOR.explained : COLOR.muted;
+          text(l.outcome, 1270, y, { size: 24, font: MONO, color, align: 'right' });
+        });
+        box(1360, 280, 440, 330);
+        text('reviews bought', 1400, 340, { size: 28, color: COLOR.muted });
+        text(String(visible), 1400, 430, { size: 88, weight: 700 });
+        text('test USDC paid', 1400, 500, { size: 28, color: COLOR.muted });
+        text(`$${(visible * S.price).toFixed(2)}`, 1400, 580, { size: 64, weight: 700, color: COLOR.counted });
+        box(1360, 640, 440, 210);
+        paragraph('No human in the loop: the agent pays each miner per call and stores every answer and receipt.', 1400, 700, 370, { size: 28, color: COLOR.muted });
+      } },
+
+    { duration: 20, captions: [[0.5, 19.5, 'Every answer comes with a Telegraph receipt and an on-chain payment anyone can check.']],
+      draw(t) {
+        heading('Proof of every purchase', 'Receipt header returned by the Telegraph node, and its payment on Sepolia');
+        const lines = [
+          'X-TELEGRAPH-RECEIPT',
+          '{',
+          `  "receipt_hash": "${fromBest.receipt.slice(0, 34)}…",`,
+          `  "reviewer":     "${fromBest.reviewer_id}",`,
+          `  "amount":       "${fromBest.paid_usdc.toFixed(2)} USDC",`,
+          `  "tx_hash":      "${fromBest.tx.slice(0, 34)}…"`,
+          '}',
+        ];
+        codeBlock(lines, 120, 290, { size: 32, width: 1680 });
+        if (t > 6) {
+          ctx.globalAlpha *= easeOut((t - 6) / 0.8);
+          text('sepolia.etherscan.io/tx/', 120, 790, { size: 34, font: MONO, color: COLOR.muted });
+          text(fromBest.tx, 120, 845, { size: 30, font: MONO, color: COLOR.blue });
+        }
+      } },
+
+    { duration: 16, captions: [
+        [0.5, 7.5, `First, the free option. ESLint and SonarJS flagged ${S.linters[0].flagged} of the ${S.linters[0].planted} bugs, even counting any warning.`],
+        [8, 15.5, `The other ${S.linters[0].planted - S.linters[0].flagged} are valid code that breaks its own comment. No lint rule knows what the code promises.`]],
+      draw(t) {
+        heading('First, the free option: linters', 'ESLint and SonarJS on the same samples, run locally  ·  any warning counts as a find');
+        S.linters.forEach((l, i) => {
+          const y = 330 + i * 120;
+          const share = l.flagged / l.planted;
+          const v = share * easeOut((t - 1 - i * 0.4) / 1.2);
+          text(l.name, 120, y + 34, { size: 30, weight: 600 });
+          ctx.fillStyle = '#ffffff10'; ctx.fillRect(760, y, 960, 46);
+          ctx.fillStyle = COLOR.muted; ctx.fillRect(760, y, Math.max(4, v * 960), 46);
+          if (t > 1) text(`${pct(v)}  (${l.flagged} of ${l.planted})`, 760 + Math.max(4, v * 960) + 16, y + 34, { size: 28 });
+        });
+        if (t > 4) {
+          ctx.save(); ctx.globalAlpha *= easeOut((t - 4) / 0.8);
+          text('What they flagged', 120, 620, { size: 28, color: COLOR.muted });
+          S.linterHits.forEach((c, i) => {
+            text(c.case, 120, 665 + i * 72, { size: 22, font: MONO, color: COLOR.blue });
+            text(c.planted.replaceAll('`', ''), 120, 697 + i * 72, { size: 24, font: MONO });
+          });
+          ctx.restore();
+        }
+        if (t > 8) {
+          ctx.save(); ctx.globalAlpha *= easeOut((t - 8) / 0.8);
+          text('What they missed, among others', 1000, 620, { size: 28, color: COLOR.muted });
+          text(caseById(EXAMPLE_MUTANT).planted.replaceAll('`', ''), 1000, 670, { size: 28, font: MONO, color: COLOR.bad });
+          text('code is valid; only the comment says it is wrong', 1000, 714, { size: 24, color: COLOR.muted });
+          ctx.restore();
+        }
+      } },
+
+    // The climax: the discarded-verdicts badge lands at 12.5 s, on the impact.
+    { duration: 36, sounds: [[12.5, 'impact']], captions: [
+        [0.5, 12, `Results. The best reviewer, ${S.best.name.split(' ')[0]}, explained ${pct(S.best.explained)} of the planted bugs.`],
+        [12.5, 24, `But the network recorded only ${pct(S.best.counted)}: it rejected the verdict on ${S.best.discarded} of its ${S.best.answers} answers.`],
+        [24.5, 35.5, `The other reviewers caught at most ${pct(S.othersMax)}, only the SQL injection. False alarms on correct code: ${pct(S.falseAlarmsMax)}.`]],
+      draw(t) {
+        heading('Round 2 scoreboard', `${S.purchases} paid reviews  ·  ${S.planted} planted bugs  ·  ${S.correct} correct samples`);
+        const x0 = 640, width = 1080;
+        S.scoreboard.forEach((r, i) => {
+          const y = 330 + i * 210;
+          paragraph(r.name, 120, y + 30, 480, { size: 32, weight: 600 });
+          [['explained', 'explained the bug in its answer', COLOR.explained], ['counted', 'counted by the network', COLOR.counted]].forEach(([key, label, color], j) => {
+            const from = j === 0 ? 1 : 12.5;
+            const v = r[key] * easeOut((t - from - i * 0.4) / 1.5);
+            const by = y + j * 70;
+            ctx.fillStyle = '#ffffff10'; ctx.fillRect(x0, by, width, 46);
+            ctx.fillStyle = color; ctx.fillRect(x0, by, Math.max(4, v * width), 46);
+            if (t > from) text(`${pct(v)}  ${label}`, x0 + Math.max(4, v * width) + 16, by + 34, { size: 26 });
+          });
+        });
+        if (t > 12.5) {
+          ctx.globalAlpha *= easeOut((t - 12.5) / 1);
+          pill(`${S.best.discarded} verdicts discarded by the network`, 1120, 220, COLOR.bad, 30);
+        }
+      } },
+
+    { duration: 28, sounds: [[1.5, 'ping'], [4.5, 'ping'], [7.5, 'ping']], captions: [
+        [0.5, 12.5, 'Same bug, three reviewers.'],
+        [13, 27.5, 'The best reviewer found it, and the network threw its verdict away. The others let the bug through.']],
+      draw(t) {
+        heading('Same bug, three reviewers', `${EXAMPLE_MUTANT}: a customer who is exactly 65 gets no discount`);
+        codeBlock(mutant, 120, 290, { size: 22, highlight: changedLine, width: 780 });
+        example.forEach((p, i) => {
+          const a = easeOut((t - 1.5 - i * 3) / 0.8);
+          if (a <= 0) return;
+          ctx.save(); ctx.globalAlpha *= a;
+          const y = 290 + i * 195;
+          box(940, y, 860, 180);
+          text(p.reviewer, 970, y + 46, { size: 28, weight: 600 });
+          const verdict = p.verdict === 'none' ? 'verdict rejected by the network' : `verdict: ${p.verdict}`;
+          const color = p.grade_code === 'explained-without-verdict' ? COLOR.explained : p.grade_code === 'caught' ? COLOR.counted : COLOR.bad;
+          pill(verdict, 970, y + 92, color, 22);
+          // Long enough to keep the reviewer's key sentence (where it names the changed expression).
+          const quote = p.answer.length > 150 ? `${p.answer.slice(0, 150).replace(/\s+\S*$/, '')}…` : p.answer;
+          paragraph(`“${quote}”`, 970, y + 128, 810, { size: 21, color: COLOR.muted, spacing: 26 });
+          ctx.restore();
+        });
+      } },
+
+    { duration: 16, captions: [[0.5, 15.5, `In round one, only ${S.answered1} of the ${S.miners1.length} miners listed for code review returned a review at all.`]],
+      draw(t) {
+        heading('Round 1: who can review code at all', 'Every miner listed for CODE_REVIEW_GENERAL on the testnet');
+        S.miners1.forEach((m, i) => {
+          const a = easeOut((t - 0.5 - i * 0.25) / 0.6);
+          if (a <= 0) return;
+          ctx.save(); ctx.globalAlpha *= a;
+          const column = i % 4, row = Math.floor(i / 4);
+          const x = 120 + column * 425, y = 280 + row * 140;
+          box(x, y, 395, 122, m.answered ? COLOR.counted + '22' : COLOR.panel, m.answered ? COLOR.counted : COLOR.border);
+          paragraph(m.name, x + 24, y + 40, 350, { size: 22, spacing: 28, weight: 600, color: m.answered ? COLOR.text : COLOR.muted });
+          text(m.answered ? 'returned reviews' : 'refused by the network', x + 24, y + 106, { size: 20, color: m.answered ? COLOR.counted : COLOR.muted });
+          ctx.restore();
+        });
+      } },
+
+    { duration: 18, captions: [[0.5, 17.5, 'Anyone can rerun it. Failed miners are recorded as failures, and an interrupted run resumes without paying twice.']],
+      draw(t) {
+        heading('Run it, break it, reproduce it');
+        const commands = ['npm run generate-catalog', 'npm run crash-test -- --round my-run --budget 3', 'npm run scoreboard -- my-run'];
+        codeBlock(commands.map((c) => `$ ${c}`), 120, 260, { size: 32, width: 1680 });
+        const items = [
+          ['Miner offline or refused?', 'Recorded as "could not answer". The run goes on.'],
+          ['Run interrupted?', 'Saved after every purchase. Resuming skips what was already paid.'],
+          ['Over budget?', 'The agent stops before spending past the limit you set.'],
+        ];
+        items.forEach(([question, answer], i) => {
+          const a = easeOut((t - 2 - i * 3) / 0.8);
+          if (a <= 0) return;
+          ctx.save(); ctx.globalAlpha *= a;
+          text(question, 120, 540 + i * 120, { size: 36, weight: 600 });
+          text(answer, 120, 588 + i * 120, { size: 30, color: COLOR.muted });
+          ctx.restore();
+        });
+      } },
+
+    { duration: 15, sounds: [[0, 'resolve']], captions: [[0.5, 14.5, 'Buyers of intelligence need to know what they are buying. Mutante measures it.']],
+      draw(t) {
+        ctx.globalAlpha *= easeOut(t / 1);
+        text('MUTANTE', W / 2, 400, { size: 120, weight: 700, align: 'center', color: COLOR.counted });
+        text('an independent quality meter for Telegraph miners', W / 2, 480, { size: 42, align: 'center' });
+        text('Telegraph Hackathon Season II entry  ·  @andradeclaudiox  ·  built with Claude', W / 2, 600, { size: 30, align: 'center', color: COLOR.muted });
+        text('Source code, run logs and every receipt are published with the submission.', W / 2, 660, { size: 28, align: 'center', color: COLOR.muted });
+      } },
+  ];
+}
+
+function caption(t) {
+  const lines = wrap(t, 1500, 40, 500);
+  const lineHeight = 54, h = lines.length * lineHeight + 30;
+  const y = H - 60 - h;
+  ctx.fillStyle = 'rgba(0,0,0,0.78)';
+  ctx.beginPath(); ctx.roundRect(W / 2 - 800, y, 1600, h, 12); ctx.fill();
+  lines.forEach((l, i) => text(l, W / 2, y + 15 + 40 + i * lineHeight, { size: 40, weight: 500, align: 'center', color: '#ffffff' }));
+}
+
+window.prepare = () => {
+  const S = statistics(window.DATA);
+  const list = scenes(window.DATA, S);
+  let start = 0;
+  for (const s of list) { s.start = start; start += s.duration; }
+  window.CAPTIONS = list.flatMap((s) => s.captions.map(([a, b, words]) => ({ start: s.start + a, end: s.start + b, text: words })));
+  window.SOUND_CUES = list.flatMap((s) => (s.sounds ?? []).map(([at, kind]) => ({ at: s.start + at, kind })));
+  window.frame = (t) => {
+    ctx.globalAlpha = 1; ctx.fillStyle = COLOR.background; ctx.fillRect(0, 0, W, H);
+    const scene = list.find((s) => t >= s.start && t < s.start + s.duration) ?? list[list.length - 1];
+    const local = t - scene.start;
+    ctx.save();
+    ctx.globalAlpha = clamp(Math.min(local / 0.4, (scene.duration - local) / 0.4));
+    scene.draw(local);
+    ctx.restore();
+    ctx.globalAlpha = 1;
+    const current = window.CAPTIONS.find((c) => t >= c.start && t < c.end);
+    if (current) caption(current.text);
+  };
+  return { duration: start, captions: window.CAPTIONS, soundCues: window.SOUND_CUES };
+};
+</script>
+</body>
+</html>
