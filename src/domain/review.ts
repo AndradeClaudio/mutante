@@ -32,6 +32,8 @@ export interface DeliveredReview {
   readonly latencyMs: number;
   readonly receipt: Receipt | null;
   readonly rawResponse: string;
+  /** When the network chose the miner (auto-routing), which one actually answered. */
+  readonly servedBy?: { readonly minerId: string; readonly name: string; readonly routerReasoning: string };
 }
 
 export interface FailedReview {

@@ -45,6 +45,15 @@ describe("gradeReview", () => {
     expect(gradeReview(delivered(null, ["`or True` bypasses the check"]), bug)).toBe("explained-without-verdict");
   });
 
+  it("gives no credit for quoting the bug when the reviewer concludes the code is correct", () => {
+    const review = delivered("Request changes", ["Verdict: Correct logic for the stated rule; `or True` keeps admins working."]);
+    expect(gradeReview(review, bug)).toBe("blocked-without-reason");
+  });
+
+  it("still credits a reviewer that calls the code incorrect and names the bug", () => {
+    expect(gradeReview(delivered(null, ["Verdict: Incorrect - `or True` bypasses the check."]), bug)).toBe("explained-without-verdict");
+  });
+
   it("tells an answer without a verdict apart from a failure", () => {
     expect(gradeReview(delivered(null), bug)).toBe("no-verdict");
     expect(

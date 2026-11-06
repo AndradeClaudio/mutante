@@ -40,19 +40,19 @@ The other 51 are valid code that breaks its own comment. No lint rule knows what
 
 11
 00:02:12,500 --> 00:02:24,000
-Results. The best reviewer, CodeWire, explained 52% of the planted bugs.
+Results. 2 reviewers really read the code: ChainSight explained 63%, CodeWire explained 52% of the planted bugs.
 
 12
 00:02:24,500 --> 00:02:36,000
-But the network recorded only 33%: it rejected the verdict on 27 of its 69 answers.
+But the network counted only 26% and 33%: both write their verdict as prose, so the verdict field was rejected 59 times.
 
 13
 00:02:36,500 --> 00:02:47,500
-The other reviewers caught at most 2%, only the SQL injection. False alarms on correct code: 0%.
+The other miners caught at most 2%, only the SQL injection. False alarms on correct code: at most 7%.
 
 14
 00:02:48,500 --> 00:02:56,000
-Same price per call: $0.01. But per bug caught, CodeWire cost $0.039, and the others $0.71.
+Same price per call: $0.01. Per bug caught: CodeWire $0.039, ChainSight $0.049, Telegraph $0.710, PREFLIGHT $0.710.
 
 15
 00:02:56,500 --> 00:03:03,500
@@ -64,20 +64,24 @@ Same bug, three reviewers.
 
 17
 00:03:17,000 --> 00:03:31,500
-The best reviewer found it, and the network threw its verdict away. The others let the bug through.
+CodeWire found it, but its verdict was rejected for its format. The other two let the bug through.
 
 18
-00:03:32,500 --> 00:03:47,500
-In round one, only 3 of the 16 miners listed for code review returned a review at all.
+00:03:32,500 --> 00:03:40,500
+Called directly, only 3 of the 16 miners listed for code review returned a review.
 
 19
-00:03:48,500 --> 00:03:57,000
-Bring your own function: Mutante plants bugs in it, proves them with your tests, and buys the reviews.
+00:03:41,000 --> 00:03:49,500
+Of the rest, 10 are repository data sources, not reviewers, and 2 could not be reached. One good reviewer only answers through the router.
 
 20
-00:03:57,500 --> 00:04:05,500
-Failed miners are recorded as failures, and an interrupted run resumes without paying twice.
+00:03:50,500 --> 00:03:59,000
+Bring your own function: Mutante plants bugs in it, proves them with your tests, and buys the reviews.
 
 21
-00:04:06,500 --> 00:04:20,500
+00:03:59,500 --> 00:04:07,500
+Failed miners are recorded as failures, and an interrupted run resumes without paying twice.
+
+22
+00:04:08,500 --> 00:04:22,500
 Buyers of intelligence need to know what they are buying. Mutante measures it.

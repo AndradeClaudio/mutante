@@ -1,0 +1,1065 @@
+{
+  "id": "round-002-auto-routing",
+  "intent": "CODE_REVIEW_GENERAL",
+  "budgetMicroUsdc": 300000,
+  "cases": [
+    {
+      "id": "can-vote-correct",
+      "language": "javascript",
+      "code": "// Voting is allowed at 18 or older.\nfunction canVote(age) {\n  return age >= 18;\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "can-vote"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "can-vote-boundary-1",
+      "language": "javascript",
+      "code": "// Voting is allowed at 18 or older.\nfunction canVote(age) {\n  return age > 18;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "can-vote",
+        "operator": "boundary"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "boundary",
+        "description": "boundary changed: `>=` became `>`",
+        "clues": [
+          "age\\s*>\\s*18",
+          "off[- ]by[- ]one",
+          "boundary",
+          "edge case",
+          "inclusive",
+          "exclusive",
+          "exactly",
+          "strict(ly)? (inequality|comparison|less|greater)",
+          "(less|greater) than or equal"
+        ]
+      }
+    },
+    {
+      "id": "can-vote-comparison-flip-1",
+      "language": "javascript",
+      "code": "// Voting is allowed at 18 or older.\nfunction canVote(age) {\n  return age <= 18;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "can-vote",
+        "operator": "comparison-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "inverted-comparison",
+        "description": "comparison inverted: `>=` became `<=`",
+        "clues": [
+          "age\\s*<=\\s*18",
+          "invert",
+          "revers",
+          "backwards",
+          "opposite",
+          "flipped",
+          "wrong direction",
+          "(rejects|accepts)\\b[^.]{0,60}\\b(accepts|rejects)\\b",
+          "returns `?(true|false)`? when [^.]{0,40}\\bnot\\b"
+        ]
+      }
+    },
+    {
+      "id": "can-vote-constant-changed-1",
+      "language": "javascript",
+      "code": "// Voting is allowed at 18 or older.\nfunction canVote(age) {\n  return age >= 19;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "can-vote",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `18` became `19`",
+        "clues": [
+          "age\\s*>=\\s*19",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?19\\b",
+          "`19`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "cart-total-arithmetic-1",
+      "language": "javascript",
+      "code": "// Sum of the item prices.\nfunction cartTotal(items) {\n  let total = 0;\n  for (let i = 0; i < items.length; i++) total -= items[i].price;\n  return total;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "cart-total",
+        "operator": "arithmetic"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "arithmetic",
+        "description": "arithmetic operator swapped: `+=` became `-=`",
+        "clues": [
+          "total\\s*-=\\s*items\\[i\\]",
+          "arithmetic",
+          "wrong operator",
+          "should (be )?(add|subtract|multipl|divid)",
+          "sign",
+          "subtraction",
+          "addition",
+          "multiplication",
+          "division",
+          "negative of",
+          "increase (rather|instead)"
+        ]
+      }
+    },
+    {
+      "id": "can-delete-post-logical-connective-1",
+      "language": "javascript",
+      "code": "// Only admins or the post owner may delete a post.\nfunction canDelete(user, post) {\n  return user.isAdmin && post.ownerId === user.id;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "can-delete-post",
+        "operator": "logical-connective"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "logic",
+        "description": "logical connective swapped: `||` became `&&`",
+        "clues": [
+          "user\\.isAdmin\\s*&&\\s*post\\.ownerId\\s*===\\s*user\\.id",
+          "logical operator",
+          "should be (&&|\\|\\||and|or|===|!==)",
+          "negat",
+          "invert",
+          "opposite",
+          "always (returns? )?`?(true|false)",
+          "both [^.]{0,40}(simultaneously|at the same time)",
+          "\\b(and|or)\\b\\W{0,3} instead of",
+          "every [^.]{0,30}except"
+        ]
+      }
+    },
+    {
+      "id": "can-delete-post-equality-flip-1",
+      "language": "javascript",
+      "code": "// Only admins or the post owner may delete a post.\nfunction canDelete(user, post) {\n  return user.isAdmin || post.ownerId !== user.id;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "can-delete-post",
+        "operator": "equality-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "logic",
+        "description": "equality inverted: `===` became `!==`",
+        "clues": [
+          "post\\.ownerId\\s*!==\\s*user\\.id",
+          "logical operator",
+          "should be (&&|\\|\\||and|or|===|!==)",
+          "negat",
+          "invert",
+          "opposite",
+          "always (returns? )?`?(true|false)",
+          "both [^.]{0,40}(simultaneously|at the same time)",
+          "\\b(and|or)\\b\\W{0,3} instead of",
+          "every [^.]{0,30}except"
+        ]
+      }
+    },
+    {
+      "id": "withdraw-always-true-condition-1",
+      "language": "javascript",
+      "code": "// Withdraws if the balance covers it; otherwise throws.\nfunction withdraw(account, amount) {\n  if (amount > account.balance || true) throw new Error(\"insufficient funds\");\n  account.balance -= amount;\n  return account.balance;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "withdraw",
+        "operator": "always-true-condition"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "authorization",
+        "description": "`if` condition made always true (`|| true`)",
+        "clues": [
+          "\\|\\|\\s*true",
+          "always (true|truthy|pass|execut|run)",
+          "\\|\\|\\s*true",
+          "bypass",
+          "unconditional",
+          "tautolog"
+        ]
+      }
+    },
+    {
+      "id": "withdraw-guard-removed-1",
+      "language": "javascript",
+      "code": "// Withdraws if the balance covers it; otherwise throws.\nfunction withdraw(account, amount) {\n  account.balance -= amount;\n  return account.balance;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "withdraw",
+        "operator": "guard-removed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "missing-validation",
+        "description": "guard removed: `if (amount > account.balance) throw new Error(\"insufficient funds\");`",
+        "clues": [
+          "amount\\s*>\\s*account\\.balance",
+          "missing (check|validation|guard)",
+          "no (check|validation|guard)",
+          "without (check|validat)",
+          "not (checked|validated)",
+          "(allows|permits) [^.]{0,40}(exceed|beyond|more than)"
+        ]
+      }
+    },
+    {
+      "id": "authenticated-profile-negation-removed-1",
+      "language": "javascript",
+      "code": "// Returns the user's profile; anonymous callers are rejected.\nfunction getProfile(session) {\n  if (session.user) throw new Error(\"unauthenticated\");\n  return session.user.profile;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "authenticated-profile",
+        "operator": "negation-removed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "logic",
+        "description": "negation `!` removed",
+        "clues": [
+          "missing (!|not|negation)",
+          "should be negated",
+          "without (the )?(!|not)",
+          "logical operator",
+          "should be (&&|\\|\\||and|or|===|!==)",
+          "negat",
+          "invert",
+          "opposite",
+          "always (returns? )?`?(true|false)",
+          "both [^.]{0,40}(simultaneously|at the same time)",
+          "\\b(and|or)\\b\\W{0,3} instead of",
+          "every [^.]{0,30}except"
+        ]
+      }
+    },
+    {
+      "id": "find-user-sql-concatenation-1",
+      "language": "javascript",
+      "code": "// Finds a user by email with a parameterized query.\nfunction findUser(db, email) {\n  return db.query(\"SELECT * FROM users WHERE email = '\" + email + \"'\");\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "find-user",
+        "operator": "sql-concatenation"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "injection",
+        "description": "parameterized query replaced by SQL concatenated with user input",
+        "clues": [
+          "sql injection",
+          "inject",
+          "parameteri[sz]",
+          "concatenat",
+          "interpolat"
+        ]
+      }
+    },
+    {
+      "id": "cart-total-correct",
+      "language": "javascript",
+      "code": "// Sum of the item prices.\nfunction cartTotal(items) {\n  let total = 0;\n  for (let i = 0; i < items.length; i++) total += items[i].price;\n  return total;\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "cart-total"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    },
+    {
+      "id": "cart-total-boundary-1",
+      "language": "javascript",
+      "code": "// Sum of the item prices.\nfunction cartTotal(items) {\n  let total = 0;\n  for (let i = 0; i <= items.length; i++) total += items[i].price;\n  return total;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "cart-total",
+        "operator": "boundary"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "boundary",
+        "description": "boundary changed: `<` became `<=`",
+        "clues": [
+          "i\\s*<=\\s*items\\.length",
+          "off[- ]by[- ]one",
+          "boundary",
+          "edge case",
+          "inclusive",
+          "exclusive",
+          "exactly",
+          "strict(ly)? (inequality|comparison|less|greater)",
+          "(less|greater) than or equal"
+        ]
+      }
+    },
+    {
+      "id": "cart-total-comparison-flip-1",
+      "language": "javascript",
+      "code": "// Sum of the item prices.\nfunction cartTotal(items) {\n  let total = 0;\n  for (let i = 0; i > items.length; i++) total += items[i].price;\n  return total;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "cart-total",
+        "operator": "comparison-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "inverted-comparison",
+        "description": "comparison inverted: `<` became `>`",
+        "clues": [
+          "i\\s*>\\s*items\\.length",
+          "invert",
+          "revers",
+          "backwards",
+          "opposite",
+          "flipped",
+          "wrong direction",
+          "(rejects|accepts)\\b[^.]{0,60}\\b(accepts|rejects)\\b",
+          "returns `?(true|false)`? when [^.]{0,40}\\bnot\\b"
+        ]
+      }
+    },
+    {
+      "id": "cart-total-constant-changed-1",
+      "language": "javascript",
+      "code": "// Sum of the item prices.\nfunction cartTotal(items) {\n  let total = 1;\n  for (let i = 0; i < items.length; i++) total += items[i].price;\n  return total;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "cart-total",
+        "operator": "constant-changed"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "constant",
+        "description": "constant changed: `0` became `1`",
+        "clues": [
+          "total\\s*=\\s*1",
+          "(than|of|as|at|treats|\\?\\?)\\s*`?1\\b",
+          "`1`",
+          "magic number",
+          "off[- ]by[- ]one",
+          "wrong (constant|value|threshold|index)",
+          "should be \\d+",
+          "minimum (result|value) of"
+        ]
+      }
+    },
+    {
+      "id": "withdraw-arithmetic-1",
+      "language": "javascript",
+      "code": "// Withdraws if the balance covers it; otherwise throws.\nfunction withdraw(account, amount) {\n  if (amount > account.balance) throw new Error(\"insufficient funds\");\n  account.balance += amount;\n  return account.balance;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "withdraw",
+        "operator": "arithmetic"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "arithmetic",
+        "description": "arithmetic operator swapped: `-=` became `+=`",
+        "clues": [
+          "account\\.balance\\s*\\+=\\s*amount",
+          "arithmetic",
+          "wrong operator",
+          "should (be )?(add|subtract|multipl|divid)",
+          "sign",
+          "subtraction",
+          "addition",
+          "multiplication",
+          "division",
+          "negative of",
+          "increase (rather|instead)"
+        ]
+      }
+    },
+    {
+      "id": "strong-password-logical-connective-1",
+      "language": "javascript",
+      "code": "// Strong: at least 12 characters and contains a digit.\nfunction isStrongPassword(pw) {\n  return pw.length >= 12 || /\\d/.test(pw);\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "strong-password",
+        "operator": "logical-connective"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "logic",
+        "description": "logical connective swapped: `&&` became `||`",
+        "clues": [
+          "pw\\.length\\s*>=\\s*12\\s*\\|\\|\\s*\\/\\\\d\\/\\.test",
+          "logical operator",
+          "should be (&&|\\|\\||and|or|===|!==)",
+          "negat",
+          "invert",
+          "opposite",
+          "always (returns? )?`?(true|false)",
+          "both [^.]{0,40}(simultaneously|at the same time)",
+          "\\b(and|or)\\b\\W{0,3} instead of",
+          "every [^.]{0,30}except"
+        ]
+      }
+    },
+    {
+      "id": "weekend-equality-flip-1",
+      "language": "javascript",
+      "code": "// day: 0 = Sunday ... 6 = Saturday.\nfunction isWeekend(day) {\n  return day !== 0 || day === 6;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "weekend",
+        "operator": "equality-flip"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "logic",
+        "description": "equality inverted: `===` became `!==`",
+        "clues": [
+          "day\\s*!==\\s*0",
+          "logical operator",
+          "should be (&&|\\|\\||and|or|===|!==)",
+          "negat",
+          "invert",
+          "opposite",
+          "always (returns? )?`?(true|false)",
+          "both [^.]{0,40}(simultaneously|at the same time)",
+          "\\b(and|or)\\b\\W{0,3} instead of",
+          "every [^.]{0,30}except"
+        ]
+      }
+    },
+    {
+      "id": "authenticated-profile-always-true-condition-1",
+      "language": "javascript",
+      "code": "// Returns the user's profile; anonymous callers are rejected.\nfunction getProfile(session) {\n  if (!session.user || true) throw new Error(\"unauthenticated\");\n  return session.user.profile;\n}\n",
+      "origin": {
+        "kind": "mutant",
+        "originalId": "authenticated-profile",
+        "operator": "always-true-condition"
+      },
+      "answerKey": {
+        "kind": "planted-bug",
+        "category": "authorization",
+        "description": "`if` condition made always true (`|| true`)",
+        "clues": [
+          "\\|\\|\\s*true",
+          "always (true|truthy|pass|execut|run)",
+          "\\|\\|\\s*true",
+          "bypass",
+          "unconditional",
+          "tautolog"
+        ]
+      }
+    },
+    {
+      "id": "can-delete-post-correct",
+      "language": "javascript",
+      "code": "// Only admins or the post owner may delete a post.\nfunction canDelete(user, post) {\n  return user.isAdmin || post.ownerId === user.id;\n}\n",
+      "origin": {
+        "kind": "original",
+        "originalId": "can-delete-post"
+      },
+      "answerKey": {
+        "kind": "correct-code"
+      }
+    }
+  ],
+  "reviewers": [
+    {
+      "id": "auto-routed",
+      "name": "Telegraph auto-routing (no miner chosen)"
+    }
+  ],
+  "startedAt": "2026-11-06T21:10:13.656Z",
+  "closedAt": "2026-11-06T21:12:34.630Z",
+  "reviews": [
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "can-vote-constant-changed-1",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "Off‑by‑one error; ages 18 are incorrectly denied"
+      ],
+      "summary": "",
+      "latencyMs": 33046,
+      "receipt": {
+        "hash": "0x92dc717d576df50b932079be187789ffdeb8df4ed951b4045e483935c9223f8e",
+        "transaction": "0x746d69f08b765b4e8945906731bcd8eb0a9eca896bc81cd485f272c68d805d0f",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":null,\"findings\":[\"Off‑by‑one error; ages 18 are incorrectly denied\"],\"summary\":null},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"rejected\"},\"input\":{\"code\":\"// Voting is allowed at 18 or older.\\nfunction canVote(age) {\\n  return age \\u003e= 19;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1464,\"timestamp\":\"2026-11-06T21:10:40.937736368Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The '/codereview' endpoint is described as serving this intent and takes a 'query' parameter which is suitable for the provided code snippet.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x7b933acbde214bb8f633d14f415d4f4059f2f1cf26caefe1d080ce995954a5a8\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The '/codereview' endpoint is described as serving this intent and takes a 'query' parameter which is suitable for the provided code snippet."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "can-vote-correct",
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "Verdict: Correct and functional for the stated requirement.",
+        "Correctness: Implements the age check accurately; returns true for ages 18 and above, false otherwise.",
+        "Bugs: None apparent for the given simple logic.",
+        "Improvements: Add input validation (e.g., ensure age is a non‑negative number) to handle unexpected types.",
+        "Document the function with a JSDoc comment for clarity.",
+        "Consider edge cases like null or undefined and decide whether to coerce or reject them."
+      ],
+      "summary": "",
+      "latencyMs": 33091,
+      "receipt": {
+        "hash": "0x712f236fe71e961bd5cb02ed6d7faa0f7c870df8a61d963c2f8e2738571413b3",
+        "transaction": "0x004b528844ef39fdb701ee0c45bcc1fbcb2645c03aff9682fcd313d5c0f4673e",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":\"Approve\",\"findings\":[\"Verdict: Correct and functional for the stated requirement.\",\"Correctness: Implements the age check accurately; returns true for ages 18 and above, false otherwise.\",\"Bugs: None apparent for the given simple logic.\",\"Improvements: Add input validation (e.g., ensure age is a non‑negative number) to handle unexpected types.\",\"Document the function with a JSDoc comment for clarity.\",\"Consider edge cases like null or undefined and decide whether to coerce or reject them.\"],\"summary\":null},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"rejected\"},\"input\":{\"code\":\"// Voting is allowed at 18 or older.\\nfunction canVote(age) {\\n  return age \\u003e= 18;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1415,\"timestamp\":\"2026-11-06T21:10:40.847779625Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The endpoint requires a 'query' parameter, which should contain the code to be reviewed. The user provided the code within the question, which is copied directly into the 'query' field.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x396e5e7a5ec7a4d041c4b216d807b383406659190b1f350d8258fd9b6aef4ed2\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The endpoint requires a 'query' parameter, which should contain the code to be reviewed. The user provided the code within the question, which is copied directly into the 'query' field."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "can-vote-comparison-flip-1",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "Verdict: Incorrect - the voting eligibility logic is reversed.",
+        "Correctness: Returns true for ages under or equal to 18, but voting is allowed for 18 +; should be age >= 18.",
+        "Potential bugs: Ages like 0 or negative numbers incorrectly return true; no input validation.",
+        "Top improvements: Change return statement to return age >= 18;",
+        "Add a guard to handle non‑numeric or negative inputs (e.g., if (typeof age !== 'number' age < 0) return false;)",
+        "Include a comment clarifying the rule (e.g., \"Voting is allowed for individuals 18 years old or older\")"
+      ],
+      "summary": "Verdict: Incorrect - the voting eligibility logic is reversed. Correctness: Returns true for ages under or equal to 18, but voting is allowed for 18 +; should be age >= 18.",
+      "latencyMs": 35010,
+      "receipt": {
+        "hash": "0xa8cbd6e204437ce7cf60c93a917ac9b7b07808bed64bcb733e1a04a4913c1868",
+        "transaction": "0xcb6c52711efffc392bd292cd3d902e3a27ec7494cc5dcb5936c4598e075e134a",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":null,\"findings\":[\"Verdict: Incorrect - the voting eligibility logic is reversed.\",\"Correctness: Returns true for ages under or equal to 18, but voting is allowed for 18 +; should be age \\u003e= 18.\",\"Potential bugs: Ages like 0 or negative numbers incorrectly return true; no input validation.\",\"Top improvements: Change return statement to return age \\u003e= 18;\",\"Add a guard to handle non‑numeric or negative inputs (e.g., if (typeof age !== 'number' age \\u003c 0) return false;)\",\"Include a comment clarifying the rule (e.g., \\\"Voting is allowed for individuals 18 years old or older\\\")\"],\"summary\":\"Verdict: Incorrect - the voting eligibility logic is reversed. Correctness: Returns true for ages under or equal to 18, but voting is allowed for 18 +; should be age \\u003e= 18.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Voting is allowed at 18 or older.\\nfunction canVote(age) {\\n  return age \\u003c= 18;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":2127,\"timestamp\":\"2026-11-06T21:10:41.568093112Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent has been classified as CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The query parameter is used to pass the code snippet provided by the user for review.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x02aaf7908053bb7bbd197d0615e82d02fabb0dfb8cac236d4a5428b791cd0a6a\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent has been classified as CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The query parameter is used to pass the code snippet provided by the user for review."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "can-vote-boundary-1",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "Verdict: Incorrect - the function disallows 18‑year‑olds and lacks input validation.",
+        "Correctness: Uses age > 18; the rule says \"18 or older\", so it should be age >= 18.",
+        "Potential bugs: Non‑numeric or negative inputs return false silently; could cause unexpected behavior.",
+        "null, undefined, or string numbers (\"19\") are coerced to NaN/0, leading to wrong results.",
+        "Improvements: Use age >= 18 to include 18‑year‑olds.",
+        "Validate the argument: ensure it's a finite number and non‑negative, e.g., if (!Number.isFinite(age) age < 0) return false;",
+        "Consider returning a boolean explicitly (return Number.isFinite(age) && age >= 18;)",
+        "Add a short comment or JSDoc describing expected input type and behavior."
+      ],
+      "summary": "Verdict: Incorrect - the function disallows 18‑year‑olds and lacks input validation.",
+      "latencyMs": 36294,
+      "receipt": {
+        "hash": "0x00f59fd6610ff3d5c19273c2814df1918d59ebf7c13e33bb2b208be6fe178b41",
+        "transaction": "0x5f5c37c5d5e03c4e0fcea3e17d0c67138d1f397fae6b3ee1ccb742d585997e7d",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":null,\"findings\":[\"Verdict: Incorrect - the function disallows 18‑year‑olds and lacks input validation.\",\"Correctness: Uses age \\u003e 18; the rule says \\\"18 or older\\\", so it should be age \\u003e= 18.\",\"Potential bugs: Non‑numeric or negative inputs return false silently; could cause unexpected behavior.\",\"null, undefined, or string numbers (\\\"19\\\") are coerced to NaN/0, leading to wrong results.\",\"Improvements: Use age \\u003e= 18 to include 18‑year‑olds.\",\"Validate the argument: ensure it's a finite number and non‑negative, e.g., if (!Number.isFinite(age) age \\u003c 0) return false;\",\"Consider returning a boolean explicitly (return Number.isFinite(age) \\u0026\\u0026 age \\u003e= 18;)\",\"Add a short comment or JSDoc describing expected input type and behavior.\"],\"summary\":\"Verdict: Incorrect - the function disallows 18‑year‑olds and lacks input validation.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Voting is allowed at 18 or older.\\nfunction canVote(age) {\\n  return age \\u003e 18;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1707,\"timestamp\":\"2026-11-06T21:10:41.19660546Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The query parameter is used to pass the code snippet for review.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x6d36b6944dd0071d81c41df536bebb271e73aa252c423455f2ef17d9d8d46e57\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The query parameter is used to pass the code snippet for review."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "withdraw-always-true-condition-1",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "The function contains a logical error that makes it always throw, rendering it unusable.",
+        "The condition amount > account.balance true always evaluates to true, so the error is always thrown.",
+        "The intended check should be only amount > account.balance.",
+        "Unreachable code after the throw; account.balance is never updated.",
+        "No validation for non‑numeric amount or negative values.",
+        "Mutates the passed account object without cloning; may be unexpected.",
+        "No type checking; could cause runtime errors if account or balance is undefined"
+      ],
+      "summary": "Verdict: The function contains a logical error that makes it always throw, rendering it unusable.",
+      "latencyMs": 33560,
+      "receipt": {
+        "hash": "0xec5c5f46af9c117bf0751033c0a9edf0f0fa8e4252f48a87d5810b27bf5c5c7b",
+        "transaction": "0x46659d2333b39184d03b5384b919dd695c6d706adab99290d61640ed5e3e959e",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":null,\"findings\":[\"The function contains a logical error that makes it always throw, rendering it unusable.\",\"The condition amount \\u003e account.balance true always evaluates to true, so the error is always thrown.\",\"The intended check should be only amount \\u003e account.balance.\",\"Unreachable code after the throw; account.balance is never updated.\",\"No validation for non‑numeric amount or negative values.\",\"Mutates the passed account object without cloning; may be unexpected.\",\"No type checking; could cause runtime errors if account or balance is undefined\"],\"summary\":\"Verdict: The function contains a logical error that makes it always throw, rendering it unusable.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Withdraws if the balance covers it; otherwise throws.\\nfunction withdraw(account, amount) {\\n  if (amount \\u003e account.balance || true) throw new Error(\\\"insufficient funds\\\");\\n  account.balance -= amount;\\n  return account.balance;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1927,\"timestamp\":\"2026-11-06T21:11:17.185531937Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The query parameter is used to pass the code snippet for review.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0xe9ed6a6d06457a69724af1663f75ceac3502c253a2aa9b2a182aac2cc0197ee9\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The query parameter is used to pass the code snippet for review."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "can-delete-post-logical-connective-1",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "Verdict: Incorrect logic - non‑admin owners cannot delete their own posts.",
+        "Correctness: Uses && instead of ; only admins whose ID matches the owner can delete, which is not the intended rule.",
+        "Potential bugs: Throws if user or post is null/undefined.",
+        "No type checking; isAdmin may be undefined, causing a falsy result.",
+        "Top improvements: Change condition to user.isAdmin post.ownerId === user.id.",
+        "Add defensive checks: if (!user !post) return false;",
+        "Optionally validate input types (typeof user.isAdmin === 'boolean', etc.) for robustness."
+      ],
+      "summary": "",
+      "latencyMs": 37034,
+      "receipt": {
+        "hash": "0xbbe5ad1c43a799c2a62942f9cdefe6c4b8437bcb4bb9b04eab26331677880ec2",
+        "transaction": "0x447759fea3d79f0faf79ce543745d72bd83ff5496613e41d273d9cdf2a86f740",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":null,\"findings\":[\"Verdict: Incorrect logic - non‑admin owners cannot delete their own posts.\",\"Correctness: Uses \\u0026\\u0026 instead of ; only admins whose ID matches the owner can delete, which is not the intended rule.\",\"Potential bugs: Throws if user or post is null/undefined.\",\"No type checking; isAdmin may be undefined, causing a falsy result.\",\"Top improvements: Change condition to user.isAdmin post.ownerId === user.id.\",\"Add defensive checks: if (!user !post) return false;\",\"Optionally validate input types (typeof user.isAdmin === 'boolean', etc.) for robustness.\"],\"summary\":null},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"rejected\"},\"input\":{\"code\":\"// Only admins or the post owner may delete a post.\\nfunction canDelete(user, post) {\\n  return user.isAdmin \\u0026\\u0026 post.ownerId === user.id;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1007,\"timestamp\":\"2026-11-06T21:11:16.233231025Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has a /codereview endpoint that explicitly serves the CODE_REVIEW_GENERAL intent. The query parameter is used to pass the code snippet for review.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x1c49c1f0abf79386772bf9770d860b32f8d592874fbad5830c5679d04e64d324\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has a /codereview endpoint that explicitly serves the CODE_REVIEW_GENERAL intent. The query parameter is used to pass the code snippet for review."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "cart-total-arithmetic-1",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "Verdict: Incorrect - the function subtracts prices instead of summing them.",
+        "Uses total -= items[i].price; → should be +=.",
+        "Returns a negative total for any non‑empty cart.",
+        "No guard against items being null/undefined or not an array.",
+        "No check that each item.price is a valid number (e.g., NaN, null).",
+        "Returns 0 for an empty array, which is fine, but the intent is unclear without validation.",
+        "Replace the loop with return items.reduce((sum, item) => sum + Number(item.price 0), 0);.",
+        "Add input validation: throw or return a default if items isn't an array or if a price is missing/invalid.",
+        "Use const for variables that don't change (total can be eliminated) and prefer for...of for readability."
+      ],
+      "summary": "Verdict: Incorrect - the function subtracts prices instead of summing them.",
+      "latencyMs": 38955,
+      "receipt": {
+        "hash": "0xd69f575bad656952a7bba232a2a4c3f852f7868c6358a24b71aa2e0333b21536",
+        "transaction": "0xdaac3630c8474988d3fcb4519bd1434e9c1d2529fa0f42da06753c2f84f77488",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":null,\"findings\":[\"Verdict: Incorrect - the function subtracts prices instead of summing them.\",\"Uses total -= items[i].price; → should be +=.\",\"Returns a negative total for any non‑empty cart.\",\"No guard against items being null/undefined or not an array.\",\"No check that each item.price is a valid number (e.g., NaN, null).\",\"Returns 0 for an empty array, which is fine, but the intent is unclear without validation.\",\"Replace the loop with return items.reduce((sum, item) =\\u003e sum + Number(item.price 0), 0);.\",\"Add input validation: throw or return a default if items isn't an array or if a price is missing/invalid.\",\"Use const for variables that don't change (total can be eliminated) and prefer for...of for readability.\"],\"summary\":\"Verdict: Incorrect - the function subtracts prices instead of summing them.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Sum of the item prices.\\nfunction cartTotal(items) {\\n  let total = 0;\\n  for (let i = 0; i \\u003c items.length; i++) total -= items[i].price;\\n  return total;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1178,\"timestamp\":\"2026-11-06T21:11:16.539391213Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The 'query' parameter is required for this endpoint and should contain the code provided by the user.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x1aa8eb62c90218d0c7ce043b3b206b1aef767736b510ccc97220f6a94a97afa1\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The 'query' parameter is required for this endpoint and should contain the code provided by the user."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "can-delete-post-equality-flip-1",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "Verdict: Incorrect - the logic allows anyone except the post owner to delete.",
+        "Correctness: The condition post.ownerId !== user.id is inverted; it should check equality to allow the owner to delete.",
+        "As written, non‑owners (including unauthenticated users) can delete posts, which violates the comment.",
+        "Potential bugs / edge cases: No null/undefined checks for user or post; calling the function with missing arguments will throw.",
+        "user.isAdmin may be undefined; explicit boolean conversion (!!user.isAdmin) is safer.",
+        "If user.id or post.ownerId are of different types (e.g., string vs. number), strict equality may fail.",
+        "Fix the ownership check: post.ownerId === user.id.",
+        "Add defensive checks for missing arguments.",
+        "Return a boolean explicitly (return !!user.isAdmin post.ownerId === user.id;).",
+        "Consider using a guard clause for clarity."
+      ],
+      "summary": "Verdict: Incorrect - the logic allows anyone except the post owner to delete.",
+      "latencyMs": 38026,
+      "receipt": {
+        "hash": "0xd5c05117a928f7a8f7f543ef73d120f6b68a7bf847a9f453f52bf63b4088df66",
+        "transaction": "0xf382f95c63d6411155455b4c5b3ef31c2c14c62695c1747f1e842b7a4af86df4",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":null,\"findings\":[\"Verdict: Incorrect - the logic allows anyone except the post owner to delete.\",\"Correctness: The condition post.ownerId !== user.id is inverted; it should check equality to allow the owner to delete.\",\"As written, non‑owners (including unauthenticated users) can delete posts, which violates the comment.\",\"Potential bugs / edge cases: No null/undefined checks for user or post; calling the function with missing arguments will throw.\",\"user.isAdmin may be undefined; explicit boolean conversion (!!user.isAdmin) is safer.\",\"If user.id or post.ownerId are of different types (e.g., string vs. number), strict equality may fail.\",\"Fix the ownership check: post.ownerId === user.id.\",\"Add defensive checks for missing arguments.\",\"Return a boolean explicitly (return !!user.isAdmin post.ownerId === user.id;).\",\"Consider using a guard clause for clarity.\"],\"summary\":\"Verdict: Incorrect - the logic allows anyone except the post owner to delete.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"unavailable\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Only admins or the post owner may delete a post.\\nfunction canDelete(user, post) {\\n  return user.isAdmin || post.ownerId !== user.id;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1339,\"timestamp\":\"2026-11-06T21:11:16.55579495Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The 'query' parameter is required for this endpoint, and the user has provided the code to be reviewed within the question, which should be used as the value for the 'query' parameter.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x449af74b1dfae64db7f47ef8cd678f015cf9a2a7503c558da0a53e67b2ff9722\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The 'query' parameter is required for this endpoint, and the user has provided the code to be reviewed within the question, which should be used as the value for the 'query' parameter."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "cart-total-correct",
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "Throws if items is null/undefined or not an array.",
+        "Fails when an element lacks a price property or when price isn't a number (e.g., null, undefined, string).",
+        "No handling for floating‑point precision issues (e.g., cents)."
+      ],
+      "summary": "Verdict: Correct and functional for basic use, but lacks robustness and type safety.",
+      "latencyMs": 15312,
+      "receipt": {
+        "hash": "0xeedbe57d804952159d37684e560c452bf939b087cc00d5b365f57210c2c91cb6",
+        "transaction": "0x163d14c78c8b05e60bc90befe60d11aa4cba0489bf7d26de2ddf94515b0f071f",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":\"Approve\",\"findings\":[\"Throws if items is null/undefined or not an array.\",\"Fails when an element lacks a price property or when price isn't a number (e.g., null, undefined, string).\",\"No handling for floating‑point precision issues (e.g., cents).\"],\"summary\":\"Verdict: Correct and functional for basic use, but lacks robustness and type safety.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Sum of the item prices.\\nfunction cartTotal(items) {\\n  let total = 0;\\n  for (let i = 0; i \\u003c items.length; i++) total += items[i].price;\\n  return total;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1015,\"timestamp\":\"2026-11-06T21:11:38.596213018Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The intent is CODE_REVIEW_GENERAL, and the '/codereview' endpoint is described as serving this intent. The endpoint requires a 'query' parameter, which is populated with the provided code snippet from the user's question.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x238aed1cddd986aea5070bad53fe5ab9fd233fc91702dc1da5af7f6ba5a90a06\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The intent is CODE_REVIEW_GENERAL, and the '/codereview' endpoint is described as serving this intent. The endpoint requires a 'query' parameter, which is populated with the provided code snippet from the user's question."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "withdraw-guard-removed-1",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "No balance check; can produce negative balances.",
+        "Directly mutates the account object without validation.",
+        "Returns the new balance even when the operation should fail.",
+        "No error handling or informative exception"
+      ],
+      "summary": "",
+      "latencyMs": 23781,
+      "receipt": {
+        "hash": "0x73184bb6e74ed9ad88e1f87102832af0d935fad8819618fca383fbd71249c830",
+        "transaction": "0x89e352ec87924b91892c8145c06c65e9c9dbdac304c9b50164488adc25a144db",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":null,\"findings\":[\"No balance check; can produce negative balances.\",\"Directly mutates the account object without validation.\",\"Returns the new balance even when the operation should fail.\",\"No error handling or informative exception\"],\"summary\":null},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"rejected\"},\"input\":{\"code\":\"// Withdraws if the balance covers it; otherwise throws.\\nfunction withdraw(account, amount) {\\n  account.balance -= amount;\\n  return account.balance;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1055,\"timestamp\":\"2026-11-06T21:11:42.778114608Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The miner configuration provides an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The 'query' parameter is required for this endpoint and should contain the code provided in the question.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x6573d15024fce18cf009de1eb7f5e9926641d73de94ed6c1419a497e67dacb0d\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The miner configuration provides an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The 'query' parameter is required for this endpoint and should contain the code provided in the question."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "find-user-sql-concatenation-1",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "SQL Injection vulnerability - an attacker can inject arbitrary SQL via the email argument.",
+        "Potential syntax errors when email contains single quotes (O'Reilly)."
+      ],
+      "summary": "",
+      "latencyMs": 21889,
+      "receipt": {
+        "hash": "0x45934aeac9ec844cc171632084b6611c424158875439bd2c49cd86bdc0fa5589",
+        "transaction": "0x1930f2eb4a68b5f0e7495271baedb5f19c8b398ad86493302b6101a11bac1e08",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":null,\"findings\":[\"SQL Injection vulnerability - an attacker can inject arbitrary SQL via the email argument.\",\"Potential syntax errors when email contains single quotes (O'Reilly).\"],\"summary\":null},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"rejected\"},\"input\":{\"code\":\"// Finds a user by email with a parameterized query.\\nfunction findUser(db, email) {\\n  return db.query(\\\"SELECT * FROM users WHERE email = '\\\" + email + \\\"'\\\");\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1143,\"timestamp\":\"2026-11-06T21:11:42.874380999Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user is asking for a code review, and the CODE_REVIEW_GENERAL intent is explicitly provided. The ChainSight miner has an endpoint '/codereview' that specifically serves the CODE_REVIEW_GENERAL intent. The 'query' parameter is required for this endpoint and should contain the code provided in the user's question.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0xa98a5704b8c87d8e48c601cd5ed0fad9c65abc607a173f3c4c3dd430acb6c06a\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user is asking for a code review, and the CODE_REVIEW_GENERAL intent is explicitly provided. The ChainSight miner has an endpoint '/codereview' that specifically serves the CODE_REVIEW_GENERAL intent. The 'query' parameter is required for this endpoint and should contain the code provided in the user's question."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "authenticated-profile-negation-removed-1",
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "The authentication check is inverted: if (session.user) throws when a user is present instead of when absent.",
+        "Throws Error(\"unauthenticated\") for valid sessions.",
+        "Potential TypeError for anonymous callers because session.user is undefined and .profile is accessed"
+      ],
+      "summary": "Verdict: The function contains a logical error that makes it always throw for authenticated users and will also crash on unauthenticated calls.",
+      "latencyMs": 23782,
+      "receipt": {
+        "hash": "0xb586a615bff834bd7292ceab3c76de90903f8068950c81ea172d150aed0aadac",
+        "transaction": "0x4bac2b08211c51895379741b15f085f4bad4f5d796bc98012cf08daef396ecb7",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":\"Request changes\",\"findings\":[\"The authentication check is inverted: if (session.user) throws when a user is present instead of when absent.\",\"Throws Error(\\\"unauthenticated\\\") for valid sessions.\",\"Potential TypeError for anonymous callers because session.user is undefined and .profile is accessed\"],\"summary\":\"Verdict: The function contains a logical error that makes it always throw for authenticated users and will also crash on unauthenticated calls.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Returns the user's profile; anonymous callers are rejected.\\nfunction getProfile(session) {\\n  if (session.user) throw new Error(\\\"unauthenticated\\\");\\n  return session.user.profile;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1243,\"timestamp\":\"2026-11-06T21:11:38.814144242Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user is asking for a code review, and the provided miner has an endpoint specifically for code review that matches the CODE_REVIEW_GENERAL intent. The 'query' parameter is used to pass the code snippet for review.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x5cae1b9638382f89dc1f1acb9a366f8e0de56c311969f590ab53aa37421cd1a4\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user is asking for a code review, and the provided miner has an endpoint specifically for code review that matches the CODE_REVIEW_GENERAL intent. The 'query' parameter is used to pass the code snippet for review."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "cart-total-boundary-1",
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "The function has a logical error that causes NaN or runtime errors and lacks input validation.",
+        "Correctness Loop uses i <= items.length; the last iteration accesses items[items.length] which is undefined, leading to NaN total.",
+        "No check that each element has a numeric price property; non‑numeric or missing values will break the sum.",
+        "Bugs Off‑by‑one error in the for loop condition.",
+        "Potential TypeError when items is empty or not an array.",
+        "No handling of null/undefined items or non‑numeric prices."
+      ],
+      "summary": "Verdict: The function has a logical error that causes NaN or runtime errors and lacks input validation.",
+      "latencyMs": 17864,
+      "receipt": {
+        "hash": "0xefaf11b6150315f9d7b6f7f00a5b7655aec15ae34077094944341c6b4948fc7c",
+        "transaction": "0x2beeef6b973708b70d4427159fe903db965db5ee2792d71b1a1cb9ae5faed173",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":\"Request changes\",\"findings\":[\"The function has a logical error that causes NaN or runtime errors and lacks input validation.\",\"Correctness Loop uses i \\u003c= items.length; the last iteration accesses items[items.length] which is undefined, leading to NaN total.\",\"No check that each element has a numeric price property; non‑numeric or missing values will break the sum.\",\"Bugs Off‑by‑one error in the for loop condition.\",\"Potential TypeError when items is empty or not an array.\",\"No handling of null/undefined items or non‑numeric prices.\"],\"summary\":\"Verdict: The function has a logical error that causes NaN or runtime errors and lacks input validation.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Sum of the item prices.\\nfunction cartTotal(items) {\\n  let total = 0;\\n  for (let i = 0; i \\u003c= items.length; i++) total += items[i].price;\\n  return total;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1317,\"timestamp\":\"2026-11-06T21:11:51.301467664Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The /codereview endpoint is described as serving this intent and takes a 'query' parameter which is suitable for the provided code.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x13e626e7bc88b68ab44412f107437ada623cd5621432d4a89c6684b596fae057\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The /codereview endpoint is described as serving this intent and takes a 'query' parameter which is suitable for the provided code."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "cart-total-constant-changed-1",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "Incorrect - the function miscalculates the total.",
+        "Initializes total to 1 instead of 0, adding an extra unit to every result.",
+        "No validation for items being an array or containing objects with a numeric price.",
+        "If items is empty, returns 1 instead of 0.",
+        "Throws a runtime error if an element lacks a price property or if price isn't a number.",
+        "Initialize total to 0.",
+        "Add input validation (e.g., Array.isArray(items) and type‑check price).",
+        "Use a more expressive loop (e.g., for (const item of items)) or reduce for clarity.",
+        "Consider handling non‑numeric prices gracefully (skip or coerce with Number)."
+      ],
+      "summary": "",
+      "latencyMs": 26083,
+      "receipt": {
+        "hash": "0x8146c5bc2a65b7073accce231f2b0b02c6ffa5010b03ba4de2a5c118ed97ec46",
+        "transaction": "0xb756b107fb17acc8351d1b9abfd0f2d0064a46679362fd93775b743b4a1a5968",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":null,\"findings\":[\"Incorrect - the function miscalculates the total.\",\"Initializes total to 1 instead of 0, adding an extra unit to every result.\",\"No validation for items being an array or containing objects with a numeric price.\",\"If items is empty, returns 1 instead of 0.\",\"Throws a runtime error if an element lacks a price property or if price isn't a number.\",\"Initialize total to 0.\",\"Add input validation (e.g., Array.isArray(items) and type‑check price).\",\"Use a more expressive loop (e.g., for (const item of items)) or reduce for clarity.\",\"Consider handling non‑numeric prices gracefully (skip or coerce with Number).\"],\"summary\":null},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"rejected\"},\"input\":{\"code\":\"// Sum of the item prices.\\nfunction cartTotal(items) {\\n  let total = 1;\\n  for (let i = 0; i \\u003c items.length; i++) total += items[i].price;\\n  return total;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1083,\"timestamp\":\"2026-11-06T21:12:06.716657573Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The provided miner configuration has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The endpoint requires a 'query' parameter, which is populated with the user's provided code snippet.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0xe958a27c1cbbf9d2066e99bdcaecf3d1017750c2995f3c7ad945e865bfdeb4f4\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The provided miner configuration has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The endpoint requires a 'query' parameter, which is populated with the user's provided code snippet."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "cart-total-comparison-flip-1",
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "The function contains a logic error and will always return 0.",
+        "The loop condition i > items.length is wrong; it should be i < items.length.",
+        "As written, the loop never executes, so total remains 0.",
+        "No validation for items being an array or elements having a price property; could throw runtime errors on bad input.",
+        "Fix the loop condition to iterate correctly.",
+        "Add input validation (e.g., Array.isArray(items) and type checks for price).",
+        "Use for...of or reduce for clearer, more idiomatic code.",
+        "Consider handling non‑numeric or missing price values (e.g., Number(item.price) 0)."
+      ],
+      "summary": "",
+      "latencyMs": 26594,
+      "receipt": {
+        "hash": "0x8df61c66e9518e7ddded4c32da126369cee53dabb4780714a42929c4695f1fcf",
+        "transaction": "0xed43fb9bda74efb6b3ae363b3b24eca097e9090a455daa1feb5b786ccf637922",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":\"Request changes\",\"findings\":[\"The function contains a logic error and will always return 0.\",\"The loop condition i \\u003e items.length is wrong; it should be i \\u003c items.length.\",\"As written, the loop never executes, so total remains 0.\",\"No validation for items being an array or elements having a price property; could throw runtime errors on bad input.\",\"Fix the loop condition to iterate correctly.\",\"Add input validation (e.g., Array.isArray(items) and type checks for price).\",\"Use for...of or reduce for clearer, more idiomatic code.\",\"Consider handling non‑numeric or missing price values (e.g., Number(item.price) 0).\"],\"summary\":null},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"rejected\"},\"input\":{\"code\":\"// Sum of the item prices.\\nfunction cartTotal(items) {\\n  let total = 0;\\n  for (let i = 0; i \\u003e items.length; i++) total += items[i].price;\\n  return total;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1149,\"timestamp\":\"2026-11-06T21:12:06.625305809Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent is explicitly classified as CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that serves this intent. The endpoint requires a 'query' parameter, which should contain the code provided in the user's question.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x31da4b0464b2214eabd63a558e4b45aea09b438a414515f6a6ca274550b69531\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent is explicitly classified as CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that serves this intent. The endpoint requires a 'query' parameter, which should contain the code provided in the user's question."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "withdraw-arithmetic-1",
+      "kind": "delivered",
+      "verdict": "Request changes",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "Adds amount to account.balance instead of subtracting it, so it never reduces the balance.",
+        "No check for negative or non‑numeric amount.",
+        "Mutates the input object without explicit intent-could be unexpected in functional contexts."
+      ],
+      "summary": "",
+      "latencyMs": 27943,
+      "receipt": {
+        "hash": "0xce55ef1c77261a4749925d563aa9b80fb2265fc837f7784c034391b40ad6902d",
+        "transaction": "0x3052f265b20824a4b46bcf9658d6137a1fdb5ff9895343986051e1eae2e86b92",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":\"Request changes\",\"findings\":[\"Adds amount to account.balance instead of subtracting it, so it never reduces the balance.\",\"No check for negative or non‑numeric amount.\",\"Mutates the input object without explicit intent-could be unexpected in functional contexts.\"],\"summary\":null},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"rejected\"},\"input\":{\"code\":\"// Withdraws if the balance covers it; otherwise throws.\\nfunction withdraw(account, amount) {\\n  if (amount \\u003e account.balance) throw new Error(\\\"insufficient funds\\\");\\n  account.balance += amount;\\n  return account.balance;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1188,\"timestamp\":\"2026-11-06T21:12:06.680202973Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The 'query' parameter is required for this endpoint and should contain the code provided in the user's question.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x250bdb54d4ccca36a7fa41b7b8b79b9a41fb6756efe595dd658682cb68c0e54f\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The 'query' parameter is required for this endpoint and should contain the code provided in the user's question."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "strong-password-logical-connective-1",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "Verdict: Incorrect - the function does not enforce both length and digit requirements.",
+        "Logic bug: Uses (OR) instead of &&; it returns true for passwords that are either ≥12 characters or contain a digit, not both.",
+        "Edge case: Empty string (\"\") passes because pw.length >= 12 is false but \\d test is false, so returns false - but a 12‑char password without digits also returns true, violating the spec.",
+        "Naming: Function name suggests a boolean check; keep it, but ensure semantics match the comment.",
+        "Improvement: Replace with && and optionally add additional strength checks (uppercase, special chars) if needed.",
+        "Suggested fix: javascript function isStrongPassword(pw) { return pw.length >= 12 && /\\d/.test(pw); }",
+        "Optional enhancements: Trim whitespace, handle non‑string inputs, and document expected input type."
+      ],
+      "summary": "Verdict: Incorrect - the function does not enforce both length and digit requirements.",
+      "latencyMs": 24414,
+      "receipt": {
+        "hash": "0x6aff471e3f7dbf3dd9ab902d5c2b631426158813d4661282058942d140f06bf4",
+        "transaction": "0xa046cd7c96848366b7c6d5bb6ce626a9968ce0ffd9b8060296677f4e131cb64e",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":null,\"findings\":[\"Verdict: Incorrect - the function does not enforce both length and digit requirements.\",\"Logic bug: Uses (OR) instead of \\u0026\\u0026; it returns true for passwords that are either ≥12 characters or contain a digit, not both.\",\"Edge case: Empty string (\\\"\\\") passes because pw.length \\u003e= 12 is false but \\\\d test is false, so returns false - but a 12‑char password without digits also returns true, violating the spec.\",\"Naming: Function name suggests a boolean check; keep it, but ensure semantics match the comment.\",\"Improvement: Replace with \\u0026\\u0026 and optionally add additional strength checks (uppercase, special chars) if needed.\",\"Suggested fix: javascript function isStrongPassword(pw) { return pw.length \\u003e= 12 \\u0026\\u0026 /\\\\d/.test(pw); }\",\"Optional enhancements: Trim whitespace, handle non‑string inputs, and document expected input type.\"],\"summary\":\"Verdict: Incorrect - the function does not enforce both length and digit requirements.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Strong: at least 12 characters and contains a digit.\\nfunction isStrongPassword(pw) {\\n  return pw.length \\u003e= 12 || /\\\\d/.test(pw);\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":987,\"timestamp\":\"2026-11-06T21:12:16.877659705Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves this intent. The 'query' parameter is required for this endpoint, and the user has provided the code to be reviewed within the question, which will be used as the value for the 'query' parameter.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x0bca27f9aea823e6ee7d35a6ba9adcba0ee1386533ecc9c329ac8e1e0a63b8b7\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent is CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint '/codereview' that explicitly serves this intent. The 'query' parameter is required for this endpoint, and the user has provided the code to be reviewed within the question, which will be used as the value for the 'query' parameter."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "can-delete-post-correct",
+      "kind": "delivered",
+      "verdict": "Approve",
+      "verdictRejectedByNetwork": false,
+      "findings": [
+        "Assumes user, post, and their properties (isAdmin, ownerId, id) are always defined; will throw if any are null/undefined.",
+        "No validation for data types (e.g., isAdmin should be boolean, IDs should be comparable types).",
+        "Does not handle role hierarchies or additional permission rules (e.g., moderators)."
+      ],
+      "summary": "Verdict: ✅ Functionally correct for basic admin/owner check, but lacks robustness and type safety.",
+      "latencyMs": 16315,
+      "receipt": {
+        "hash": "0xcb69fd6a37b880c4f697571da764a44da1ceaba64d3008d361ba7227f8fea2ed",
+        "transaction": "0x5f26981e866a593d82525b7e6ad07ae28956fad0211c36378cb870004112eff0",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":\"Approve\",\"findings\":[\"Assumes user, post, and their properties (isAdmin, ownerId, id) are always defined; will throw if any are null/undefined.\",\"No validation for data types (e.g., isAdmin should be boolean, IDs should be comparable types).\",\"Does not handle role hierarchies or additional permission rules (e.g., moderators).\"],\"summary\":\"Verdict: ✅ Functionally correct for basic admin/owner check, but lacks robustness and type safety.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"ok\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Only admins or the post owner may delete a post.\\nfunction canDelete(user, post) {\\n  return user.isAdmin || post.ownerId === user.id;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1076,\"timestamp\":\"2026-11-06T21:12:27.661739355Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent is fixed as CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint at /codereview that explicitly serves the CODE_REVIEW_GENERAL intent. The query parameter is required for this endpoint and should contain the code provided in the question.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x91984c9f7f569d5a8d9b9b3fab65f86c852bb3caa51a43f54653d8ee6a0bbfab\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent is fixed as CODE_REVIEW_GENERAL. The ChainSight miner has an endpoint at /codereview that explicitly serves the CODE_REVIEW_GENERAL intent. The query parameter is required for this endpoint and should contain the code provided in the question."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "authenticated-profile-always-true-condition-1",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "The function incorrectly rejects all callers due to a logical error; it will always throw an authentication error.",
+        "The condition !session.user true always evaluates to true, so the function never returns a profile.",
+        "The true part is likely a leftover from debugging; it makes the authentication check meaningless.",
+        "Remove the true and optionally add a more robust check (e.g., verify session validity, handle missing profile safely).",
+        "Consider throwing a specific error type (e.g., AuthenticationError) and avoid exposing internal details.",
+        "Guard against session.user.profile being undefined to prevent runtime errors."
+      ],
+      "summary": "Verdict: The function incorrectly rejects all callers due to a logical error; it will always throw an authentication error.",
+      "latencyMs": 19628,
+      "receipt": {
+        "hash": "0xe0f21d3c42acb11a6e4c733f34ec81e8a5ef15b8fb18d21c9d35a22a3954e1fd",
+        "transaction": "0x44456fb63d7b80313121c2b454438240c6171b39cdb05cba1d9c6ef7807f010c",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":null,\"findings\":[\"The function incorrectly rejects all callers due to a logical error; it will always throw an authentication error.\",\"The condition !session.user true always evaluates to true, so the function never returns a profile.\",\"The true part is likely a leftover from debugging; it makes the authentication check meaningless.\",\"Remove the true and optionally add a more robust check (e.g., verify session validity, handle missing profile safely).\",\"Consider throwing a specific error type (e.g., AuthenticationError) and avoid exposing internal details.\",\"Guard against session.user.profile being undefined to prevent runtime errors.\"],\"summary\":\"Verdict: The function incorrectly rejects all callers due to a logical error; it will always throw an authentication error.\"},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"ok\"},\"input\":{\"code\":\"// Returns the user's profile; anonymous callers are rejected.\\nfunction getProfile(session) {\\n  if (!session.user || true) throw new Error(\\\"unauthenticated\\\");\\n  return session.user.profile;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":858,\"timestamp\":\"2026-11-06T21:12:27.913711247Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user is asking for a code review, and the CODE_REVIEW_GENERAL intent is fixed. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The 'query' parameter is required for this endpoint and should contain the code provided in the question.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0x33177744701360b1ff4a250288a911b718741470e9b018e1bb89f49d1a0655d6\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user is asking for a code review, and the CODE_REVIEW_GENERAL intent is fixed. The ChainSight miner has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The 'query' parameter is required for this endpoint and should contain the code provided in the question."
+      }
+    },
+    {
+      "reviewerId": "auto-routed",
+      "caseId": "weekend-equality-flip-1",
+      "kind": "delivered",
+      "verdict": null,
+      "verdictRejectedByNetwork": true,
+      "findings": [
+        "Verdict: Incorrect - the logic always returns true for weekdays and false for Sunday.",
+        "Correctness: The condition should check if the day is Saturday or Sunday, but uses day !== 0 day === 6, which evaluates to true for any non‑Sunday day.",
+        "Bug: Returns true for Monday‑Friday (should be false) and false for Sunday (should be true).",
+        "Improvements: Use proper logical OR: return day === 0 day === 6;",
+        "Add input validation (e.g., ensure day is an integer between 0 and 6) and possibly throw an error for out‑of‑range values.",
+        "Include a short comment or JSDoc describing the expected range and return value."
+      ],
+      "summary": "",
+      "latencyMs": 20969,
+      "receipt": {
+        "hash": "0x3f29f8ec69e762898ea2754a8dccfcc643b49d5c0c2e0535dac71df5995d2939",
+        "transaction": "0xb3dc82de9db6b0fb73ebc7ca78393887dac52a9af92b0ed0a66fdbb137e2efff",
+        "amountMicroUsdc": 10000,
+        "recordedMiner": "4893"
+      },
+      "rawResponse": "{\"miner_id\":\"302\",\"miner_name\":\"ChainSight — Universal Intelligence \\u0026 Data Oracle\",\"endpoint\":\"/codereview\",\"result\":{\"verdict\":null,\"findings\":[\"Verdict: Incorrect - the logic always returns true for weekdays and false for Sunday.\",\"Correctness: The condition should check if the day is Saturday or Sunday, but uses day !== 0 day === 6, which evaluates to true for any non‑Sunday day.\",\"Bug: Returns true for Monday‑Friday (should be false) and false for Sunday (should be true).\",\"Improvements: Use proper logical OR: return day === 0 day === 6;\",\"Add input validation (e.g., ensure day is an integer between 0 and 6) and possibly throw an error for out‑of‑range values.\",\"Include a short comment or JSDoc describing the expected range and return value.\"],\"summary\":null},\"result_shape\":\"intent\",\"format_version\":3,\"field_status\":{\"verdict\":\"rejected\",\"findings\":\"ok\",\"summary\":\"rejected\"},\"input\":{\"code\":\"// day: 0 = Sunday ... 6 = Saturday.\\nfunction isWeekend(day) {\\n  return day !== 0 || day === 6;\\n}\\n\"},\"input_schema_version\":3,\"cost_usd\":0.01,\"duration_ms\":1189,\"timestamp\":\"2026-11-06T21:12:27.791671009Z\",\"reasoning\":\"Intent: intent given by the caller\\nMiner: The user wants a code review, and the intent is fixed as CODE_REVIEW_GENERAL. The provided miner configuration has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The 'query' parameter is required for this endpoint, and the user has provided the code snippet within the \\u003cQUESTION\\u003e tags, which should be directly used as the value for the 'query' parameter.\",\"intent\":\"CODE_REVIEW_GENERAL\",\"signal_hash\":\"0xe560308bb2dbf9c83e94911dad5c225ce0b000c44781cfb4caf1aa94bc8e827b\"}",
+      "servedBy": {
+        "minerId": "302",
+        "name": "ChainSight — Universal Intelligence & Data Oracle",
+        "routerReasoning": "Intent: intent given by the caller\nMiner: The user wants a code review, and the intent is fixed as CODE_REVIEW_GENERAL. The provided miner configuration has an endpoint '/codereview' that explicitly serves the CODE_REVIEW_GENERAL intent. The 'query' parameter is required for this endpoint, and the user has provided the code snippet within the <QUESTION> tags, which should be directly used as the value for the 'query' parameter."
+      }
+    }
+  ]
+}

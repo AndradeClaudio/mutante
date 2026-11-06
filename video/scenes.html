@@ -22,7 +22,7 @@ const COLOR = {
 };
 const SANS = '"Segoe UI", system-ui, sans-serif';
 const MONO = '"Cascadia Code", Consolas, monospace';
-const ROUND_1 = 'round-001', ROUND_2 = 'round-002', STATIC_BASELINE = 'round-002-static-baseline';
+const ROUND_1 = 'round-001', ROUND_2 = 'round-002', ROUND_3 = 'round-003-auto-routing', STATIC_BASELINE = 'round-002-static-baseline';
 // A one-character bug that the best reviewer explained, the network discarded and the others let through.
 const EXAMPLE_CORRECT = 'discount-age-correct', EXAMPLE_MUTANT = 'discount-age-boundary-1';
 
@@ -31,30 +31,43 @@ const easeOut = (x) => 1 - Math.pow(1 - clamp(x), 3);
 const pct = (x) => `${Math.round(x * 100)}%`;
 
 function statistics(D) {
-  const round2 = D.purchases.filter((p) => p.round === ROUND_2);
-  const ids = [...new Set(round2.map((p) => p.reviewer_id))];
-  const scoreboard = ids.map((id) => {
-    const mine = round2.filter((p) => p.reviewer_id === id);
+  const reviewerRow = (id, name, mine) => {
     const n = (grade) => mine.filter((p) => p.grade_code === grade).length;
     const planted = mine.filter((p) => p.answer_key === 'planted bug').length;
     const correct = mine.filter((p) => p.answer_key === 'correct code').length;
+    const paid = mine.reduce((sum, p) => sum + p.paid_usdc, 0);
     return {
-      id, name: mine[0].reviewer, planted,
+      id, name, planted, paid,
       counted: n('caught') / planted,
       explained: (n('caught') + n('explained-without-verdict')) / planted,
       falseAlarms: correct ? n('false-alarm') / correct : 0,
-      paid: mine.reduce((sum, p) => sum + p.paid_usdc, 0),
-      costPerCatch: n('caught') ? mine.reduce((sum, p) => sum + p.paid_usdc, 0) / n('caught') : null,
+      costPerCatch: n('caught') ? paid / n('caught') : null,
       discarded: mine.filter((p) => p.answer_key !== 'annulled' && p.verdict_discarded_by_network === 1).length,
-      answers: mine.filter((p) => p.answer_key !== 'annulled').length,
     };
-  }).sort((a, b) => b.explained - a.explained);
+  };
+  // Round 2 named each miner; round 3 asked the same samples without naming one (auto-routing).
+  const round2 = D.purchases.filter((p) => p.round === ROUND_2);
+  const round3 = D.purchases.filter((p) => p.round === ROUND_3);
+  const direct = [...new Set(round2.map((p) => p.reviewer_id))]
+    .map((id) => reviewerRow(id, round2.find((p) => p.reviewer_id === id).reviewer, round2.filter((p) => p.reviewer_id === id)));
+  const routedTo = round3[0].served_by.split(' — ')[0];
+  const routed = reviewerRow('auto-routed', `${routedTo} (via auto-routing)`, round3);
+  const scoreboard = [...direct, routed].sort((a, b) => b.explained - a.explained);
+  const bestDirect = [...direct].sort((a, b) => b.explained - a.explained)[0];
+  const readers = scoreboard.filter((r) => r.explained > 0.2);
   const cases2 = D.cases.filter((c) => c.round === ROUND_2);
   const round1 = D.purchases.filter((p) => p.round === ROUND_1);
+  const routedNames = new Set(round3.map((p) => p.served_by));
+  // Why each round-1 miner returned nothing, from what the network answered.
   const miners1 = [...new Set(round1.map((p) => p.reviewer_id))].map((id) => {
     const mine = round1.filter((p) => p.reviewer_id === id);
-    return { id, name: mine[0].reviewer, answered: mine.some((p) => p.grade_code !== 'failed') };
+    const answered = mine.some((p) => p.grade_code !== 'failed');
+    const status = answered ? 'answered'
+      : routedNames.has(mine[0].reviewer) ? 'routed-only'
+      : /could not route/.test(mine[0].answer) ? 'unreachable' : 'data-source';
+    return { id, name: mine[0].reviewer, status };
   });
+  const count1 = (status) => miners1.filter((m) => m.status === status).length;
   // Static analyzers: any warning counts as flagging the bug (a generous reading).
   const baseline = D.purchases.filter((p) => p.round === STATIC_BASELINE && p.answer_key === 'planted bug');
   const isFlag = (p) => p.grade_code === 'caught' || p.grade_code === 'blocked-without-reason';
@@ -66,15 +79,18 @@ function statistics(D) {
     .map((id) => D.cases.find((c) => c.round === STATIC_BASELINE && c.case === id));
   return {
     linters, linterHits,
-    scoreboard, best: scoreboard[0], othersMax: Math.max(...scoreboard.slice(1).map((p) => p.explained)),
-    purchases: round2.length, price: round2[0].paid_usdc,
+    scoreboard, readers, bestDirect, routed,
+    othersMax: Math.max(...scoreboard.filter((r) => !readers.includes(r)).map((p) => p.explained)),
+    discardedTotal: readers.reduce((sum, r) => sum + r.discarded, 0),
+    byPrice: scoreboard.filter((r) => r.costPerCatch !== null).sort((a, b) => a.costPerCatch - b.costPerCatch),
+    purchases: round2.length, routedPurchases: round3.length, price: round2[0].paid_usdc,
     originals: cases2.filter((c) => c.case.endsWith('-correct')).length,
     operators: new Set(cases2.filter((c) => c.answer_key !== 'correct code' && c.mutation).map((c) => c.mutation)).size,
     totalCases: cases2.length,
     planted: cases2.filter((c) => c.answer_key === 'planted bug').length,
     correct: cases2.filter((c) => c.answer_key === 'correct code').length,
     annulled: cases2.filter((c) => c.answer_key === 'annulled').length,
-    miners1, answered1: miners1.filter((m) => m.answered).length,
+    miners1, answered1: count1('answered'), dataSources1: count1('data-source'), unreachable1: count1('unreachable'),
     falseAlarmsMax: Math.max(...scoreboard.map((p) => p.falseAlarms)),
   };
 }
@@ -133,7 +149,7 @@ function scenes(D, S) {
   const mutant = caseById(EXAMPLE_MUTANT).code.trimEnd().split('\n');
   const changedLine = mutant.findIndex((l, i) => l !== correct[i]);
   const example = D.purchases.filter((p) => p.round === ROUND_2 && p.case === EXAMPLE_MUTANT);
-  const fromBest = example.find((p) => p.reviewer_id === S.best.id);
+  const fromBest = example.find((p) => p.reviewer_id === S.bestDirect.id);
   const log = D.log;
   const sampleMutants = ['can-vote-boundary-1', 'cart-total-arithmetic-1', 'weekend-logical-connective-1', 'find-user-sql-concatenation-1', 'strong-password-constant-changed-1']
     .map(caseById).filter(Boolean);
@@ -274,42 +290,42 @@ function scenes(D, S) {
 
     // The climax: the discarded-verdicts badge lands at 12.5 s, on the impact.
     { duration: 36, sounds: [[12.5, 'impact']], captions: [
-        [0.5, 12, `Results. The best reviewer, ${S.best.name.split(' ')[0]}, explained ${pct(S.best.explained)} of the planted bugs.`],
-        [12.5, 24, `But the network recorded only ${pct(S.best.counted)}: it rejected the verdict on ${S.best.discarded} of its ${S.best.answers} answers.`],
-        [24.5, 35.5, `The other reviewers caught at most ${pct(S.othersMax)}, only the SQL injection. False alarms on correct code: ${pct(S.falseAlarmsMax)}.`]],
+        [0.5, 12, `Results. ${S.readers.length} reviewers really read the code: ${S.readers.map((r) => `${r.name.split(' ')[0]} explained ${pct(r.explained)}`).join(', ')} of the planted bugs.`],
+        [12.5, 24, `But the network counted only ${S.readers.map((r) => pct(r.counted)).join(' and ')}: both write their verdict as prose, so the verdict field was rejected ${S.discardedTotal} times.`],
+        [24.5, 35.5, `The other miners caught at most ${pct(S.othersMax)}, only the SQL injection. False alarms on correct code: at most ${pct(S.falseAlarmsMax)}.`]],
       draw(t) {
-        heading('Round 2 scoreboard', `${S.purchases} paid reviews  ·  ${S.planted} planted bugs  ·  ${S.correct} correct samples`);
-        const x0 = 640, width = 1080;
+        heading('Scoreboard', `Same ${S.planted} planted bugs and ${S.correct} correct samples  ·  ${S.purchases} reviews naming a miner, ${S.routedPurchases} via auto-routing`);
+        const x0 = 700, width = 1020;
         S.scoreboard.forEach((r, i) => {
-          const y = 330 + i * 210;
-          paragraph(r.name, 120, y + 30, 480, { size: 32, weight: 600 });
+          const y = 300 + i * 140;
+          paragraph(r.name, 120, y + 28, 540, { size: 28, weight: 600, spacing: 34 });
           [['explained', 'explained the bug in its answer', COLOR.explained], ['counted', 'counted by the network', COLOR.counted]].forEach(([key, label, color], j) => {
             const from = j === 0 ? 1 : 12.5;
             const v = r[key] * easeOut((t - from - i * 0.4) / 1.5);
-            const by = y + j * 70;
-            ctx.fillStyle = '#ffffff10'; ctx.fillRect(x0, by, width, 46);
-            ctx.fillStyle = color; ctx.fillRect(x0, by, Math.max(4, v * width), 46);
-            if (t > from) text(`${pct(v)}  ${label}`, x0 + Math.max(4, v * width) + 16, by + 34, { size: 26 });
+            const by = y + j * 56;
+            ctx.fillStyle = '#ffffff10'; ctx.fillRect(x0, by, width, 40);
+            ctx.fillStyle = color; ctx.fillRect(x0, by, Math.max(4, v * width), 40);
+            if (t > from) text(`${pct(v)}  ${label}`, x0 + Math.max(4, v * width) + 16, by + 30, { size: 24 });
           });
         });
         if (t > 12.5) {
           ctx.globalAlpha *= easeOut((t - 12.5) / 1);
-          pill(`${S.best.discarded} verdicts discarded by the network`, 1120, 220, COLOR.bad, 30);
+          pill(`${S.discardedTotal} verdicts rejected for their format`, 1060, 165, COLOR.bad, 30);
         }
       } },
 
     { duration: 16, captions: [
-        [0.5, 8, `Same price per call: $${S.price.toFixed(2)}. But per bug caught, ${S.best.name.split(' ')[0]} cost $${S.best.costPerCatch.toFixed(3)}, and the others $${S.scoreboard[1].costPerCatch.toFixed(2)}.`],
+        [0.5, 8, `Same price per call: $${S.price.toFixed(2)}. Per bug caught: ${S.byPrice.map((r) => `${r.name.split(' ')[0]} $${r.costPerCatch.toFixed(3)}`).join(', ')}.`],
         [8.5, 15.5, 'That is the leaderboard buyers need: price per verified correct answer, not per call.']],
       draw(t) {
-        heading('Price per verified correct answer', 'Everything paid to each reviewer in round 2 ÷ bugs it caught and the network counted');
-        const most = Math.max(...S.scoreboard.map((r) => r.costPerCatch ?? 0));
-        S.scoreboard.forEach((r, i) => {
-          const y = 330 + i * 150;
-          const v = (r.costPerCatch ?? 0) / most * easeOut((t - 1 - i * 0.5) / 1.2);
-          paragraph(r.name, 120, y + 30, 520, { size: 30, weight: 600 });
+        heading('Price per verified correct answer', 'Everything paid to each reviewer ÷ bugs it caught and the network counted');
+        const most = Math.max(...S.byPrice.map((r) => r.costPerCatch));
+        S.byPrice.forEach((r, i) => {
+          const y = 300 + i * 120;
+          const v = r.costPerCatch / most * easeOut((t - 1 - i * 0.5) / 1.2);
+          paragraph(r.name, 120, y + 30, 540, { size: 28, weight: 600, spacing: 34 });
           ctx.fillStyle = '#ffffff10'; ctx.fillRect(700, y, 1020, 50);
-          ctx.fillStyle = i === 0 ? COLOR.counted : COLOR.bad; ctx.fillRect(700, y, Math.max(4, v * 1020), 50);
+          ctx.fillStyle = S.readers.includes(r) ? COLOR.counted : COLOR.bad; ctx.fillRect(700, y, Math.max(4, v * 1020), 50);
           const label = `$${r.costPerCatch.toFixed(3)} per bug caught  ·  $${r.paid.toFixed(2)} paid`;
           // A long bar holds its label inside; a short one gets it alongside.
           const inside = v > 0.5;
@@ -317,14 +333,15 @@ function scenes(D, S) {
         });
         if (t > 8.5) {
           ctx.save(); ctx.globalAlpha *= easeOut((t - 8.5) / 0.8);
-          pill(`${Math.round(S.scoreboard[1].costPerCatch / S.best.costPerCatch)}× cheaper per correct answer, at the same price per call`, 120, 820, COLOR.counted, 30);
+          const spread = S.byPrice[S.byPrice.length - 1].costPerCatch / S.byPrice[0].costPerCatch;
+          pill(`${Math.round(spread)}× apart per correct answer, at the same price per call`, 120, 820, COLOR.counted, 30);
           ctx.restore();
         }
       } },
 
     { duration: 28, sounds: [[1.5, 'ping'], [4.5, 'ping'], [7.5, 'ping']], captions: [
         [0.5, 12.5, 'Same bug, three reviewers.'],
-        [13, 27.5, 'The best reviewer found it, and the network threw its verdict away. The others let the bug through.']],
+        [13, 27.5, `${S.bestDirect.name.split(' ')[0]} found it, but its verdict was rejected for its format. The other two let the bug through.`]],
       draw(t) {
         heading('Same bug, three reviewers', `${EXAMPLE_MUTANT}: a customer who is exactly 65 gets no discount`);
         codeBlock(mutant, 120, 290, { size: 22, highlight: changedLine, width: 780 });
@@ -345,18 +362,28 @@ function scenes(D, S) {
         });
       } },
 
-    { duration: 16, captions: [[0.5, 15.5, `In round one, only ${S.answered1} of the ${S.miners1.length} miners listed for code review returned a review at all.`]],
+    { duration: 18, captions: [
+        [0.5, 8.5, `Called directly, only ${S.answered1} of the ${S.miners1.length} miners listed for code review returned a review.`],
+        [9, 17.5, `Of the rest, ${S.dataSources1} are repository data sources, not reviewers, and ${S.unreachable1} could not be reached. One good reviewer only answers through the router.`]],
       draw(t) {
-        heading('Round 1: who can review code at all', 'Every miner listed for CODE_REVIEW_GENERAL on the testnet');
+        heading('Round 1: who can review code at all', 'Every miner listed for CODE_REVIEW_GENERAL on the testnet, called directly');
+        const look = {
+          answered: ['returned reviews', COLOR.counted],
+          'routed-only': ['answers only via auto-routing', COLOR.explained],
+          unreachable: ['unreachable: could not route', COLOR.muted],
+          'data-source': ['repository data source', COLOR.muted],
+        };
         S.miners1.forEach((m, i) => {
           const a = easeOut((t - 0.5 - i * 0.25) / 0.6);
           if (a <= 0) return;
           ctx.save(); ctx.globalAlpha *= a;
           const column = i % 4, row = Math.floor(i / 4);
           const x = 120 + column * 425, y = 280 + row * 140;
-          box(x, y, 395, 122, m.answered ? COLOR.counted + '22' : COLOR.panel, m.answered ? COLOR.counted : COLOR.border);
-          paragraph(m.name, x + 24, y + 40, 350, { size: 22, spacing: 28, weight: 600, color: m.answered ? COLOR.text : COLOR.muted });
-          text(m.answered ? 'returned reviews' : 'refused by the network', x + 24, y + 106, { size: 20, color: m.answered ? COLOR.counted : COLOR.muted });
+          const [label, color] = look[m.status];
+          const lit = m.status === 'answered' || m.status === 'routed-only';
+          box(x, y, 395, 122, lit ? color + '22' : COLOR.panel, lit ? color : COLOR.border);
+          paragraph(m.name, x + 24, y + 40, 350, { size: 22, spacing: 28, weight: 600, color: lit ? COLOR.text : COLOR.muted });
+          text(label, x + 24, y + 106, { size: 20, color });
           ctx.restore();
         });
       } },

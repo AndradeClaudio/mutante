@@ -9,6 +9,12 @@ import type { TestCase } from "../../domain/test-case.js";
 const SEPOLIA = "eip155:11155111";
 const TEST_USDC = "0xcc194e1a843B658526D0D5C431f670028582Ae17";
 
+/**
+ * What a buyer gets by default: no miner named, the network's router picks one by its leaderboard.
+ * Treated as one more reviewer, so the default path is graded like any miner.
+ */
+export const AUTO_ROUTED: Reviewer = { id: "auto-routed", name: "Telegraph auto-routing (no miner chosen)" };
+
 export interface TelegraphSettings {
   readonly nodeUrl: string; // e.g. https://devnode.telegraphprotocol.com
   readonly account: PrivateKeyAccount;
@@ -35,14 +41,16 @@ export class TelegraphMarket implements ReviewMarket {
     const response = await fetch(`${this.settings.nodeUrl}/engine/v1/intents/${this.intent}/miners`);
     if (!response.ok) throw new Error(`Could not list reviewers: HTTP ${response.status}`);
     const body = (await response.json()) as { miners: { id: string | number; name: string }[] };
-    return body.miners.map((m) => ({ id: String(m.id), name: m.name }));
+    return [...body.miners.map((m) => ({ id: String(m.id), name: m.name })), AUTO_ROUTED];
   }
 
   async buyReview(reviewer: Reviewer, testCase: TestCase): Promise<Review> {
     const start = Date.now();
     const base = { reviewerId: reviewer.id, caseId: testCase.id };
     try {
-      const response = await this.payingFetch(`${this.settings.nodeUrl}/engine/v1/ask/${reviewer.id}`, {
+      const askUrl =
+        reviewer.id === AUTO_ROUTED.id ? `${this.settings.nodeUrl}/engine/v1/ask` : `${this.settings.nodeUrl}/engine/v1/ask/${reviewer.id}`;
+      const response = await this.payingFetch(askUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ intent: this.intent, params: { code: testCase.code.text } }),
@@ -65,6 +73,7 @@ export class TelegraphMarket implements ReviewMarket {
         latencyMs,
         receipt,
         rawResponse: text,
+        ...(reviewer.id === AUTO_ROUTED.id ? { servedBy: answer.servedBy } : {}),
       };
     } catch (error) {
       const reason = error instanceof Error ? error.message : String(error);
@@ -84,14 +93,25 @@ function readReceipt(header: string | null): Receipt | null {
   };
 }
 
-/** The node answers `{result, field_status}`; anything unparseable counts as an empty answer. */
-function parseAnswer(text: string): { result: Record<string, unknown>; fieldStatus: Record<string, unknown> } {
+interface ParsedAnswer {
+  result: Record<string, unknown>;
+  fieldStatus: Record<string, unknown>;
+  servedBy: { minerId: string; name: string; routerReasoning: string };
+}
+
+/** The node answers `{result, field_status, miner_id, miner_name, reasoning}`; anything unparseable is an empty answer. */
+function parseAnswer(text: string): ParsedAnswer {
   const asObject = (value: unknown) => (value && typeof value === "object" ? (value as Record<string, unknown>) : {});
+  const asText = (value: unknown) => (value === undefined || value === null ? "" : String(value));
   try {
-    const body = JSON.parse(text) as { result?: unknown; field_status?: unknown };
-    return { result: asObject(body.result), fieldStatus: asObject(body.field_status) };
+    const body = JSON.parse(text) as Record<string, unknown>;
+    return {
+      result: asObject(body.result),
+      fieldStatus: asObject(body.field_status),
+      servedBy: { minerId: asText(body.miner_id), name: asText(body.miner_name), routerReasoning: asText(body.reasoning) },
+    };
   } catch {
-    return { result: {}, fieldStatus: {} };
+    return { result: {}, fieldStatus: {}, servedBy: { minerId: "", name: "", routerReasoning: "" } };
   }
 }
 

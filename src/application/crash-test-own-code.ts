@@ -2,8 +2,8 @@ import { generateCases, type ContractChecker, type GenerationResult } from "../d
 import type { MutationOperator } from "../domain/mutation/operators.js";
 import type { OriginalCode } from "../domain/mutation/original-code.js";
 import type { Round } from "../domain/round.js";
-import type { TestCase } from "../domain/test-case.js";
 import type { OnRecorded, RunCrashTest } from "./run-crash-test.js";
+import { variedSelection } from "./varied-selection.js";
 
 export interface OwnCodeRequest {
   readonly roundId: string;
@@ -52,19 +52,4 @@ export class CrashTestOwnCode {
     );
     return { round, provenMutants: mutants.length, discarded: generated.discarded };
   }
-}
-
-/** Takes mutants operator by operator, so a small budget still covers different kinds of bug. */
-function variedSelection(mutants: readonly TestCase[], limit: number): TestCase[] {
-  const byOperator = new Map<string, TestCase[]>();
-  for (const mutant of mutants) {
-    const operator = mutant.origin.kind === "mutant" ? mutant.origin.operator : "other";
-    byOperator.set(operator, [...(byOperator.get(operator) ?? []), mutant]);
-  }
-  const queues = [...byOperator.values()];
-  const chosen: TestCase[] = [];
-  for (let i = 0; chosen.length < limit && queues.some((q) => i < q.length); i++) {
-    for (const queue of queues) if (i < queue.length && chosen.length < limit) chosen.push(queue[i]!);
-  }
-  return chosen;
 }

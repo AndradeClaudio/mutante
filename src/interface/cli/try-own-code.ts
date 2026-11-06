@@ -14,7 +14,7 @@ import { roundRepository } from "./paths.js";
 import { printScoreboard } from "./scoreboard-table.js";
 
 // Usage: npm run try -- --code samples/try/free-shipping.js --tests samples/try/free-shipping.tests.js
-//          [--mutants 4] [--budget 0.2] [--reviewers 7310045,5530,20260828] [--round try-my-run]
+//          [--mutants 4] [--budget 0.25] [--reviewers 7310045,5530,20260828,auto-routed] [--round try-my-run]
 // The code file holds one JavaScript function whose first comment is its contract (max 256 bytes).
 // The tests file is a list of assert(condition) calls that the correct function passes.
 const { values: options } = parseArgs({
@@ -22,9 +22,9 @@ const { values: options } = parseArgs({
     code: { type: "string" },
     tests: { type: "string" },
     mutants: { type: "string", default: "4" },
-    budget: { type: "string", default: "0.2" },
-    // The three miners that returned reviews in round 2; pass --reviewers to try others.
-    reviewers: { type: "string", default: "7310045,5530,20260828" },
+    budget: { type: "string", default: "0.25" },
+    // The miners that returned reviews when named directly, plus the network's own auto-routing (round 3).
+    reviewers: { type: "string", default: "7310045,5530,20260828,auto-routed" },
     round: { type: "string" },
   },
 });

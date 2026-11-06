@@ -88,6 +88,8 @@ function purchaseRow(round: RoundSnapshot, review: Review) {
     paid_usdc: (review.receipt?.amountMicroUsdc ?? 0) / 1_000_000,
     receipt: review.receipt?.hash ?? "",
     tx: review.receipt?.transaction ?? "",
+    // Only for auto-routed purchases: the miner the network's router picked.
+    served_by: delivered ? (review.servedBy?.name ?? "") : "",
   };
 }
 
