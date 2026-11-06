@@ -6,6 +6,11 @@ const TIME_LIMIT_MS = 200;
 /** Runs JavaScript code and its tests in an isolated Node context (no modules, network or disk). */
 export class JavaScriptContractChecker implements ContractChecker {
   async honorsContract(code: string, tests: string): Promise<boolean> {
+    return (await this.firstViolation(code, tests)) === null;
+  }
+
+  /** The message of the first failing assertion, or null when every check passes. */
+  async firstViolation(code: string, tests: string): Promise<string | null> {
     const context = {
       assert(condition: unknown, message = "contract broken") {
         if (!condition) throw new Error(message);
@@ -15,9 +20,9 @@ export class JavaScriptContractChecker implements ContractChecker {
       // The vm `timeout` stops synchronous infinite loops created by mutants (e.g. `i < n` turned into `i > n`).
       const run = runInNewContext(`${code}\n;(async () => { ${tests} })()`, context, { timeout: TIME_LIMIT_MS });
       await Promise.race([run, timeout(TIME_LIMIT_MS)]);
-      return true;
-    } catch {
-      return false;
+      return null;
+    } catch (error) {
+      return error instanceof Error ? error.message : String(error);
     }
   }
 }

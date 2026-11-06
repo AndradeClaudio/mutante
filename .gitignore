@@ -4,3 +4,5 @@ video/preview/
 video/check-frames/
 # The demo video is published on video platforms and can be regenerated with npm run record-video.
 outreach/video/*.mp4
+# Evaluation material stays private: the pool keeps part of it as hidden tests (see evaluators/README.md).
+evaluators/private/

@@ -15,7 +15,9 @@
     "check-video": "node video/check.mjs",
     "static-baseline": "tsx src/interface/cli/run-static-baseline.ts",
     "try": "tsx src/interface/cli/try-own-code.ts",
-    "check-routing": "tsx src/interface/cli/check-routing.ts"
+    "check-routing": "tsx src/interface/cli/check-routing.ts",
+    "evaluation:build": "tsx src/interface/cli/build-evaluation-material.ts",
+    "evaluation:submit": "tsx src/interface/cli/submit-evaluation-material.ts"
   },
   "keywords": [],
   "author": "",

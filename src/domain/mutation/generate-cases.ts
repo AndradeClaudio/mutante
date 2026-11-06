@@ -7,6 +7,8 @@ import { CATEGORY_CLUES, type Mutation, type MutationOperator } from "./operator
 /** Runs the contract tests against some code (the original or a mutant). */
 export interface ContractChecker {
   honorsContract(code: string, tests: string): Promise<boolean>;
+  /** Which check the code breaks (the failing assertion's message), or null when it honors the contract. */
+  firstViolation(code: string, tests: string): Promise<string | null>;
 }
 
 export type DiscardReason = "duplicate" | "over-on-chain-limit" | "equivalent";
