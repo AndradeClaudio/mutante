@@ -1,0 +1,146 @@
+[
+ {
+  "epoch": 2030,
+  "fetched_at": "2026-11-07T02:10:00Z",
+  "miner_slug": "chainsight-oracle",
+  "reviewer_id": "auto-routed",
+  "reviewer": "ChainSight (via auto-routing)",
+  "score": 1,
+  "tied_at_top": 6
+ },
+ {
+  "epoch": 2030,
+  "fetched_at": "2026-11-07T02:10:00Z",
+  "miner_slug": "zk-codereview",
+  "reviewer_id": "7310045",
+  "reviewer": "CodeWire Code Review Request Contract",
+  "score": 1,
+  "tied_at_top": 6
+ },
+ {
+  "epoch": 2030,
+  "fetched_at": "2026-11-07T02:10:00Z",
+  "miner_slug": "telegraph-verity-intelligence",
+  "reviewer_id": "5530",
+  "reviewer": "Telegraph Verity Intelligence",
+  "score": 1,
+  "tied_at_top": 6
+ },
+ {
+  "epoch": 2030,
+  "fetched_at": "2026-11-07T02:10:00Z",
+  "miner_slug": "a1-preflight",
+  "reviewer_id": "20260828",
+  "reviewer": "PREFLIGHT Infrastructure Signals",
+  "score": 1,
+  "tied_at_top": 6
+ },
+ {
+  "epoch": 2032,
+  "fetched_at": "2026-11-07T08:24:48Z",
+  "miner_slug": "chainsight-oracle",
+  "reviewer_id": "auto-routed",
+  "reviewer": "ChainSight (via auto-routing)",
+  "score": 1,
+  "tied_at_top": 6
+ },
+ {
+  "epoch": 2032,
+  "fetched_at": "2026-11-07T08:24:48Z",
+  "miner_slug": "zk-codereview",
+  "reviewer_id": "7310045",
+  "reviewer": "CodeWire Code Review Request Contract",
+  "score": 1,
+  "tied_at_top": 6
+ },
+ {
+  "epoch": 2032,
+  "fetched_at": "2026-11-07T08:24:48Z",
+  "miner_slug": "telegraph-verity-intelligence",
+  "reviewer_id": "5530",
+  "reviewer": "Telegraph Verity Intelligence",
+  "score": 1,
+  "tied_at_top": 6
+ },
+ {
+  "epoch": 2032,
+  "fetched_at": "2026-11-07T08:24:48Z",
+  "miner_slug": "a1-preflight",
+  "reviewer_id": "20260828",
+  "reviewer": "PREFLIGHT Infrastructure Signals",
+  "score": 1,
+  "tied_at_top": 6
+ },
+ {
+  "epoch": 2034,
+  "fetched_at": "2026-11-07T14:33:52Z",
+  "miner_slug": "chainsight-oracle",
+  "reviewer_id": "auto-routed",
+  "reviewer": "ChainSight (via auto-routing)",
+  "score": 1,
+  "tied_at_top": 6
+ },
+ {
+  "epoch": 2034,
+  "fetched_at": "2026-11-07T14:33:52Z",
+  "miner_slug": "zk-codereview",
+  "reviewer_id": "7310045",
+  "reviewer": "CodeWire Code Review Request Contract",
+  "score": 1,
+  "tied_at_top": 6
+ },
+ {
+  "epoch": 2034,
+  "fetched_at": "2026-11-07T14:33:52Z",
+  "miner_slug": "telegraph-verity-intelligence",
+  "reviewer_id": "5530",
+  "reviewer": "Telegraph Verity Intelligence",
+  "score": 1,
+  "tied_at_top": 6
+ },
+ {
+  "epoch": 2034,
+  "fetched_at": "2026-11-07T14:33:52Z",
+  "miner_slug": "a1-preflight",
+  "reviewer_id": "20260828",
+  "reviewer": "PREFLIGHT Infrastructure Signals",
+  "score": 1,
+  "tied_at_top": 6
+ },
+ {
+  "epoch": 2042,
+  "fetched_at": "2026-11-08T14:58:07Z",
+  "miner_slug": "chainsight-oracle",
+  "reviewer_id": "auto-routed",
+  "reviewer": "ChainSight (via auto-routing)",
+  "score": 1,
+  "tied_at_top": 7
+ },
+ {
+  "epoch": 2042,
+  "fetched_at": "2026-11-08T14:58:07Z",
+  "miner_slug": "zk-codereview",
+  "reviewer_id": "7310045",
+  "reviewer": "CodeWire Code Review Request Contract",
+  "score": 1,
+  "tied_at_top": 7
+ },
+ {
+  "epoch": 2042,
+  "fetched_at": "2026-11-08T14:58:07Z",
+  "miner_slug": "telegraph-verity-intelligence",
+  "reviewer_id": "5530",
+  "reviewer": "Telegraph Verity Intelligence",
+  "score": 1,
+  "tied_at_top": 7
+ },
+ {
+  "epoch": 2042,
+  "fetched_at": "2026-11-08T14:58:07Z",
+  "miner_slug": "a1-preflight",
+  "reviewer_id": "20260828",
+  "reviewer": "PREFLIGHT Infrastructure Signals",
+  "score": 1,
+  "tied_at_top": 7
+ }
+]

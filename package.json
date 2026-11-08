@@ -10,7 +10,7 @@
     "crash-test": "tsx src/interface/cli/run-crash-test.ts",
     "scoreboard": "tsx src/interface/cli/show-scoreboard.ts",
     "regrade": "tsx src/interface/cli/regrade-round.ts",
-    "export-scoreboard": "tsx src/interface/cli/export-public-scoreboard.ts round-001 round-002 round-002-static-baseline round-003-auto-routing round-004",
+    "export-scoreboard": "tsx src/interface/cli/export-public-scoreboard.ts round-001 round-002 round-002-static-baseline round-003-auto-routing round-004 round-005",
     "record-video": "node video/record.mjs",
     "check-video": "node video/check.mjs",
     "static-baseline": "tsx src/interface/cli/run-static-baseline.ts",

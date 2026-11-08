@@ -50,28 +50,29 @@ What the results show:
     none. Through the router it works and reviews well. Measuring only by direct calls would have missed it, which is
     why round 3 exists.
 
-### The next day: same samples, different ranking (round 4)
+### Three days, same samples, different ranking (rounds 4 and 5)
 
-On 7 November we bought the same 71 reviews again, from the same four reviewers, asked the same way, with the same answer
-key and the same two samples annulled:
+On 7 and 8 November we bought the same 71 reviews again, from the same four reviewers, asked the same way, with the same
+answer key and the same two samples annulled:
 
-| Reviewer | Bugs explained, 6 → 7 Nov | Bugs counted by the network | False alarms | Price per bug caught |
+| Reviewer | Bugs explained, 6 → 7 → 8 Nov | Bugs counted by the network | False alarms (of 15) | Price per bug caught |
 |---|---|---|---|---|
-| ChainSight, via auto-routing | 63% → **72%** (39 / 54) | 26% → 30% (16 / 54) | 7% → 13% (2 of 15) | $0.049 → **$0.044** |
-| CodeWire, named directly | 52% → 43% (23 / 54) | 33% → 19% (10 / 54) | 0% → 7% (1 of 15) | $0.039 → $0.071 |
-| Telegraph Verity | 2% → 2% | 2% → 2% | 0% | $0.710 |
-| PREFLIGHT | 2% → 2% | 2% → 2% | 0% | $0.710 |
+| ChainSight, via auto-routing | 63% → 72% → **72%** | 26% → 30% → 30% | 1 → 2 → 0 | $0.049 → $0.044 → **$0.044** |
+| CodeWire, named directly | 52% → 43% → 48% | 33% → 19% → 24% | 0 → 1 → 2 | $0.039 → $0.071 → $0.055 |
+| Telegraph Verity | 2% → 2% → 2% | 2% → 2% → 2% | 0 | $0.710 |
+| PREFLIGHT | 2% → 2% → 2% | 2% → 2% → 2% | 0 | $0.710 |
 
-- **The best reviewer changed overnight.** The two reviewers that read the code moved by several points in opposite
-  directions. On the same samples, the cheapest correct answer came from CodeWire on day 1 and from ChainSight on day 2.
+- **The best reviewer changed overnight.** On day 1 the cheapest correct answer came from CodeWire; on days 2 and 3 it
+  came from ChainSight. CodeWire swings by up to 14 points from one day to the next, and false alarms come and go.
 - **One measurement is not enough to rank a reviewer.** A buyer should re-run the test, for example every epoch, and
   rank on more than one run. Mutante is built for that: a round costs cents and needs no human grading.
-- On both days the official leaderboard gave all four of them the same score, 1.0 (epochs 2032 and 2034).
+- On all three days the official leaderboard gave all four the same score, 1.0 (epochs 2032, 2034 and 2042; by epoch
+  2042, seven miners shared it). The snapshots are in [`data/public/official-leaderboard.json`](data/public/official-leaderboard.json).
 
-Rounds 2, 3 and 4 cost $2.13, $0.69 and $2.84 in test USDC. Every answer, receipt and transaction is in
+Rounds 2, 3, 4 and 5 cost $2.13, $0.69, $2.84 and $2.84 in test USDC. Every answer, receipt and transaction is in
 [`data/rounds/round-002.json`](data/rounds/round-002.json),
-[`data/rounds/round-003-auto-routing.json`](data/rounds/round-003-auto-routing.json) and
-[`data/rounds/round-004.json`](data/rounds/round-004.json).
+[`data/rounds/round-003-auto-routing.json`](data/rounds/round-003-auto-routing.json),
+[`data/rounds/round-004.json`](data/rounds/round-004.json) and [`data/rounds/round-005.json`](data/rounds/round-005.json).
 
 ## How it works
 
