@@ -11,77 +11,97 @@ This function decides who gets a discount: seniors from 65, and children under 1
 Change one character and a customer on their 65th birthday loses the senior discount. Would a paid AI reviewer notice?
 
 4
-00:00:30,500 --> 00:00:42,000
+00:00:30,500 --> 00:00:41,000
 We start from small correct functions. Each states its rule in a comment and has tests.
 
 5
-00:00:42,500 --> 00:00:57,500
+00:00:41,500 --> 00:00:53,500
 A mutation engine plants one bug at a time, and keeps it only if the tests prove it is a real bug.
 
 6
-00:00:58,500 --> 00:01:16,000
+00:00:54,500 --> 00:01:07,000
 Then an agent buys a review of every sample from every reviewer: machine to machine, $0.01 per call in test USDC.
 
 7
-00:01:16,500 --> 00:01:35,500
+00:01:07,500 --> 00:01:21,500
 What you see is a replay of the real run log from 6 November 2026.
 
 8
-00:01:36,500 --> 00:01:55,500
+00:01:22,500 --> 00:01:37,500
 Every answer comes with a Telegraph receipt and an on-chain payment anyone can check.
 
 9
-00:01:56,500 --> 00:02:03,500
+00:01:38,500 --> 00:01:45,500
 First, the free option. ESLint and SonarJS flagged 3 of the 54 bugs, even counting any warning.
 
 10
-00:02:04,000 --> 00:02:11,500
+00:01:46,000 --> 00:01:53,500
 The other 51 are valid code that breaks its own comment. No lint rule knows what the code promises.
 
 11
-00:02:12,500 --> 00:02:24,000
+00:01:54,500 --> 00:02:06,000
 Results. 2 reviewers really read the code: ChainSight explained 63%, CodeWire explained 52% of the planted bugs.
 
 12
-00:02:24,500 --> 00:02:36,000
+00:02:06,500 --> 00:02:18,000
 But the network counted only 26% and 33%: both write their verdict as prose, so the verdict field was rejected 59 times.
 
 13
-00:02:36,500 --> 00:02:47,500
+00:02:18,500 --> 00:02:29,500
 The other miners caught at most 2%, only the SQL injection. False alarms on correct code: at most 7%.
 
 14
-00:02:48,500 --> 00:02:56,000
-Same price per call: $0.01. Per bug caught: CodeWire $0.039, ChainSight $0.049, Telegraph $0.710, PREFLIGHT $0.710.
+00:02:30,500 --> 00:02:38,000
+Same price per call: $0.01. Per bug caught: CodeWire $0.039, ChainSight $0.049, Verity $0.710, PREFLIGHT $0.710.
 
 15
-00:02:56,500 --> 00:03:03,500
+00:02:38,500 --> 00:02:45,500
 That is the leaderboard buyers need: price per verified correct answer, not per call.
 
 16
-00:03:04,500 --> 00:03:16,500
-Same bug, three reviewers.
+00:02:46,500 --> 00:02:53,500
+Telegraph's own leaderboard gives 7 code reviewers the same top score: 1.0.
 
 17
-00:03:17,000 --> 00:03:31,500
-CodeWire found it, but its verdict was rejected for its format. The other two let the bug through.
+00:02:54,000 --> 00:03:01,500
+On the same samples on 8 Nov, those reviewers explained between 2% and 72% of the planted bugs.
 
 18
-00:03:32,500 --> 00:03:40,500
-Called directly, only 3 of the 16 miners listed for code review returned a review.
+00:03:02,500 --> 00:03:10,500
+We bought the same 284 reviews again on 7 Nov and 8 Nov: same samples, same answer key.
 
 19
-00:03:41,000 --> 00:03:49,500
-Of the rest, 10 are repository data sources, not reviewers, and 2 could not be reached. One good reviewer only answers through the router.
+00:03:11,000 --> 00:03:19,500
+ChainSight went from 63% to 72% of bugs explained. CodeWire's counted share swung between 19% and 33%.
 
 20
-00:03:50,500 --> 00:03:59,000
-Bring your own function: Mutante plants bugs in it, proves them with your tests, and buys the reviews.
+00:03:20,000 --> 00:03:27,500
+Verity and PREFLIGHT stayed at 2%. One measurement is not enough to rank a reviewer, and a re-run costs cents.
 
 21
-00:03:59,500 --> 00:04:07,500
-Failed miners are recorded as failures, and an interrupted run resumes without paying twice.
+00:03:28,500 --> 00:03:38,500
+Same bug, three reviewers.
 
 22
-00:04:08,500 --> 00:04:22,500
+00:03:39,000 --> 00:03:51,500
+CodeWire found it, but its verdict was rejected for its format. The other two let the bug through.
+
+23
+00:03:52,500 --> 00:03:59,500
+Called directly, only 3 of the 16 miners listed for code review returned a review.
+
+24
+00:04:00,000 --> 00:04:07,500
+Of the rest, 10 are repository data sources, not reviewers, and 2 could not be reached. One good reviewer only answers through the router.
+
+25
+00:04:08,500 --> 00:04:17,000
+Bring your own function: Mutante plants bugs in it, proves them with your tests, and buys the reviews.
+
+26
+00:04:17,500 --> 00:04:25,500
+Failed miners are recorded as failures, and an interrupted run resumes without paying twice.
+
+27
+00:04:26,500 --> 00:04:40,500
 Buyers of intelligence need to know what they are buying. Mutante measures it.

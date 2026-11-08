@@ -14,6 +14,7 @@ const DESTINATION = "outreach/video/mutante-demo";
 const data = {
   purchases: JSON.parse(await readFile("data/public/purchases.json", "utf8")),
   cases: JSON.parse(await readFile("data/public/cases.json", "utf8")),
+  official: JSON.parse(await readFile("data/public/official-leaderboard.json", "utf8")),
   log: (await readFile("data/round-002.log", "utf8"))
     .split(/\r?\n/)
     .map((line) => /^\[(\d+) left\]\s+(\S+)\s+(\S+)\s+(.+)$/.exec(line))

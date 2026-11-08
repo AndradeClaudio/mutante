@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Mutante demo</title>
 <style>
-  html, body { margin: 0; background: #0d1117; }
+  html, body { margin: 0; background: #f6f7fb; }
   canvas { display: block; }
 </style>
 </head>
@@ -16,13 +16,20 @@
 // Every scene is a function of time, so dropped frames never delay the video.
 const W = 1920, H = 1080;
 const ctx = document.getElementById('screen').getContext('2d');
+// Light theme shared with the public dashboard: soft aurora background, glass panels, violet-to-cyan accents.
 const COLOR = {
-  background: '#0d1117', panel: '#161b22', border: '#2b3340', text: '#e6edf3', muted: '#8b97a6',
-  counted: '#3fb8af', explained: '#e3a33b', bad: '#e5534b', good: '#57ab5a', blue: '#6cb6ff', code: '#0a0e13',
+  background: '#f6f7fb', panel: 'rgba(255,255,255,0.80)', border: 'rgba(15,23,42,0.08)', text: '#0b1020', muted: '#5a6478',
+  counted: '#10b5d6', explained: '#f5a524', bad: '#f4546b', good: '#12b981', blue: '#6d5dfc', code: '#0f1222',
+  codeText: '#e6e9f5', codeMuted: '#8a93a6', codeAccent: '#a99cff', track: 'rgba(15,23,42,0.07)',
 };
+// One colour per reviewer, the same as on the dashboard.
+const REVIEWER_COLOR = { 'auto-routed': '#6d5dfc', '7310045': '#10b5d6', '5530': '#f4546b', '20260828': '#f5a524' };
+const SHORT_NAME = { 'auto-routed': 'ChainSight', '7310045': 'CodeWire', '5530': 'Verity', '20260828': 'PREFLIGHT' };
 const SANS = '"Segoe UI", system-ui, sans-serif';
 const MONO = '"Cascadia Code", Consolas, monospace';
 const ROUND_1 = 'round-001', ROUND_2 = 'round-002', ROUND_3 = 'round-003-auto-routing', STATIC_BASELINE = 'round-002-static-baseline';
+// The same samples bought again on later days: day 1 named three miners (round 2) and used auto-routing (round 3).
+const DAYS = [['6 Nov', [ROUND_2, ROUND_3]], ['7 Nov', ['round-004']], ['8 Nov', ['round-005']]];
 // A one-character bug that the best reviewer explained, the network discarded and the others let through.
 const EXAMPLE_CORRECT = 'discount-age-correct', EXAMPLE_MUTANT = 'discount-age-boundary-1';
 
@@ -68,6 +75,17 @@ function statistics(D) {
     return { id, name: mine[0].reviewer, status };
   });
   const count1 = (status) => miners1.filter((m) => m.status === status).length;
+  // Each reviewer on each day it was measured.
+  const days = DAYS.map(([day, rounds]) => {
+    const today = D.purchases.filter((p) => rounds.includes(p.round));
+    const rows = Object.keys(SHORT_NAME).filter((id) => today.some((p) => p.reviewer_id === id))
+      .map((id) => reviewerRow(id, SHORT_NAME[id], today.filter((p) => p.reviewer_id === id)));
+    return { day, rows, purchases: today.length };
+  }).filter((d) => d.rows.length > 0);
+  const latest = days[days.length - 1];
+  const across = (id, key) => days.map((d) => d.rows.find((r) => r.id === id)?.[key]).filter((v) => v !== undefined && v !== null);
+  const officialEpoch = Math.max(...D.official.map((r) => r.epoch));
+  const official = D.official.filter((r) => r.epoch === officialEpoch);
   // Static analyzers: any warning counts as flagging the bug (a generous reading).
   const baseline = D.purchases.filter((p) => p.round === STATIC_BASELINE && p.answer_key === 'planted bug');
   const isFlag = (p) => p.grade_code === 'caught' || p.grade_code === 'blocked-without-reason';
@@ -78,6 +96,7 @@ function statistics(D) {
   const linterHits = [...new Set(baseline.filter(isFlag).map((p) => p.case))]
     .map((id) => D.cases.find((c) => c.round === STATIC_BASELINE && c.case === id));
   return {
+    days, latest, across, officialEpoch, official, tiedAtTop: official[0].tied_at_top,
     linters, linterHits,
     scoreboard, readers, bestDirect, routed,
     othersMax: Math.max(...scoreboard.filter((r) => !readers.includes(r)).map((p) => p.explained)),
@@ -96,9 +115,91 @@ function statistics(D) {
 }
 
 // ---------- drawing ----------
-function box(x, y, w, h, fill = COLOR.panel, border = COLOR.border, radius = 14) {
+function box(x, y, w, h, fill = COLOR.panel, border = COLOR.border, radius = 24) {
+  ctx.save();
+  // Glass panels float on a soft shadow; coloured or dark boxes sit flatter.
+  if (fill === COLOR.panel || fill === COLOR.code) {
+    ctx.shadowColor = 'rgba(30, 27, 75, 0.14)'; ctx.shadowBlur = 48; ctx.shadowOffsetY = 18;
+  }
   ctx.beginPath(); ctx.roundRect(x, y, w, h, radius); ctx.fillStyle = fill; ctx.fill();
-  if (border) { ctx.strokeStyle = border; ctx.lineWidth = 2; ctx.stroke(); }
+  ctx.restore();
+  if (border) { ctx.beginPath(); ctx.roundRect(x, y, w, h, radius); ctx.strokeStyle = border; ctx.lineWidth = 2; ctx.stroke(); }
+}
+// The brand gradient, left to right across a span.
+function gradient(x0, x1) {
+  const g = ctx.createLinearGradient(x0, 0, x1, 0);
+  g.addColorStop(0, '#6d5dfc'); g.addColorStop(0.5, '#3b82f6'); g.addColorStop(1, '#10b5d6');
+  return g;
+}
+// Slowly drifting colour fields behind every scene; a function of the global time so they never jump.
+function backdrop(T) {
+  ctx.fillStyle = COLOR.background; ctx.fillRect(0, 0, W, H);
+  const blobs = [
+    [300 + 160 * Math.sin(T / 9), 120 + 90 * Math.cos(T / 11), 760, '201, 194, 255'],
+    [1650 + 140 * Math.cos(T / 10), 260 + 110 * Math.sin(T / 8), 680, '182, 236, 247'],
+    [1000 + 220 * Math.sin(T / 13), 980 + 60 * Math.cos(T / 7), 620, '255, 217, 225'],
+  ];
+  for (const [x, y, r, rgb] of blobs) {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, `rgba(${rgb}, 0.75)`); g.addColorStop(1, `rgba(${rgb}, 0)`);
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  }
+}
+
+// ---------- 3D columns ----------
+// A tiny painter's-algorithm renderer: each column is a box on the floor, the camera orbits around the vertical axis.
+function columns3d(items, { cx, cy, scale = 1, angle = 0, tilt = 0.42, grid = null, distance = 2400 }) {
+  const cosA = Math.cos(angle), sinA = Math.sin(angle), cosT = Math.cos(tilt), sinT = Math.sin(tilt);
+  const project = ([x, y, z]) => {
+    const xr = x * cosA - z * sinA, zr = x * sinA + z * cosA;
+    const yr = y * cosT - zr * sinT, zt = y * sinT + zr * cosT;
+    const f = distance / (distance + zt);
+    return { x: cx + xr * f * scale, y: cy - yr * f * scale, depth: zt };
+  };
+  if (grid) {
+    ctx.save(); ctx.strokeStyle = 'rgba(15,23,42,0.10)'; ctx.lineWidth = 1.5;
+    for (let v = -grid.size; v <= grid.size; v += grid.step) {
+      for (const [a, b] of [[[v, 0, -grid.size], [v, 0, grid.size]], [[-grid.size, 0, v], [grid.size, 0, v]]]) {
+        const p = project(a), q = project(b);
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+  // Boxes never intersect, so drawing whole boxes far-to-near (and each box's faces far-to-near) is exact.
+  const boxes = [];
+  for (const it of items) {
+    const faces = [];
+    const s = it.size / 2, h = Math.max(2, it.height);
+    const v = (dx, y, dz) => [it.x + dx * s, y, it.z + dz * s];
+    const quads = [
+      { pts: [v(-1, h, -1), v(1, h, -1), v(1, h, 1), v(-1, h, 1)], light: 1.18 },
+      { pts: [v(-1, 0, 1), v(1, 0, 1), v(1, h, 1), v(-1, h, 1)], light: 1.0 },
+      { pts: [v(-1, 0, -1), v(1, 0, -1), v(1, h, -1), v(-1, h, -1)], light: 1.0 },
+      { pts: [v(1, 0, -1), v(1, 0, 1), v(1, h, 1), v(1, h, -1)], light: 0.78 },
+      { pts: [v(-1, 0, -1), v(-1, 0, 1), v(-1, h, 1), v(-1, h, -1)], light: 0.78 },
+    ];
+    for (const quad of quads) {
+      const p = quad.pts.map(project);
+      faces.push({ p, depth: p.reduce((sum, q) => sum + q.depth, 0) / 4, color: it.color, light: quad.light });
+    }
+    it.top = project([it.x, h, it.z]);
+    faces.sort((a, b) => b.depth - a.depth);
+    boxes.push({ depth: project([it.x, h / 2, it.z]).depth, faces });
+  }
+  boxes.sort((a, b) => b.depth - a.depth);
+  for (const f of boxes.flatMap((b) => b.faces)) {
+    const c = shade(f.color, f.light);
+    ctx.beginPath(); f.p.forEach((q, i) => (i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y))); ctx.closePath();
+    ctx.fillStyle = c; ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = 1; ctx.stroke();
+  }
+  return items;
+}
+function shade(hex, k) {
+  const n = parseInt(hex.slice(1), 16);
+  const ch = (v) => Math.max(0, Math.min(255, Math.round(k >= 1 ? v + (255 - v) * (k - 1) * 1.6 : v * k)));
+  return `rgb(${ch(n >> 16)}, ${ch((n >> 8) & 255)}, ${ch(n & 255)})`;
 }
 function text(t, x, y, { size = 36, color = COLOR.text, weight = 400, font = SANS, align = 'left' } = {}) {
   ctx.font = `${weight} ${size}px ${font}`; ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'alphabetic';
@@ -126,7 +227,7 @@ function codeBlock(lines, x, y, { size = 30, highlight = -1, highlightColor = CO
   lines.forEach((l, i) => {
     const ly = y + 24 + i * lineHeight;
     if (i === highlight) { ctx.fillStyle = highlightColor + '33'; ctx.fillRect(x + 2, ly, width - 4, lineHeight); }
-    text(l, x + 28, ly + size * 1.1, { size, font: MONO, color: l.trim().startsWith('//') ? COLOR.muted : COLOR.text });
+    text(l, x + 28, ly + size * 1.1, { size, font: MONO, color: l.trim().startsWith('//') ? COLOR.codeMuted : COLOR.codeText });
   });
   return y + lines.length * lineHeight + 48;
 }
@@ -138,8 +239,11 @@ function pill(t, x, y, color, size = 24) {
   return w;
 }
 function heading(t, subtitle) {
-  text(t, 120, 170, { size: 64, weight: 600 });
-  if (subtitle) text(subtitle, 120, 225, { size: 30, color: COLOR.muted });
+  ctx.fillStyle = gradient(120, 220); ctx.beginPath(); ctx.roundRect(120, 96, 64, 8, 4); ctx.fill();
+  ctx.save(); ctx.letterSpacing = '-1.5px';
+  text(t, 120, 180, { size: 66, weight: 700 });
+  ctx.restore();
+  if (subtitle) text(subtitle, 120, 232, { size: 29, color: COLOR.muted });
 }
 
 // ---------- scenes ----------
@@ -158,9 +262,14 @@ function scenes(D, S) {
     { duration: 9, captions: [[0.5, 8.5, 'Who reviews the reviewers? A crash test for the code-review miners on Telegraph.']],
       draw(t) {
         ctx.globalAlpha *= easeOut(t / 1.2);
-        text('MUTANTE', W / 2, 400, { size: 140, weight: 700, align: 'center', color: COLOR.counted });
-        text('a crash test for Telegraph code-review miners', W / 2, 480, { size: 46, align: 'center' });
-        text('Telegraph Hackathon Season II  ·  Apps & Agents  ·  Model Economy', W / 2, 600, { size: 30, align: 'center', color: COLOR.muted });
+        ctx.save(); ctx.letterSpacing = '-4px';
+        text('MUTANTE', W / 2, 330, { size: 150, weight: 800, align: 'center', color: gradient(W / 2 - 420, W / 2 + 420) });
+        ctx.restore();
+        text('a crash test for Telegraph code-review miners', W / 2, 410, { size: 46, align: 'center', weight: 500 });
+        text('Telegraph Hackathon Season II  ·  Apps & Agents  ·  Model Economy', W / 2, 470, { size: 28, align: 'center', color: COLOR.muted });
+        const rows = S.latest.rows;
+        columns3d(rows.map((r, i) => ({ x: (i - (rows.length - 1) / 2) * 150, z: 0, size: 90, height: 420 * r.explained * easeOut((t - 1) / 2.5), color: REVIEWER_COLOR[r.id] })),
+          { cx: W / 2, cy: 840, scale: 0.8, angle: 0.32 * Math.sin(t / 2.2), tilt: 0.3, grid: { size: 450, step: 75 } });
       } },
 
     { duration: 21, sounds: [[8.5, 'glitch']], captions: [
@@ -177,9 +286,9 @@ function scenes(D, S) {
         }
       } },
 
-    { duration: 28, captions: [
-        [0.5, 12, 'We start from small correct functions. Each states its rule in a comment and has tests.'],
-        [12.5, 27.5, 'A mutation engine plants one bug at a time, and keeps it only if the tests prove it is a real bug.']],
+    { duration: 24, captions: [
+        [0.5, 11, 'We start from small correct functions. Each states its rule in a comment and has tests.'],
+        [11.5, 23.5, 'A mutation engine plants one bug at a time, and keeps it only if the tests prove it is a real bug.']],
       draw(t) {
         heading('How the test set is built', 'Every planted bug is proven by running tests, so the answer key is known before we ask');
         const steps = [
@@ -201,10 +310,10 @@ function scenes(D, S) {
           if (i < 3) text('→', x + w + 6, y + 165, { size: 36, color: COLOR.muted });
           ctx.restore();
         });
-        if (t > 12) {
-          const step = Math.floor((t - 12) / 3.2);
+        if (t > 11.5) {
+          const step = Math.floor((t - 11.5) / 2.4);
           const c = sampleMutants[step % sampleMutants.length];
-          ctx.save(); ctx.globalAlpha *= easeOut((t - 12 - step * 3.2) / 0.5);
+          ctx.save(); ctx.globalAlpha *= easeOut((t - 11.5 - step * 2.4) / 0.5);
           text('Mutant', 120, 700, { size: 26, color: COLOR.muted });
           text(c.case, 230, 700, { size: 26, font: MONO, color: COLOR.blue });
           text(c.planted.replaceAll('`', ''), 120, 760, { size: 40, font: MONO, color: COLOR.bad });
@@ -212,31 +321,31 @@ function scenes(D, S) {
         }
       } },
 
-    { duration: 38, sounds: [[1, 'pulse']], captions: [
-        [0.5, 18, `Then an agent buys a review of every sample from every reviewer: machine to machine, $${S.price.toFixed(2)} per call in test USDC.`],
-        [18.5, 37.5, 'What you see is a replay of the real run log from 6 November 2026.']],
+    { duration: 28, sounds: [[1, 'pulse']], captions: [
+        [0.5, 13, `Then an agent buys a review of every sample from every reviewer: machine to machine, $${S.price.toFixed(2)} per call in test USDC.`],
+        [13.5, 27.5, 'What you see is a replay of the real run log from 6 November 2026.']],
       draw(t) {
         heading('Buying the reviews', 'Replay of the real run log  ·  Ethereum Sepolia testnet  ·  x402 payments');
-        const visible = Math.min(log.length, Math.floor(clamp((t - 1) / 34) * log.length));
+        const visible = Math.min(log.length, Math.floor(clamp((t - 1) / 25) * log.length));
         box(120, 280, 1180, 570, COLOR.code);
         log.slice(Math.max(0, visible - 14), visible).forEach((l, i) => {
           const y = 330 + i * 38;
-          text(`[${String(l.left).padStart(3)} left]`, 150, y, { size: 24, font: MONO, color: COLOR.muted });
-          text(l.reviewer.padEnd(9), 330, y, { size: 24, font: MONO, color: COLOR.blue });
-          text(l.caseId.slice(0, 38), 470, y, { size: 24, font: MONO });
-          const color = l.outcome === 'Request changes' ? COLOR.counted : l.outcome === 'no verdict' ? COLOR.explained : COLOR.muted;
+          text(`[${String(l.left).padStart(3)} left]`, 150, y, { size: 24, font: MONO, color: COLOR.codeMuted });
+          text(l.reviewer.padEnd(9), 330, y, { size: 24, font: MONO, color: COLOR.codeAccent });
+          text(l.caseId.slice(0, 38), 470, y, { size: 24, font: MONO, color: COLOR.codeText });
+          const color = l.outcome === 'Request changes' ? COLOR.counted : l.outcome === 'no verdict' ? COLOR.explained : COLOR.codeMuted;
           text(l.outcome, 1270, y, { size: 24, font: MONO, color, align: 'right' });
         });
         box(1360, 280, 440, 330);
         text('reviews bought', 1400, 340, { size: 28, color: COLOR.muted });
         text(String(visible), 1400, 430, { size: 88, weight: 700 });
         text('test USDC paid', 1400, 500, { size: 28, color: COLOR.muted });
-        text(`$${(visible * S.price).toFixed(2)}`, 1400, 580, { size: 64, weight: 700, color: COLOR.counted });
+        text(`$${(visible * S.price).toFixed(2)}`, 1400, 580, { size: 64, weight: 700, color: gradient(1400, 1640) });
         box(1360, 640, 440, 210);
         paragraph('No human in the loop: the agent pays each miner per call and stores every answer and receipt.', 1400, 700, 370, { size: 28, color: COLOR.muted });
       } },
 
-    { duration: 20, captions: [[0.5, 19.5, 'Every answer comes with a Telegraph receipt and an on-chain payment anyone can check.']],
+    { duration: 16, captions: [[0.5, 15.5, 'Every answer comes with a Telegraph receipt and an on-chain payment anyone can check.']],
       draw(t) {
         heading('Proof of every purchase', 'Receipt header returned by the Telegraph node, and its payment on Sepolia');
         const lines = [
@@ -266,7 +375,7 @@ function scenes(D, S) {
           const share = l.flagged / l.planted;
           const v = share * easeOut((t - 1 - i * 0.4) / 1.2);
           text(l.name, 120, y + 34, { size: 30, weight: 600 });
-          ctx.fillStyle = '#ffffff10'; ctx.fillRect(760, y, 960, 46);
+          ctx.fillStyle = COLOR.track; ctx.fillRect(760, y, 960, 46);
           ctx.fillStyle = COLOR.muted; ctx.fillRect(760, y, Math.max(4, v * 960), 46);
           if (t > 1) text(`${pct(v)}  (${l.flagged} of ${l.planted})`, 760 + Math.max(4, v * 960) + 16, y + 34, { size: 28 });
         });
@@ -290,7 +399,7 @@ function scenes(D, S) {
 
     // The climax: the discarded-verdicts badge lands at 12.5 s, on the impact.
     { duration: 36, sounds: [[12.5, 'impact']], captions: [
-        [0.5, 12, `Results. ${S.readers.length} reviewers really read the code: ${S.readers.map((r) => `${r.name.split(' ')[0]} explained ${pct(r.explained)}`).join(', ')} of the planted bugs.`],
+        [0.5, 12, `Results. ${S.readers.length} reviewers really read the code: ${S.readers.map((r) => `${SHORT_NAME[r.id] ?? r.name.split(' ')[0]} explained ${pct(r.explained)}`).join(', ')} of the planted bugs.`],
         [12.5, 24, `But the network counted only ${S.readers.map((r) => pct(r.counted)).join(' and ')}: both write their verdict as prose, so the verdict field was rejected ${S.discardedTotal} times.`],
         [24.5, 35.5, `The other miners caught at most ${pct(S.othersMax)}, only the SQL injection. False alarms on correct code: at most ${pct(S.falseAlarmsMax)}.`]],
       draw(t) {
@@ -303,7 +412,7 @@ function scenes(D, S) {
             const from = j === 0 ? 1 : 12.5;
             const v = r[key] * easeOut((t - from - i * 0.4) / 1.5);
             const by = y + j * 56;
-            ctx.fillStyle = '#ffffff10'; ctx.fillRect(x0, by, width, 40);
+            ctx.fillStyle = COLOR.track; ctx.fillRect(x0, by, width, 40);
             ctx.fillStyle = color; ctx.fillRect(x0, by, Math.max(4, v * width), 40);
             if (t > from) text(`${pct(v)}  ${label}`, x0 + Math.max(4, v * width) + 16, by + 30, { size: 24 });
           });
@@ -315,7 +424,7 @@ function scenes(D, S) {
       } },
 
     { duration: 16, captions: [
-        [0.5, 8, `Same price per call: $${S.price.toFixed(2)}. Per bug caught: ${S.byPrice.map((r) => `${r.name.split(' ')[0]} $${r.costPerCatch.toFixed(3)}`).join(', ')}.`],
+        [0.5, 8, `Same price per call: $${S.price.toFixed(2)}. Per bug caught: ${S.byPrice.map((r) => `${SHORT_NAME[r.id] ?? r.name.split(' ')[0]} $${r.costPerCatch.toFixed(3)}`).join(', ')}.`],
         [8.5, 15.5, 'That is the leaderboard buyers need: price per verified correct answer, not per call.']],
       draw(t) {
         heading('Price per verified correct answer', 'Everything paid to each reviewer ÷ bugs it caught and the network counted');
@@ -324,12 +433,12 @@ function scenes(D, S) {
           const y = 300 + i * 120;
           const v = r.costPerCatch / most * easeOut((t - 1 - i * 0.5) / 1.2);
           paragraph(r.name, 120, y + 30, 540, { size: 28, weight: 600, spacing: 34 });
-          ctx.fillStyle = '#ffffff10'; ctx.fillRect(700, y, 1020, 50);
+          ctx.fillStyle = COLOR.track; ctx.fillRect(700, y, 1020, 50);
           ctx.fillStyle = S.readers.includes(r) ? COLOR.counted : COLOR.bad; ctx.fillRect(700, y, Math.max(4, v * 1020), 50);
           const label = `$${r.costPerCatch.toFixed(3)} per bug caught  ·  $${r.paid.toFixed(2)} paid`;
           // A long bar holds its label inside; a short one gets it alongside.
           const inside = v > 0.5;
-          if (t > 1.2 + i * 0.5) text(label, inside ? 724 : 700 + Math.max(4, v * 1020) + 18, y + 36, { size: 28, weight: inside ? 600 : 400, color: inside ? COLOR.background : COLOR.text });
+          if (t > 1.2 + i * 0.5) text(label, inside ? 724 : 700 + Math.max(4, v * 1020) + 18, y + 36, { size: 28, weight: inside ? 600 : 400, color: inside ? '#ffffff' : COLOR.text });
         });
         if (t > 8.5) {
           ctx.save(); ctx.globalAlpha *= easeOut((t - 8.5) / 0.8);
@@ -339,9 +448,67 @@ function scenes(D, S) {
         }
       } },
 
-    { duration: 28, sounds: [[1.5, 'ping'], [4.5, 'ping'], [7.5, 'ping']], captions: [
-        [0.5, 12.5, 'Same bug, three reviewers.'],
-        [13, 27.5, `${S.bestDirect.name.split(' ')[0]} found it, but its verdict was rejected for its format. The other two let the bug through.`]],
+    { duration: 16, captions: [
+        [0.5, 7.5, `Telegraph's own leaderboard gives ${S.tiedAtTop} code reviewers the same top score: 1.0.`],
+        [8, 15.5, `On the same samples on ${S.latest.day}, those reviewers explained between ${pct(Math.min(...S.latest.rows.map((r) => r.explained)))} and ${pct(Math.max(...S.latest.rows.map((r) => r.explained)))} of the planted bugs.`]],
+      draw(t) {
+        heading('The official score is a tie', `Telegraph leaderboard for CODE_REVIEW_GENERAL, epoch ${S.officialEpoch}  ·  Mutante measurement on ${S.latest.day}`);
+        const rows = [...S.latest.rows].sort((a, b) => b.explained - a.explained);
+        rows.forEach((r, i) => {
+          const a = easeOut((t - 0.5 - i * 0.35) / 0.7);
+          if (a <= 0) return;
+          ctx.save(); ctx.globalAlpha *= a;
+          const y = 285 + i * 140;
+          box(120, y, 1680, 120);
+          ctx.fillStyle = REVIEWER_COLOR[r.id]; ctx.beginPath(); ctx.arc(170, y + 62, 14, 0, Math.PI * 2); ctx.fill();
+          text(r.name, 205, y + 74, { size: 36, weight: 700 });
+          const score = S.official.find((o) => o.reviewer_id === r.id)?.score;
+          pill(`official score ${score === undefined ? '—' : score.toFixed(1)}`, 520, y + 74, COLOR.muted, 26);
+          const v = r.explained * easeOut((t - 8 - i * 0.3) / 1.4);
+          ctx.fillStyle = COLOR.track; ctx.beginPath(); ctx.roundRect(880, y + 44, 560, 36, 18); ctx.fill();
+          if (t > 8) {
+            ctx.fillStyle = REVIEWER_COLOR[r.id]; ctx.beginPath(); ctx.roundRect(880, y + 44, Math.max(36, v * 560), 36, 18); ctx.fill();
+            text(`${pct(v)} explained`, 1470, y + 60, { size: 28, weight: 700 });
+            text(r.costPerCatch === null ? 'no bug caught' : '$' + `${r.costPerCatch.toFixed(3)} per bug caught`, 1470, y + 96, { size: 22, color: COLOR.muted });
+          }
+          ctx.restore();
+        });
+      } },
+
+    { duration: 26, sounds: [[9, 'impact']], captions: [
+        [0.5, 8.5, `We bought the same ${S.latest.purchases} reviews again on ${S.days.slice(1).map((d) => d.day).join(' and ')}: same samples, same answer key.`],
+        [9, 17.5, `ChainSight went from ${pct(S.across('auto-routed', 'explained')[0])} to ${pct(S.across('auto-routed', 'explained').at(-1))} of bugs explained. CodeWire's counted share swung between ${pct(Math.min(...S.across('7310045', 'counted')))} and ${pct(Math.max(...S.across('7310045', 'counted')))}.`],
+        [18, 25.5, `Verity and PREFLIGHT stayed at ${pct(S.across('5530', 'explained').at(-1))}. One measurement is not enough to rank a reviewer, and a re-run costs cents.`]],
+      draw(t) {
+        heading('Three days, same samples', 'Column height = share of planted bugs explained  ·  one row per day, rotating');
+        const ids = Object.keys(SHORT_NAME);
+        const items = [];
+        S.days.forEach((d, j) => ids.forEach((id, i) => {
+          const r = d.rows.find((x) => x.id === id);
+          if (!r) return;
+          const grow = easeOut((t - 0.6 - j * 1.4 - i * 0.15) / 1.6);
+          items.push({ x: (i - 1.5) * 160, z: (j - (S.days.length - 1) / 2) * 230, size: 92, height: 520 * r.explained * grow, color: REVIEWER_COLOR[id], label: pct(r.explained), grow });
+        }));
+        columns3d(items, { cx: 640, cy: 720, scale: 0.72, angle: -0.62 + 0.18 * Math.sin(t / 4), tilt: 0.5, grid: { size: 420, step: 70 } });
+        for (const it of items) if (it.grow > 0.95 && t > 3) {
+          ctx.save(); ctx.font = `700 22px ${SANS}`; ctx.lineWidth = 6; ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineJoin = 'round'; ctx.textAlign = 'center';
+          ctx.strokeText(it.label, it.top.x, it.top.y - 14); ctx.restore();
+          text(it.label, it.top.x, it.top.y - 14, { size: 22, weight: 700, align: 'center' });
+        }
+        box(1200, 300, 600, 560);
+        text('Bugs explained', 1240, 360, { size: 26, color: COLOR.muted });
+        text(S.days.map((d) => d.day).join('   →   '), 1240, 400, { size: 22, color: COLOR.muted });
+        ids.forEach((id, i) => {
+          const y = 470 + i * 100;
+          ctx.fillStyle = REVIEWER_COLOR[id]; ctx.beginPath(); ctx.roundRect(1240, y - 24, 22, 22, 6); ctx.fill();
+          text(SHORT_NAME[id], 1278, y - 4, { size: 30, weight: 700 });
+          text(S.across(id, 'explained').map(pct).join('  →  '), 1240, y + 36, { size: 28, font: MONO, color: COLOR.text });
+        });
+      } },
+
+    { duration: 24, sounds: [[1.5, 'ping'], [4.5, 'ping'], [7.5, 'ping']], captions: [
+        [0.5, 10.5, 'Same bug, three reviewers.'],
+        [11, 23.5, `${S.bestDirect.name.split(' ')[0]} found it, but its verdict was rejected for its format. The other two let the bug through.`]],
       draw(t) {
         heading('Same bug, three reviewers', `${EXAMPLE_MUTANT}: a customer who is exactly 65 gets no discount`);
         codeBlock(mutant, 120, 290, { size: 22, highlight: changedLine, width: 780 });
@@ -362,9 +529,9 @@ function scenes(D, S) {
         });
       } },
 
-    { duration: 18, captions: [
-        [0.5, 8.5, `Called directly, only ${S.answered1} of the ${S.miners1.length} miners listed for code review returned a review.`],
-        [9, 17.5, `Of the rest, ${S.dataSources1} are repository data sources, not reviewers, and ${S.unreachable1} could not be reached. One good reviewer only answers through the router.`]],
+    { duration: 16, captions: [
+        [0.5, 7.5, `Called directly, only ${S.answered1} of the ${S.miners1.length} miners listed for code review returned a review.`],
+        [8, 15.5, `Of the rest, ${S.dataSources1} are repository data sources, not reviewers, and ${S.unreachable1} could not be reached. One good reviewer only answers through the router.`]],
       draw(t) {
         heading('Round 1: who can review code at all', 'Every miner listed for CODE_REVIEW_GENERAL on the testnet, called directly');
         const look = {
@@ -417,8 +584,10 @@ function scenes(D, S) {
     { duration: 15, sounds: [[0, 'resolve']], captions: [[0.5, 14.5, 'Buyers of intelligence need to know what they are buying. Mutante measures it.']],
       draw(t) {
         ctx.globalAlpha *= easeOut(t / 1);
-        text('MUTANTE', W / 2, 400, { size: 120, weight: 700, align: 'center', color: COLOR.counted });
-        text('an independent quality meter for Telegraph miners', W / 2, 480, { size: 42, align: 'center' });
+        ctx.save(); ctx.letterSpacing = '-3px';
+        text('MUTANTE', W / 2, 380, { size: 130, weight: 800, align: 'center', color: gradient(W / 2 - 380, W / 2 + 380) });
+        ctx.restore();
+        text('Same score. Different reviewers. Measured every day.', W / 2, 470, { size: 44, align: 'center', weight: 600 });
         text('Telegraph Hackathon Season II entry  ·  @andradeclaudiox  ·  built with Claude', W / 2, 600, { size: 30, align: 'center', color: COLOR.muted });
         text('Source code, run logs and every receipt:', W / 2, 670, { size: 28, align: 'center', color: COLOR.muted });
         text('github.com/AndradeClaudio/mutante', W / 2, 725, { size: 36, font: MONO, align: 'center', color: COLOR.blue });
@@ -430,7 +599,7 @@ function caption(t) {
   const lines = wrap(t, 1500, 40, 500);
   const lineHeight = 54, h = lines.length * lineHeight + 30;
   const y = H - 60 - h;
-  ctx.fillStyle = 'rgba(0,0,0,0.78)';
+  ctx.fillStyle = 'rgba(11,16,32,0.86)';
   ctx.beginPath(); ctx.roundRect(W / 2 - 800, y, 1600, h, 12); ctx.fill();
   lines.forEach((l, i) => text(l, W / 2, y + 15 + 40 + i * lineHeight, { size: 40, weight: 500, align: 'center', color: '#ffffff' }));
 }
@@ -443,7 +612,7 @@ window.prepare = () => {
   window.CAPTIONS = list.flatMap((s) => s.captions.map(([a, b, words]) => ({ start: s.start + a, end: s.start + b, text: words })));
   window.SOUND_CUES = list.flatMap((s) => (s.sounds ?? []).map(([at, kind]) => ({ at: s.start + at, kind })));
   window.frame = (t) => {
-    ctx.globalAlpha = 1; ctx.fillStyle = COLOR.background; ctx.fillRect(0, 0, W, H);
+    ctx.globalAlpha = 1; backdrop(t);
     const scene = list.find((s) => t >= s.start && t < s.start + s.duration) ?? list[list.length - 1];
     const local = t - scene.start;
     ctx.save();
