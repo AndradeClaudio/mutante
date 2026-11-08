@@ -1,0 +1,36 @@
+# Production layout of the web version: the app container hardened as docs/security.md describes, behind Caddy,
+# which gets the HTTPS certificate on its own. Run from the repository root:
+#   SITE_ADDRESS=<host name> docker compose -f deploy/compose.yaml up -d --build
+services:
+  app:
+    build: ..
+    restart: unless-stopped
+    env_file: ../.env
+    environment:
+      TRUST_PROXY: "1"
+      PORT: "8080"
+    read_only: true
+    tmpfs: [/tmp]
+    volumes: [runs:/app/data/web]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    cpus: 1
+    pids_limit: 128
+    # Only Caddy reaches the app; it is never published on the host.
+    expose: ["8080"]
+
+  proxy:
+    image: caddy:2.8
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:?set SITE_ADDRESS to the public host name}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - certificates:/data
+    depends_on: [app]
+
+volumes:
+  runs:
+  certificates:
