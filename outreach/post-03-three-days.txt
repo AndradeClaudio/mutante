@@ -1,0 +1,12 @@
+Day 3 testing @Telegraphprotoc code reviewers 🧪
+
+Same 71 samples, bought daily. Bugs explained:
+ChainSight 63 → 72 → 72%
+CodeWire 52 → 43 → 48%
+Verity, PREFLIGHT 2% every day
+
+Official leaderboard: all four at 1.0.
+
+github.com/AndradeClaudio/mutante
+
+Hackathon S2 entry (prizes)
