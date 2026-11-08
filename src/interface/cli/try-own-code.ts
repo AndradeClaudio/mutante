@@ -8,7 +8,7 @@ import { RunCrashTest } from "../../application/run-crash-test.js";
 import { gradeReview } from "../../domain/grading.js";
 import { DEFAULT_OPERATORS } from "../../domain/mutation/operators.js";
 import type { RoundSnapshot } from "../../domain/round.js";
-import { JavaScriptContractChecker } from "../../infrastructure/sandbox/javascript-contract-checker.js";
+import { QuickJsContractChecker } from "../../infrastructure/sandbox/quickjs-contract-checker.js";
 import { TelegraphMarket } from "../../infrastructure/telegraph/telegraph-market.js";
 import { roundRepository } from "./paths.js";
 import { printScoreboard } from "./scoreboard-table.js";
@@ -40,7 +40,7 @@ const market = new TelegraphMarket({
   account: privateKeyToAccount(privateKey),
   maxPerPurchaseMicroUsdc: 20_000,
 });
-const checker = new JavaScriptContractChecker();
+const checker = new QuickJsContractChecker();
 const repository = roundRepository();
 
 console.log(`Planting bugs in ${options.code} and proving them with ${options.tests}…`);

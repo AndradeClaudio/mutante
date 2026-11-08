@@ -146,6 +146,29 @@ $/caught  $/explained  detected  explained  reviewer
        -           -        0%         0%   20260828 PREFLIGHT Infrastructure Signals
 ```
 
+## Web version for judges
+
+The same `try` flow as a web page: paste a function and its tests, and see who caught what, with every payment linked.
+It needs an access code. Ask [@andradeclaudiox](https://x.com/andradeclaudiox) for one.
+
+```bash
+# Set TESTNET_PRIVATE_KEY and ACCESS_CODES in .env (see .env.example), then:
+npm run web            # http://localhost:8080
+# or, in an unprivileged, read-only container:
+docker build -t mutante-web . && docker run -p 8080:8080 --env-file .env --read-only --tmpfs /tmp mutante-web
+```
+
+Because it runs code that visitors paste, it has four layers of protection. [`docs/security.md`](docs/security.md)
+explains each one:
+
+1. **Allow-list:** only one small, pure function and `assert` tests are accepted. The code is checked on its syntax tree,
+   and anything that looks like a secret is refused.
+2. **Separate interpreter:** the code runs in QuickJS compiled to WebAssembly, with no files, network or host objects,
+   and with memory and time limits.
+3. **Separate thread and container:** a worker thread with no environment variables and a hard timeout, inside an
+   unprivileged container.
+4. **Access and spending limits:** access codes, limits per hour, at most $0.25 per run and $2 per day.
+
 ## Run it
 
 Requirements: Node 22, and a disposable Sepolia wallet holding a little Sepolia ETH and test USDC.

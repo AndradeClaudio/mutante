@@ -5,7 +5,7 @@ import { DEFAULT_OPERATORS } from "../../src/domain/mutation/operators.js";
 import type { ReviewMarket, RoundRepository } from "../../src/domain/ports.js";
 import type { Review } from "../../src/domain/review.js";
 import type { RoundSnapshot } from "../../src/domain/round.js";
-import { JavaScriptContractChecker } from "../../src/infrastructure/sandbox/javascript-contract-checker.js";
+import { QuickJsContractChecker } from "../../src/infrastructure/sandbox/quickjs-contract-checker.js";
 
 const shipping = {
   id: "free-shipping",
@@ -44,7 +44,7 @@ function inMemoryRepository(): RoundRepository {
 }
 
 function useCase() {
-  return new CrashTestOwnCode(DEFAULT_OPERATORS, new JavaScriptContractChecker(), new RunCrashTest(blocksEverything, inMemoryRepository()));
+  return new CrashTestOwnCode(DEFAULT_OPERATORS, new QuickJsContractChecker(), new RunCrashTest(blocksEverything, inMemoryRepository()));
 }
 
 describe("CrashTestOwnCode", () => {

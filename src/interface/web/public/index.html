@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mutante · Try it</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<main>
+  <header>
+    <p class="eyebrow"><span class="pulse"></span>Telegraph testnet · Hackathon Season II · for judges and testers</p>
+    <h1>Crash-test the reviewers<br><span class="grad">with your own code.</span></h1>
+    <p class="lede">Paste one small JavaScript function with its contract in the first comment, and the tests that prove it. Mutante plants bugs in it, keeps only the bugs your tests prove, buys a review of each one from Telegraph's code-review miners, and shows who caught what and what each correct answer cost.</p>
+  </header>
+
+  <form id="form" class="card" autocomplete="off">
+    <div class="grid">
+      <label>Function <small>one function, contract in the first comment, at most 256 bytes</small>
+        <textarea id="code" rows="8" spellcheck="false" required></textarea>
+        <span class="meter"><span id="bytes">0</span> / 256 bytes</span>
+      </label>
+      <label>Tests <small>assert(condition) calls that the correct function passes</small>
+        <textarea id="tests" rows="8" spellcheck="false" required></textarea>
+      </label>
+    </div>
+    <div class="row">
+      <label class="code">Access code <input id="access" type="password" required minlength="8"></label>
+      <button id="example" type="button" class="ghost">Load an example</button>
+      <button id="run" type="submit">Plant bugs and buy reviews →</button>
+    </div>
+    <p class="note">Your code is sent to Telegraph miners and becomes public on a testnet. Do not paste anything private. A run buys about 20 reviews at $0.01 each in test USDC, paid by this service's testnet wallet, and takes one to two minutes.</p>
+    <ul id="problems" class="problems" hidden></ul>
+  </form>
+
+  <section id="progress" class="card" hidden>
+    <h2>Buying reviews <span id="count" class="pill">0</span></h2>
+    <ol id="log" class="log"></ol>
+  </section>
+
+  <section id="results" hidden>
+    <div class="card">
+      <h2>Scoreboard</h2>
+      <p class="muted">Explained: the answer names the planted bug. Counted: the network recorded a correct "Request changes". Price per bug caught: everything paid to the reviewer in this run ÷ bugs it caught.</p>
+      <div class="table"><table><thead><tr><th>Reviewer</th><th class="num">$ per bug caught</th><th class="num">Explained</th><th class="num">Counted</th><th class="num">False alarms</th></tr></thead><tbody id="scoreboard"></tbody></table></div>
+      <p id="summary" class="muted"></p>
+    </div>
+    <div id="cases"></div>
+  </section>
+
+  <footer>Mutante · <a href="https://github.com/AndradeClaudio/mutante" target="_blank" rel="noopener">source code and method</a> · every payment links to Sepolia Etherscan</footer>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>

@@ -5,9 +5,9 @@ import { generateCases } from "../../src/domain/mutation/generate-cases.js";
 import { DEFAULT_OPERATORS } from "../../src/domain/mutation/operators.js";
 import type { OriginalCode } from "../../src/domain/mutation/original-code.js";
 import type { DeliveredReview } from "../../src/domain/review.js";
-import { JavaScriptContractChecker } from "../../src/infrastructure/sandbox/javascript-contract-checker.js";
+import { QuickJsContractChecker } from "../../src/infrastructure/sandbox/quickjs-contract-checker.js";
 
-const checker = new JavaScriptContractChecker();
+const checker = new QuickJsContractChecker();
 const canVote: OriginalCode = {
   id: "can-vote",
   language: "javascript",

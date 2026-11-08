@@ -17,7 +17,8 @@
     "try": "tsx src/interface/cli/try-own-code.ts",
     "check-routing": "tsx src/interface/cli/check-routing.ts",
     "evaluation:build": "tsx src/interface/cli/build-evaluation-material.ts",
-    "evaluation:submit": "tsx src/interface/cli/submit-evaluation-material.ts"
+    "evaluation:submit": "tsx src/interface/cli/submit-evaluation-material.ts",
+    "web": "tsx src/interface/web/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -26,13 +27,15 @@
   "dependencies": {
     "@x402/evm": "^2.30.0",
     "@x402/fetch": "^2.30.0",
+    "acorn": "^8.19.0",
     "dotenv": "^18.0.9",
+    "quickjs-emscripten": "^0.32.0",
+    "tsx": "^4.23.15",
     "viem": "^2.57.16"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
     "puppeteer-core": "^23.11.1",
-    "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^5.1.0"
   }

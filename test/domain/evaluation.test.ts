@@ -3,7 +3,7 @@ import { BuildEvaluationMaterial } from "../../src/application/build-evaluation-
 import { preferencePair } from "../../src/domain/evaluation/preference-pair.js";
 import { pairForCorrectCode, pairForPlantedBug } from "../../src/domain/evaluation/reference-reviews.js";
 import { DEFAULT_OPERATORS } from "../../src/domain/mutation/operators.js";
-import { JavaScriptContractChecker } from "../../src/infrastructure/sandbox/javascript-contract-checker.js";
+import { QuickJsContractChecker } from "../../src/infrastructure/sandbox/quickjs-contract-checker.js";
 
 const original = "// Open from 9:00 until 17:00.\nfunction isOpen(h) {\n  return h >= 9 && h < 17;\n}\n";
 const mutant = original.replace("h >= 9", "h > 9");
@@ -37,7 +37,7 @@ describe("evaluation material", () => {
 
   it("builds one question per function, proving each planted bug with the check it breaks", async () => {
     const tests = 'assert(isOpen(9) === true, "isOpen(9) === true"); assert(isOpen(17) === false, "isOpen(17) === false");';
-    const material = await new BuildEvaluationMaterial(DEFAULT_OPERATORS, new JavaScriptContractChecker()).execute([
+    const material = await new BuildEvaluationMaterial(DEFAULT_OPERATORS, new QuickJsContractChecker()).execute([
       { original: { id: "open", language: "javascript", code: original, tests }, checks: ["isOpen(9) === true", "isOpen(17) === false"] },
     ]);
     expect(material.pairs).toHaveLength(1);

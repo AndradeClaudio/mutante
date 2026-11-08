@@ -1,0 +1,14 @@
+node_modules
+.env
+.env.*
+!.env.example
+data
+evaluators
+outreach
+video
+tools
+test
+samples
+scripts
+.git
+*.log

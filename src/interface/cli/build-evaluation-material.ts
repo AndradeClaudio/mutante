@@ -6,7 +6,7 @@ import type { PreferencePair } from "../../domain/evaluation/preference-pair.js"
 import { DEFAULT_OPERATORS } from "../../domain/mutation/operators.js";
 import { toEvalPoolLine } from "../../infrastructure/evaluation/evalpool-client.js";
 import { loadEvaluationOriginals } from "../../infrastructure/evaluation/evaluation-originals-file.js";
-import { JavaScriptContractChecker } from "../../infrastructure/sandbox/javascript-contract-checker.js";
+import { QuickJsContractChecker } from "../../infrastructure/sandbox/quickjs-contract-checker.js";
 
 // Usage: npm run evaluation:build -- [--originals evaluators/private/originals.json] [--out evaluators/private/code-review.ndjson]
 // Builds PRIVATE evaluation material for CODE_REVIEW_GENERAL. Nothing is sent anywhere.
@@ -19,7 +19,7 @@ const { values: options } = parseArgs({
 });
 
 const originals = await loadEvaluationOriginals(options.originals);
-const material = await new BuildEvaluationMaterial(DEFAULT_OPERATORS, new JavaScriptContractChecker()).execute(originals);
+const material = await new BuildEvaluationMaterial(DEFAULT_OPERATORS, new QuickJsContractChecker()).execute(originals);
 const provenance = { sourceKind: "synthetic", sourceUrl: "https://github.com/AndradeClaudio/mutante/tree/main/evaluators" };
 
 await mkdir(dirname(options.out), { recursive: true });

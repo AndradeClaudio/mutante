@@ -2,13 +2,13 @@ import { GenerateCatalog } from "../../application/generate-catalog.js";
 import { JAVASCRIPT_ORIGINALS } from "../../catalog/javascript-originals.js";
 import { DEFAULT_OPERATORS } from "../../domain/mutation/operators.js";
 import { saveCatalog } from "../../infrastructure/persistence/json-catalog.js";
-import { JavaScriptContractChecker } from "../../infrastructure/sandbox/javascript-contract-checker.js";
+import { QuickJsContractChecker } from "../../infrastructure/sandbox/quickjs-contract-checker.js";
 import { DEFAULT_CATALOG } from "./paths.js";
 
 // Usage: npm run generate-catalog -- [outputPath]
 const destination = process.argv[2] ?? DEFAULT_CATALOG;
 
-const catalog = await new GenerateCatalog(DEFAULT_OPERATORS, new JavaScriptContractChecker()).execute(JAVASCRIPT_ORIGINALS);
+const catalog = await new GenerateCatalog(DEFAULT_OPERATORS, new QuickJsContractChecker()).execute(JAVASCRIPT_ORIGINALS);
 await saveCatalog(destination, catalog.cases);
 
 const planted = catalog.cases.filter((c) => c.answerKey.kind === "planted-bug").length;
