@@ -1,14 +1,86 @@
 // Every value from the server is shown with textContent: miners' answers are third-party text, never HTML.
 const $ = (id) => document.getElementById(id);
-const EXAMPLE_CODE = `// Free shipping from $50; otherwise a $5 fee.
+// Each example is a small business rule whose edge a reviewer has to notice; `why` says what the bugs will touch.
+const EXAMPLES = [
+  {
+    label: 'Free shipping',
+    why: 'Pricing rule with a boundary at exactly $50.',
+    code: `// Free shipping from $50; otherwise a $5 fee.
 function shippingFee(total) {
   return total >= 50 ? 0 : 5;
 }
-`;
-const EXAMPLE_TESTS = `assert(shippingFee(50) === 0);
+`,
+    tests: `assert(shippingFee(50) === 0);
 assert(shippingFee(49.99) === 5);
 assert(shippingFee(120) === 0);
-assert(shippingFee(0) === 5);`;
+assert(shippingFee(0) === 5);`,
+  },
+  {
+    label: 'Token expiry',
+    why: 'Security rule: a token is still valid at the exact second it expires.',
+    code: `// True only when now is after expiresAt (still valid at expiresAt).
+function isExpired(token, now) {
+  return token.expiresAt < now;
+}
+`,
+    tests: `assert(isExpired({expiresAt: 5}, 10) === true);
+assert(isExpired({expiresAt: 10}, 5) === false);
+assert(isExpired({expiresAt: 7}, 7) === false);`,
+  },
+  {
+    label: 'Who can delete',
+    why: 'Authorization: admins or the owner, nobody else.',
+    code: `// Only admins or the post owner may delete a post.
+function canDelete(user, post) {
+  return user.isAdmin || post.ownerId === user.id;
+}
+`,
+    tests: `assert(canDelete({isAdmin: true, id: 1}, {ownerId: 2}) === true);
+assert(canDelete({isAdmin: false, id: 2}, {ownerId: 2}) === true);
+assert(canDelete({isAdmin: false, id: 1}, {ownerId: 2}) === false);`,
+  },
+  {
+    label: 'Withdraw',
+    why: 'Money: withdrawing the whole balance is allowed, more than it must throw.',
+    code: `// Withdraws if the balance covers it; otherwise throws.
+function withdraw(account, amount) {
+  if (amount > account.balance) throw new Error("insufficient funds");
+  account.balance -= amount;
+  return account.balance;
+}
+`,
+    tests: `assert(withdraw({balance: 10}, 10) === 0);
+assert(withdraw({balance: 10}, 3) === 7);
+let threw = false;
+try { withdraw({balance: 5}, 10); } catch { threw = true; }
+assert(threw);`,
+  },
+  {
+    label: 'Rate limit',
+    why: 'Off-by-one territory: the request that reaches the limit is refused.',
+    code: `// Allows a request while fewer than \`limit\` were made in the window.
+function allowRequest(count, limit) {
+  return count < limit;
+}
+`,
+    tests: `assert(allowRequest(4, 5) === true);
+assert(allowRequest(5, 5) === false);
+assert(allowRequest(6, 5) === false);`,
+  },
+  {
+    label: 'Discount',
+    why: 'Arithmetic plus a floor: a discount never makes the price negative.',
+    code: `// Price after a percentage discount, never below zero.
+function applyDiscount(price, percent) {
+  const result = price - price * percent / 100;
+  return Math.max(result, 0);
+}
+`,
+    tests: `assert(applyDiscount(100, 10) === 90);
+assert(applyDiscount(100, 150) === 0);
+assert(applyDiscount(50, 0) === 50);`,
+  },
+];
 const GOOD = new Set(['caught', 'correctly-approved']);
 const WARN = new Set(['explained-without-verdict', 'blocked-without-reason']);
 const BAD = new Set(['missed', 'false-alarm', 'failed']);
@@ -22,11 +94,30 @@ const el = (tag, className, text) => {
 };
 
 $('code').addEventListener('input', () => { $('bytes').textContent = String(new TextEncoder().encode($('code').value).length); });
-$('example').addEventListener('click', () => {
-  $('code').value = EXAMPLE_CODE;
-  $('tests').value = EXAMPLE_TESTS;
+function loadExample(example, chip) {
+  $('code').value = example.code;
+  $('tests').value = example.tests;
   $('code').dispatchEvent(new Event('input'));
-});
+  $('example-why').textContent = example.why;
+  for (const other of $('examples').children) other.setAttribute('aria-pressed', String(other === chip));
+}
+
+for (const example of EXAMPLES) {
+  const chip = el('button', 'chip', example.label);
+  chip.type = 'button';
+  chip.addEventListener('click', () => loadExample(example, chip));
+  $('examples').append(chip);
+}
+// The page opens with a working example, so a judge only needs the access code to see a run.
+loadExample(EXAMPLES[0], $('examples').firstElementChild);
+// Editing the code means it is no longer the example, so no chip stays highlighted.
+for (const id of ['code', 'tests']) {
+  $(id).addEventListener('input', (event) => {
+    if (!event.isTrusted) return;
+    for (const chip of $('examples').children) chip.setAttribute('aria-pressed', 'false');
+    $('example-why').textContent = '';
+  });
+}
 
 $('form').addEventListener('submit', async (event) => {
   event.preventDefault();

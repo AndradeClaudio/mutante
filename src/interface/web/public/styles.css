@@ -61,3 +61,11 @@ footer a { color: var(--violet); }
 }
 @keyframes drift { to { transform: translate(6rem, 4rem) scale(1.1); } }
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+
+/* Example picker: chips above the editors. */
+.examples { margin-bottom: 1rem; }
+.examples-title { display: block; font-size: .8rem; font-weight: 650; color: var(--sub); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .5rem; }
+.chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+button.chip { padding: .45rem .9rem; font-size: .88rem; background: #fff; color: var(--ink); border: 1px solid var(--line); box-shadow: none; }
+button.chip[aria-pressed="true"] { background: var(--grad); color: #fff; border-color: transparent; box-shadow: 0 8px 22px -12px rgba(109, 93, 252, .8); }
+.example-why { min-height: 1.2em; margin: .5rem 0 0; font-size: .9rem; }

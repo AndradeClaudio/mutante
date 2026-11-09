@@ -16,6 +16,11 @@
   </header>
 
   <form id="form" class="card" autocomplete="off">
+    <div class="examples" role="group" aria-labelledby="examples-title">
+      <span id="examples-title" class="examples-title">Start from an example</span>
+      <div id="examples" class="chips"></div>
+      <p id="example-why" class="muted example-why"></p>
+    </div>
     <div class="grid">
       <label>Function <small>one function, contract in the first comment, at most 256 bytes</small>
         <textarea id="code" rows="8" spellcheck="false" required></textarea>
@@ -27,7 +32,6 @@
     </div>
     <div class="row">
       <label class="code">Access code <input id="access" type="password" required minlength="8"></label>
-      <button id="example" type="button" class="ghost">Load an example</button>
       <button id="run" type="submit">Plant bugs and buy reviews →</button>
     </div>
     <p class="note">Your code is sent to Telegraph miners and becomes public on a testnet. Do not paste anything private. A run buys about 20 reviews at $0.01 each in test USDC, paid by this service's testnet wallet, and takes one to two minutes.</p>
