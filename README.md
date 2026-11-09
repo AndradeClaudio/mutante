@@ -149,13 +149,20 @@ $/caught  $/explained  detected  explained  reviewer
 ## Web version for judges
 
 The same `try` flow as a web page: paste a function and its tests, and see who caught what, with every payment linked.
-It needs an access code. Ask [@andradeclaudiox](https://x.com/andradeclaudiox) for one.
+
+**Live: <https://64-177-59-121.sslip.io>**. It is online during the judging period. It needs an access code; judges
+get one with the submission, and anyone else can ask [@andradeclaudiox](https://x.com/andradeclaudiox). The page opens
+with an example loaded, so the access code is all a first run needs; a run takes one to two minutes.
+
+To run your own copy:
 
 ```bash
 # Set TESTNET_PRIVATE_KEY and ACCESS_CODES in .env (see .env.example), then:
 npm run web            # http://localhost:8080
 # or, in an unprivileged, read-only container:
 docker build -t mutante-web . && docker run -p 8080:8080 --env-file .env --read-only --tmpfs /tmp mutante-web
+# or on a server, behind Caddy with automatic HTTPS (how the live version runs):
+SITE_ADDRESS=your.host.name docker compose -f deploy/compose.yaml up -d --build
 ```
 
 Because it runs code that visitors paste, it has four layers of protection. [`docs/security.md`](docs/security.md)
