@@ -22,6 +22,14 @@ describe("trial gate (layer 4)", () => {
     expect(gate.admit("judge-code", "5.6.7.8").admitted).toBe(true);
   });
 
+  it("recognizes a code without using up a run, so a refused sample costs nothing", () => {
+    const { gate } = gateAt();
+    expect(gate.recognize("guess", "a")).toMatchObject({ recognized: false, status: 401 });
+    for (let i = 0; i < 5; i++) expect(gate.recognize("judge-code", "a").recognized).toBe(true);
+    const run = gate.admit("judge-code", "a");
+    expect(run.admitted).toBe(true);
+  });
+
   it("runs one at a time and limits runs per code per hour", () => {
     const { gate, advance } = gateAt();
     const first = gate.admit("judge-code", "a");

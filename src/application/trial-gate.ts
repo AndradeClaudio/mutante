@@ -17,6 +17,10 @@ export type Admission =
   | { readonly admitted: true; readonly ticket: TrialTicket }
   | { readonly admitted: false; readonly reason: string; readonly status: 401 | 429 | 503 };
 
+export type Recognition =
+  | { readonly recognized: true; readonly codeLabel: string }
+  | { readonly recognized: false; readonly reason: string; readonly status: 401 | 429 };
+
 /** Proof that a run was admitted; closing it releases the budget it did not use. */
 export interface TrialTicket {
   readonly codeLabel: string;
@@ -44,18 +48,29 @@ export class TrialGate {
     if (limits.accessCodes.length === 0) throw new Error("Configure at least one access code.");
   }
 
-  admit(accessCode: string, address: string): Admission {
+  /**
+   * Checks only the access code, so a visitor without one learns nothing else from the service, not even
+   * whether their code would be accepted. A wrong code counts toward the address's failure limit.
+   */
+  recognize(accessCode: string, address: string): Recognition {
     const now = this.now();
     const failures = recent(this.failuresByAddress.get(address), now);
     if (failures.length >= this.limits.failedAttemptsPerHour) {
-      return { admitted: false, reason: "Too many wrong access codes from this address. Try again in an hour.", status: 429 };
+      return { recognized: false, reason: "Too many wrong access codes from this address. Try again in an hour.", status: 429 };
     }
     const code = this.limits.accessCodes.find((known) => sameText(known, accessCode));
     if (!code) {
       this.failuresByAddress.set(address, [...failures, now]);
-      return { admitted: false, reason: "Unknown access code.", status: 401 };
+      return { recognized: false, reason: "Unknown access code.", status: 401 };
     }
-    const label = labelOf(code);
+    return { recognized: true, codeLabel: labelOf(code) };
+  }
+
+  admit(accessCode: string, address: string): Admission {
+    const recognition = this.recognize(accessCode, address);
+    if (!recognition.recognized) return { admitted: false, reason: recognition.reason, status: recognition.status };
+    const now = this.now();
+    const label = recognition.codeLabel;
     const runs = recent(this.runsByCode.get(label), now);
     if (runs.length >= this.limits.runsPerCodePerHour) {
       return { admitted: false, reason: `This access code already started ${runs.length} runs in the last hour.`, status: 429 };

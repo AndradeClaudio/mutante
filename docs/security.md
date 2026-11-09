@@ -77,6 +77,8 @@ Code: [`src/application/trial-gate.ts`](../src/application/trial-gate.ts) and
 
 - **Access codes** (`ACCESS_CODES`):
   - an access code is required to start a run, and is compared in constant time;
+  - it is checked before anything else, so without one the code is not even parsed; a refused sample does not use up a
+    run;
   - one address may try at most 10 wrong codes per hour.
 - **Limits:**
   - one run at a time;

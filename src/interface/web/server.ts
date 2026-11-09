@@ -114,7 +114,15 @@ async function startRun(request: IncomingMessage, response: ServerResponse): Pro
     return send(response, 400, { error: "Send accessCode, code and tests as text." });
   }
 
-  // Layer 1: only the accepted shape of code gets any further.
+  // Layer 4 first: without a valid access code, nothing else about the request is looked at.
+  const address = clientAddress(request);
+  const recognition = gate.recognize(input.accessCode, address);
+  if (!recognition.recognized) {
+    log("refused", { address: hashed(address), reason: recognition.reason });
+    return send(response, recognition.status, { error: recognition.reason });
+  }
+
+  // Layer 1: only the accepted shape of code gets any further. A refused sample does not use up a run.
   let submission: Submission;
   try {
     submission = Submission.accept(input.code, input.tests, rules);
@@ -123,8 +131,7 @@ async function startRun(request: IncomingMessage, response: ServerResponse): Pro
     throw error;
   }
 
-  // Layer 4: access code, rate limits and spending limits.
-  const address = clientAddress(request);
+  // Layer 4 again: rate limits and spending limits.
   const admission = gate.admit(input.accessCode, address);
   if (!admission.admitted) {
     log("refused", { address: hashed(address), reason: admission.reason });
