@@ -150,7 +150,7 @@ $/caught  $/explained  detected  explained  reviewer
 
 The same `try` flow as a web page: paste a function and its tests, and see who caught what, with every payment linked.
 
-**Live: <https://64-177-59-121.sslip.io>**. It is online during the judging period. It needs an access code; judges
+**Live version:** it goes online for the judging period, and its link will be here. It needs an access code; judges
 get one with the submission, and anyone else can ask [@andradeclaudiox](https://x.com/andradeclaudiox). The page opens
 with an example loaded, so the access code is all a first run needs; a run takes one to two minutes.
 
