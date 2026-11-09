@@ -57,6 +57,17 @@ describe("CrashTestOwnCode", () => {
     expect(round.toSnapshot().reviews).toHaveLength(4);
   });
 
+  it("says when the bugs are planted, before the first review is bought", async () => {
+    const events: string[] = [];
+    await useCase().execute(
+      { roundId: "try", original: shipping, maxMutants: 3, budgetMicroUsdc: 1_000_000 },
+      () => events.push("review"),
+      ({ casesToReview }) => events.push(`planted ${casesToReview}`),
+    );
+    expect(events[0]).toBe("planted 4");
+    expect(events.filter((e) => e === "review")).toHaveLength(4);
+  });
+
   it("spreads a small budget over different kinds of bug", async () => {
     const { round } = await useCase().execute({ roundId: "try", original: shipping, maxMutants: 3, budgetMicroUsdc: 1_000_000 });
     const operators = round.cases.flatMap((c) => (c.origin.kind === "mutant" ? [c.origin.operator] : []));

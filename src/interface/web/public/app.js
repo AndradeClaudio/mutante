@@ -131,6 +131,10 @@ $('form').addEventListener('submit', async (event) => {
       body: JSON.stringify({ accessCode: $('access').value, code: $('code').value, tests: $('tests').value }),
     });
     const body = await response.json();
+    if (response.status === 409 && body.runId) {
+      follow(body.runId);
+      return;
+    }
     if (!response.ok) {
       showProblems(body.problems ?? [body.error ?? 'The run could not start.']);
       $('run').disabled = false;
@@ -149,27 +153,83 @@ function showProblems(problems) {
   list.hidden = problems.length === 0;
 }
 
+const REVIEWER_NAMES = { '7310045': 'CodeWire', '5530': 'Verity', '20260828': 'PREFLIGHT', 'auto-routed': 'Auto-routing' };
+const STAGES = ['planting', 'buying', 'grading'];
+const STAGE_TITLES = {
+  planting: 'Planting bugs in your function…',
+  buying: 'Buying reviews from the miners…',
+  grading: 'Grading the answers…',
+  finished: 'Done',
+};
+
+// "web-shippingfee-boundary-1" → "bug: boundary"; the original is the one with no planted bug.
+function caseName(caseId) {
+  if (caseId.endsWith('-correct')) return 'your original';
+  const kind = caseId.replace(/^web-[a-z0-9]+-/, '').replace(/-\d+$/, '');
+  return `bug: ${kind.replace(/-/g, ' ')}`;
+}
+
+function showStage(run) {
+  const current = STAGES.indexOf(run.stage);
+  STAGES.forEach((stage, i) => {
+    const item = $(`stage-${stage}`);
+    item.className = run.stage === 'finished' || i < current ? 'done' : i === current ? 'active' : '';
+  });
+  $('stage-title').textContent = STAGE_TITLES[run.stage] ?? 'Working…';
+  const expected = run.expectedReviews ?? 0;
+  const bought = run.progress.length;
+  // Planting is about a tenth of the wait; the purchases are the rest.
+  const share = run.stage === 'planting' ? 0.04 : run.stage === 'buying' ? 0.1 + 0.85 * (expected ? bought / expected : 0) : 1;
+  $('bar-fill').style.width = `${Math.round(share * 100)}%`;
+  $('bar-fill').parentElement.setAttribute('aria-valuenow', String(Math.round(share * 100)));
+  $('count').textContent = run.stage === 'planting'
+    ? 'Running your tests against each changed version, in a sandbox.'
+    : bought === 0
+      ? `${run.provenMutants} bugs proven by your tests. Waiting for the first answers (the first ones take the longest)…`
+      : run.stage === 'finished'
+        ? `${bought} reviews answered · $${(bought * 0.01).toFixed(2)} of test USDC paid · results below`
+        : `${bought} of ${expected} reviews answered · $${(bought * 0.01).toFixed(2)} of test USDC paid so far`;
+}
+
 async function follow(runId) {
+  history.replaceState(null, '', `#run=${runId}`);
+  showProblems([]);
+  $('run').disabled = true;
   $('progress').hidden = false;
   $('log').replaceChildren();
+  $('progress').scrollIntoView({ behavior: 'smooth', block: 'start' });
   let shown = 0;
+  let startedAt = Date.now();
+  const clock = setInterval(() => {
+    const seconds = Math.floor((Date.now() - startedAt) / 1000);
+    $('elapsed').textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+  }, 1000);
   for (;;) {
-    await new Promise((r) => setTimeout(r, 2000));
-    const response = await fetch(`/api/runs/${runId}`);
-    if (!response.ok) { showProblems(['The run was lost. Start it again.']); break; }
-    const run = await response.json();
-    for (const p of run.progress.slice(shown)) {
-      const item = el('li');
-      item.append(el('span', 'who', p.reviewer), el('span', 'case', p.caseId), el('span', `out ${p.outcome === 'Request changes' ? 'good' : p.outcome === 'failed' ? 'bad' : ''}`, p.outcome));
-      $('log').prepend(item);
+    const response = await fetch(`/api/runs/${runId}`).catch(() => null);
+    if (response && response.status === 404) { showProblems(['This run is no longer on the server (runs are kept for 24 hours). Start a new one.']); break; }
+    if (response && response.ok) {
+      const run = await response.json();
+      startedAt = run.startedAt;
+      for (const p of run.progress.slice(shown)) {
+        const item = el('li');
+        const tone = p.outcome === 'Request changes' ? 'good' : p.outcome === 'failed' ? 'bad' : '';
+        item.append(el('span', 'who', REVIEWER_NAMES[p.reviewer] ?? p.reviewer), el('span', 'case', caseName(p.caseId)), el('span', `out ${tone}`, p.outcome));
+        $('log').prepend(item);
+      }
+      shown = run.progress.length;
+      showStage(run);
+      if (run.status === 'done') { render(run.result); break; }
+      if (run.status === 'failed') { showProblems([run.error]); break; }
     }
-    shown = run.progress.length;
-    $('count').textContent = String(shown);
-    if (run.status === 'done') { render(run.result); break; }
-    if (run.status === 'failed') { showProblems([run.error]); break; }
+    await new Promise((r) => setTimeout(r, 2000));
   }
+  clearInterval(clock);
   $('run').disabled = false;
 }
+
+// A reload, or a shared link, reopens the run instead of starting over.
+const linkedRun = /^#run=([0-9a-f-]{36})$/.exec(location.hash);
+if (linkedRun) follow(linkedRun[1]);
 
 function render(result) {
   $('results').hidden = false;

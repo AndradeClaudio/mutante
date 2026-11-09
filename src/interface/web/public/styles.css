@@ -69,3 +69,25 @@ footer a { color: var(--violet); }
 button.chip { padding: .45rem .9rem; font-size: .88rem; background: #fff; color: var(--ink); border: 1px solid var(--line); box-shadow: none; }
 button.chip[aria-pressed="true"] { background: var(--grad); color: #fff; border-color: transparent; box-shadow: 0 8px 22px -12px rgba(109, 93, 252, .8); }
 .example-why { min-height: 1.2em; margin: .5rem 0 0; font-size: .9rem; }
+
+/* Run progress: three stages, a bar and a clock, so a long wait never looks frozen. */
+.progress-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.progress-head h2 { margin: 0; }
+#elapsed { font-variant-numeric: tabular-nums; }
+.stages { list-style: none; margin: 1rem 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; counter-reset: stage; }
+.stages li { position: relative; padding: .8rem .9rem .8rem 2.6rem; border: 1px solid var(--line); border-radius: 14px; background: #fff; color: var(--faint); transition: border-color .3s, color .3s, box-shadow .3s; counter-increment: stage; }
+.stages li::before { content: counter(stage); position: absolute; left: .8rem; top: .8rem; width: 1.3rem; height: 1.3rem; border-radius: 50%; display: grid; place-items: center; font-size: .75rem; font-weight: 700; background: rgba(15, 23, 42, .06); color: var(--sub); }
+.stages b { display: block; color: inherit; font-size: .92rem; }
+.stages span { display: block; font-size: .8rem; margin-top: .2rem; line-height: 1.35; }
+.stages li.active { color: var(--ink); border-color: rgba(109, 93, 252, .45); box-shadow: 0 10px 30px -18px rgba(109, 93, 252, .9); }
+.stages li.active::before { background: var(--grad); color: #fff; animation: breathe 1.4s ease-in-out infinite; }
+.stages li.done { color: var(--sub); }
+.stages li.done::before { content: "✓"; background: rgba(18, 185, 129, .16); color: #0b7a56; }
+@keyframes breathe { 50% { box-shadow: 0 0 0 6px rgba(109, 93, 252, .15); } }
+.bar { height: .5rem; border-radius: 999px; background: rgba(15, 23, 42, .06); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--grad); background-size: 200% 100%; border-radius: inherit; transition: width .8s ease; animation: flow 2s linear infinite; }
+@keyframes flow { to { background-position: -200% 0; } }
+.counter { margin: .6rem 0 .8rem; }
+.small { font-size: .8rem; margin-bottom: 0; }
+@media (max-width: 720px) { .stages { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .bar i, .stages li.active::before { animation: none; } }

@@ -38,9 +38,20 @@
     <ul id="problems" class="problems" hidden></ul>
   </form>
 
-  <section id="progress" class="card" hidden>
-    <h2>Buying reviews <span id="count" class="pill">0</span></h2>
+  <section id="progress" class="card" hidden aria-live="polite">
+    <div class="progress-head">
+      <h2 id="stage-title">Starting the run…</h2>
+      <span id="elapsed" class="pill">0:00</span>
+    </div>
+    <ol class="stages">
+      <li id="stage-planting"><b>Plant and prove bugs</b><span>Mutante changes your function in small ways and keeps only the changes your tests catch.</span></li>
+      <li id="stage-buying"><b>Buy reviews</b><span>Each review is a paid request on the Telegraph testnet. Miners answer in 5 to 40 seconds each, four at a time.</span></li>
+      <li id="stage-grading"><b>Grade the answers</b><span>Each answer is compared with the bug that was planted.</span></li>
+    </ol>
+    <div class="bar" role="progressbar" aria-labelledby="stage-title" aria-valuemin="0" aria-valuemax="100"><i id="bar-fill"></i></div>
+    <p id="count" class="muted counter"></p>
     <ol id="log" class="log"></ol>
+    <p class="muted small">The whole run takes one to two minutes. You can reload or close this page: the link in the address bar brings the run back.</p>
   </section>
 
   <section id="results" hidden>

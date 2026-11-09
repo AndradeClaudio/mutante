@@ -76,7 +76,7 @@ export class TrialGate {
       return { admitted: false, reason: `This access code already started ${runs.length} runs in the last hour.`, status: 429 };
     }
     if (this.running) {
-      return { admitted: false, reason: "Another run is in progress. Try again in a minute.", status: 503 };
+      return { admitted: false, reason: "Another tester's run is in progress, and only one runs at a time to protect the wallet. Try again in a minute or two.", status: 503 };
     }
     if (this.spentTodayMicroUsdc(now) + this.reservedMicroUsdc + this.limits.budgetPerRunMicroUsdc > this.limits.dailyCapMicroUsdc) {
       return { admitted: false, reason: "Today's test budget is used up. Try again tomorrow (UTC).", status: 503 };

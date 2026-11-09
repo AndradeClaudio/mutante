@@ -50,8 +50,14 @@ const crashTest = new CrashTestOwnCode(DEFAULT_OPERATORS, checker, new RunCrashT
 
 interface RunState {
   status: "running" | "done" | "failed";
+  /** What the run is doing now, so the page can say it instead of looking frozen. */
+  stage: "planting" | "buying" | "grading" | "finished";
   startedAt: number;
+  provenMutants?: number;
+  expectedReviews?: number;
   progress: { reviewer: string; caseId: string; outcome: string }[];
+  /** Hashed label of the access code that started it; never sent to the page. */
+  codeLabel: string;
   result?: ReturnType<typeof resultOf>;
   error?: string;
 }
@@ -92,7 +98,9 @@ async function handle(request: IncomingMessage, response: ServerResponse): Promi
   const runMatch = /^\/api\/runs\/([0-9a-f-]{36})$/.exec(url.pathname);
   if (request.method === "GET" && runMatch) {
     const run = runs.get(runMatch[1]!);
-    return run ? send(response, 200, run) : send(response, 404, { error: "Unknown run." });
+    if (!run) return send(response, 404, { error: "Unknown run." });
+    const { codeLabel, ...visible } = run;
+    return send(response, 200, visible);
   }
   if (request.method === "GET" && url.pathname === "/healthz") return send(response, 200, { ok: true });
   send(response, 404, { error: "Not found." });
@@ -131,6 +139,10 @@ async function startRun(request: IncomingMessage, response: ServerResponse): Pro
     throw error;
   }
 
+  // A reload or a second tab must not look like someone else's run: hand back the run this code already has going.
+  const ongoing = [...runs.entries()].find(([, run]) => run.status === "running" && run.codeLabel === recognition.codeLabel);
+  if (ongoing) return send(response, 409, { error: "Your previous run is still going; showing it.", runId: ongoing[0] });
+
   // Layer 4 again: rate limits and spending limits.
   const admission = gate.admit(input.accessCode, address);
   if (!admission.admitted) {
@@ -139,7 +151,7 @@ async function startRun(request: IncomingMessage, response: ServerResponse): Pro
   }
 
   const id = randomUUID();
-  const state: RunState = { status: "running", startedAt: Date.now(), progress: [] };
+  const state: RunState = { status: "running", stage: "planting", startedAt: Date.now(), progress: [], codeLabel: admission.ticket.codeLabel };
   runs.set(id, state);
   forgetOldRuns();
   log("run-started", { run: id, code: admission.ticket.codeLabel, address: hashed(address), sample: hashed(submission.code) });
@@ -161,15 +173,24 @@ async function startRun(request: IncomingMessage, response: ServerResponse): Pro
           caseId: review.caseId,
           outcome: review.kind === "delivered" ? (review.verdict ?? "no verdict") : "failed",
         });
+        state.expectedReviews = state.progress.length + remaining;
+        if (remaining === 0) state.stage = "grading";
+      },
+      (planted) => {
+        state.provenMutants = planted.provenMutants;
+        state.expectedReviews = planted.casesToReview * settings.reviewers.length;
+        state.stage = "buying";
       },
     );
     const snapshot = result.round.toSnapshot();
     state.result = resultOf(snapshot, result.provenMutants);
     state.status = "done";
+    state.stage = "finished";
     admission.ticket.close(result.round.spentMicroUsdc);
     log("run-done", { run: id, spentMicroUsdc: result.round.spentMicroUsdc });
   } catch (error) {
     state.status = "failed";
+    state.stage = "finished";
     state.error = error instanceof Error ? error.message : String(error);
     admission.ticket.close(0);
     log("run-failed", { run: id, message: state.error });
